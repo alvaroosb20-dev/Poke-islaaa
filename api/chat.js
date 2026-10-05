@@ -53,9 +53,15 @@ module.exports = async (req, res) => {
         generationConfig: gen,
       }),
     });
-    let r = await llamar({ maxOutputTokens: 700, temperature: 0.5, thinkingConfig: { thinkingBudget: 0 } });
-    if (r.status === 400) r = await llamar({ maxOutputTokens: 1500, temperature: 0.5 });
+    let r;
+    for (let t = 0; t < 3; t++) {
+      r = await llamar({ maxOutputTokens: 700, temperature: 0.5, thinkingConfig: { thinkingBudget: 0 } });
+      if (r.status === 400) r = await llamar({ maxOutputTokens: 1500, temperature: 0.5 });
+      if (r.status !== 503) break;
+      await new Promise((x) => setTimeout(x, 1200));
+    }
     const d = await r.json().catch(() => ({}));
+    if (r.status === 503) return res.status(503).json({ error: "El asistente está muy ocupado en este momento. Inténtalo de nuevo en unos segundos." });
     if (r.status === 429) return res.status(429).json({ error: "Hay mucha demanda ahora mismo. Escríbenos por Instagram @poke_islas." });
     if (!r.ok) {
       const det = ((d.error && d.error.message) || "sin detalle").slice(0, 160);
