@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
       const lista = await getAll();
       catalogo = lista.map((p) => `- ${p.n} (${p.c || "sin categoría"}${p.g ? ", " + p.g : ""}): ${(p.pr / 100).toFixed(2)} €, ${p.s > 0 ? p.s + " en stock" : "agotado"}`).join("\n") || "(vacío)";
     } catch (_) {}
-    const llamar = (gen) => fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+    const llamar = (gen) => fetch("https://generativelanguage.googleapis.com/v1beta/models/" + (process.env.GEMINI_MODEL || "gemini-3.8-flash") + ":generateContent", {
       method: "POST",
       headers: { "x-goog-api-key": process.env.GEMINI_API_KEY.trim(), "content-type": "application/json" },
       body: JSON.stringify({
@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
       }),
     });
     let r = await llamar({ maxOutputTokens: 700, temperature: 0.5, thinkingConfig: { thinkingBudget: 0 } });
-    if (r.status === 400) r = await llamar({ maxOutputTokens: 700, temperature: 0.5 });
+    if (r.status === 400) r = await llamar({ maxOutputTokens: 1500, temperature: 0.5 });
     const d = await r.json().catch(() => ({}));
     if (r.status === 429) return res.status(429).json({ error: "Hay mucha demanda ahora mismo. Escríbenos por Instagram @poke_islas." });
     if (!r.ok) {
