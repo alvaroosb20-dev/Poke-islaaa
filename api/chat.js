@@ -44,18 +44,23 @@ module.exports = async (req, res) => {
       const lista = await getAll();
       catalogo = lista.map((p) => `- ${p.n} (${p.c || "sin categoría"}${p.g ? ", " + p.g : ""}): ${(p.pr / 100).toFixed(2)} €, ${p.s > 0 ? p.s + " en stock" : "agotado"}`).join("\n") || "(vacío)";
     } catch (_) {}
-    const r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+    const llamar = (gen) => fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
       method: "POST",
-      headers: { "x-goog-api-key": process.env.GEMINI_API_KEY, "content-type": "application/json" },
+      headers: { "x-goog-api-key": process.env.GEMINI_API_KEY.trim(), "content-type": "application/json" },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: BASE + "\n\nCatálogo actual:\n" + catalogo }] },
         contents: msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
-        generationConfig: { maxOutputTokens: 700, temperature: 0.5, thinkingConfig: { thinkingBudget: 0 } },
+        generationConfig: gen,
       }),
     });
+    let r = await llamar({ maxOutputTokens: 700, temperature: 0.5, thinkingConfig: { thinkingBudget: 0 } });
+    if (r.status === 400) r = await llamar({ maxOutputTokens: 700, temperature: 0.5 });
     const d = await r.json().catch(() => ({}));
     if (r.status === 429) return res.status(429).json({ error: "Hay mucha demanda ahora mismo. Escríbenos por Instagram @poke_islas." });
-    if (!r.ok) return res.status(502).json({ error: "El asistente no está disponible ahora. Escríbenos por Instagram @poke_islas." });
+    if (!r.ok) {
+      const det = ((d.error && d.error.message) || "sin detalle").slice(0, 160);
+      return res.status(502).json({ error: "El asistente no está disponible ahora (" + r.status + ": " + det + ")" });
+    }
     const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
     const reply = parts.map((p) => p.text || "").join("\n").trim();
     res.status(200).json({ reply: reply || "No he podido responder. Prueba a reformular la pregunta." });
