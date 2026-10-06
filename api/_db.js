@@ -33,6 +33,10 @@ async function getAll() {
     await cmd(["HSET", "products", ...SEED.flatMap((p) => [String(p.id), JSON.stringify(p)])]);
     raw = await cmd(["HGETALL", "products"]);
   }
+  if ((await cmd(["SET", "mb_removed", "1", "NX"])) === "OK") {
+    await cmd(["HDEL", "products", "101", "102", "103"]);
+    raw = await cmd(["HGETALL", "products"]);
+  }
   return toList(raw);
 }
 
