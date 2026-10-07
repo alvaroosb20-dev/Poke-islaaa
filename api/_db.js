@@ -24,7 +24,8 @@ function toList(raw) {
   const out = [];
   if (Array.isArray(raw)) for (let k = 0; k < raw.length; k += 2) out.push(JSON.parse(raw[k + 1]));
   else if (raw && typeof raw === "object") for (const v of Object.values(raw)) out.push(typeof v === "string" ? JSON.parse(v) : v);
-  return out.sort((a, b) => a.id - b.id);
+  const o = (p) => (p.ord == null ? 1e9 : p.ord);
+  return out.sort((a, b) => o(a) - o(b) || a.id - b.id);
 }
 
 async function getAll() {
