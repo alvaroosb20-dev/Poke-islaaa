@@ -1,7 +1,7 @@
 const { cmd } = require("./_db");
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
-  const { pin, action, product, id } = req.body || {};
+  const { pin, action, product, id, ids } = req.body || {};
   if (!process.env.ADMIN_PIN || typeof pin !== "string" || pin !== process.env.ADMIN_PIN) {
     await new Promise((r) => setTimeout(r, 800));
     return res.status(401).json({ error: "PIN incorrecto" });
@@ -21,9 +21,19 @@ module.exports = async (req, res) => {
       if (p.o != null && !int(p.o)) return res.status(400).json({ error: "Precio anterior no válido" });
       if (p.link && !String(p.link).startsWith("https://buy.stripe.com/")) return res.status(400).json({ error: "Enlace de Stripe no válido" });
       if (p.img && (!String(p.img).startsWith("data:image/") || p.img.length > 400000)) return res.status(400).json({ error: "Imagen no válida o demasiado grande" });
-      const row = { id: p.id, n: p.n.trim(), c: p.c || null, g: p.g || null, pr: p.pr, o: p.o || null, s: p.s, f: p.f ? 1 : 0, i: p.i || null, img: p.img || null, link: p.link || null, h: p.h || null };
+      const row = { id: p.id, n: p.n.trim(), c: p.c || null, g: p.g || null, pr: p.pr, o: p.o || null, s: p.s, f: p.f ? 1 : 0, i: p.i || null, img: p.img || null, link: p.link || null, h: p.h || null, d: typeof p.d === "string" && p.d.trim() ? p.d.trim().slice(0, 300) : null };
       Object.keys(row).forEach((k) => row[k] === null && delete row[k]);
+      const prev = (await cmd(["HMGET", "products", String(row.id)]))[0];
+      if (prev) { try { const o = JSON.parse(prev).ord; if (Number.isFinite(o)) row.ord = o; } catch (_) {} }
       await cmd(["HSET", "products", String(row.id), JSON.stringify(row)]);
+      return res.status(200).json({ ok: true });
+    }
+    if (action === "order") {
+      if (!Array.isArray(ids) || !ids.length || ids.length > 500 || !ids.every(Number.isSafeInteger)) return res.status(400).json({ error: "Orden no válido" });
+      const rows = await cmd(["HMGET", "products", ...ids.map(String)]);
+      const args = [];
+      rows.forEach((r, i) => { if (!r) return; const p = JSON.parse(r); p.ord = i; args.push(String(ids[i]), JSON.stringify(p)); });
+      if (args.length) await cmd(["HSET", "products", ...args]);
       return res.status(200).json({ ok: true });
     }
     res.status(400).json({ error: "Acción no válida" });
