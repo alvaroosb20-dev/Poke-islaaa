@@ -1,10 +1,11 @@
 const { cmd } = require("./_db");
-const ENVIOS = { canarias: ["Canarias", 500], peninsula: ["Península", 650], baleares: ["Baleares", 850], ceutamelilla: ["Ceuta / Melilla", 1200] };
+const { shipTable } = require("./_site");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
   try {
     const { items, zone } = req.body || {};
+    const ENVIOS = await shipTable();
     const env = ENVIOS[zone];
     if (!env || !Array.isArray(items) || !items.length || items.length > 30) return res.status(400).json({ error: "Pedido no válido" });
     const ids = items.map((it) => it.id);
@@ -21,6 +22,8 @@ module.exports = async (req, res) => {
       f.append(`line_items[${i}][price_data][unit_amount]`, p.pr);
       f.append(`line_items[${i}][price_data][product_data][name]`, p.n);
     });
+    f.append("metadata[zone]", zone);
+    f.append("metadata[items]", items.map((it) => it.id + ":" + parseInt(it.qty, 10)).join(","));
     f.append("shipping_address_collection[allowed_countries][0]", "ES");
     f.append("shipping_options[0][shipping_rate_data][type]", "fixed_amount");
     f.append("shipping_options[0][shipping_rate_data][display_name]", "Envío " + env[0]);
