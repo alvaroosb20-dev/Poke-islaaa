@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 const { cmd } = require("./_db");
 const M = require("./_mbox");
+const { shipTable } = require("./_site");
 
-const ENVIOS = { canarias: ["Canarias", 500], peninsula: ["Península", 650], baleares: ["Baleares", 850], ceutamelilla: ["Ceuta / Melilla", 1200] };
 const TOK = /^[a-f0-9]{32}$/;
 const fail = (res, c, m) => res.status(c).json({ error: m });
 const hash = (s) => crypto.createHash("sha256").update(String(s)).digest();
@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
     }
 
     if (b.action === "buy") {
-      const box = await M.getBox(Number(b.boxId)), env = ENVIOS[b.zone];
+      const ENVIOS = await shipTable(), box = await M.getBox(Number(b.boxId)), env = ENVIOS[b.zone];
       if (!box || !box.active || !M.valid(box)) return fail(res, 400, "Esta Mystery Box no está disponible");
       if (!env) return fail(res, 400, "Zona de envío no válida");
       try {
