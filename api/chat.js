@@ -1,11 +1,12 @@
 const { cmd, getAll } = require("./_db");
+const { shipTable } = require("./_site");
 
 const BASE = `Eres el asistente de Poke Islas, una tienda de coleccionismo Pokémon en Canarias con envíos a toda España. Respondes en español, con tono cercano y claro, normalmente en 3-6 frases (más si te piden detalle).
 
 Puedes: explicar todo sobre cartas Pokémon (sets, rarezas, idiomas, ediciones, estados de conservación, cómo detectar falsificaciones, fundas y toploaders, cuidado y almacenaje, vintage japonés, álbumes y stickers), explicar la gradación (PSA, CGC, Collectura, Nova, Akatsu, SFG: escalas de nota, qué significa el número de certificación y cómo verificarlo en la web de cada empresa), orientar a quien empieza a coleccionar, y dar soporte sobre la tienda.
 
 Datos de la tienda:
-- Envío a Canarias 5,00 €, Península 6,50 €, Baleares 8,50 €, Ceuta y Melilla 12,00 €. El coste se ve en el carrito antes de pagar.
+- {{ENVIOS}} El coste se ve en el carrito antes de pagar.
 - Pago con tarjeta y otros métodos de Stripe desde el carrito. No se guardan datos de tarjeta.
 - Compramos y vendemos cartas sueltas, colecciones y productos de coleccionismo: el formulario "QUIERO VENDER" de la web.
 - Contacto: Instagram @poke_islas (https://www.instagram.com/poke_islas/).
@@ -44,11 +45,13 @@ module.exports = async (req, res) => {
       const lista = await getAll();
       catalogo = lista.map((p) => `- ${p.n} (${p.c || "sin categoría"}${p.g ? ", " + p.g : ""}): ${(p.pr / 100).toFixed(2)} €, ${p.s > 0 ? p.s + " en stock" : "agotado"}`).join("\n") || "(vacío)";
     } catch (_) {}
+    const ST = await shipTable();
+    const enviosTxt = "Envío: " + Object.values(ST).map(([n, c]) => n + " " + (c / 100).toFixed(2).replace(".", ",") + " €").join(", ") + ".";
     const llamar = (gen) => fetch("https://generativelanguage.googleapis.com/v1beta/models/" + (process.env.GEMINI_MODEL || "gemini-3.8-flash") + ":generateContent", {
       method: "POST",
       headers: { "x-goog-api-key": process.env.GEMINI_API_KEY.trim(), "content-type": "application/json" },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: BASE + "\n\nCatálogo actual:\n" + catalogo }] },
+        systemInstruction: { parts: [{ text: BASE.replace("{{ENVIOS}}", enviosTxt) + "\n\nCatálogo actual:\n" + catalogo }] },
         contents: msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
         generationConfig: gen,
       }),
