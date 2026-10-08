@@ -73,7 +73,7 @@ const prizeImg = (b, p) => imgUrl("z" + b.id + "_" + p.id, p.iv);
 function pub(b) {
   return {
     id: b.id, name: b.name, desc: b.desc, price: b.price, img: boxImg(b),
-    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), value: p.value, p: p.pe, color: p.color, left: p.left })),
+    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), value: p.value, p: 1, color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
     soldOut: activePrizes(b).filter((p) => p.left === 0).map((p) => ({ name: p.name, rarity: p.rarity || "Común", value: p.value })),
   };
 }
