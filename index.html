@@ -286,6 +286,15 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 .vc small{color:var(--pk);font-weight:700}
 .vc .vp{font-style:normal;font-weight:900;font-size:18px}
 .vc.win{border-color:#3ddc84;box-shadow:0 0 16px #3ddc8488}.vc.lose{opacity:.6}
+
+/* ===== Cuadrícula del catálogo: 2 columnas en móvil, 3 en tablet y PC ===== */
+#grid.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:640px){#grid.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}}
+@media(min-width:1024px){#grid.grid{gap:26px}}
+#grid .p{min-width:0}
+#grid .art{aspect-ratio:3/4;overflow:hidden}
+#grid .art img{inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);object-fit:contain;border-radius:8px}
+@media(min-width:1024px){#grid .p{padding:14px;border-radius:18px}#grid .p h3{font-size:18px;margin-top:14px}#grid .tag{font-size:12.5px;padding:5px 10px;top:10px;left:10px}#grid .p:hover{transform:translateY(-4px);box-shadow:0 14px 34px #0c1a1e22}}
 </style>
 </head>
 <body>
@@ -515,7 +524,7 @@ const visibleP=()=>{const q=norm(FQ).split(/\s+/).filter(Boolean);let l=P.filter
  if(FS==="asc")l=[...l].sort((a,b)=>a.pr-b.pr);else if(FS==="desc")l=[...l].sort((a,b)=>b.pr-a.pr);return l};
 function saveCart(){ls.set("pi",cart);payNonce=null}
 function draw(){
- const chips=[["all","Todas"],["feat","⭐ Destacadas"],["n:10","Grado 10"],["n:9","Grado 9"],["n:8","Grado 8"]];
+ const chips=[["all","Todas"],["feat","⭐ Destacadas"],["n:10","Grad 10"],["n:9","Grad 9"],["n:8","Grad 8"]];
  if(!chips.some(c=>c[0]===FG)&&FG!=="graded")FG="all";
  $("#cats").innerHTML=chips.map(([k,t])=>`<button class="${k===FG?"on":""}" data-fg="${esc(k)}">${esc(t)}</button>`).join("");
  const g=$("#grid");
