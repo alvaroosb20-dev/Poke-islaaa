@@ -52,10 +52,11 @@ async function getAll() {
   for (const p of list) {
     if (typeof p.img === "string" && p.img.startsWith("data:image/")) {
       try {
-        p.iv = await putImg("p" + p.id, p.img);
-        delete p.img;
-        await cmd(["HSET", "products", String(p.id), JSON.stringify(p)]);
-      } catch (_) { delete p.img; }
+        const iv = await putImg("p" + p.id, p.img);
+        const { img, ...rest } = p;
+        await cmd(["HSET", "products", String(p.id), JSON.stringify({ ...rest, iv })]);
+        p.iv = iv; delete p.img;
+      } catch (e) { console.error("migración foto producto", p.id, e.message); } // la foto sigue guardada en el producto
     } else delete p.img;
   }
   return sortProducts(list);
