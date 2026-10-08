@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta name="google-site-verification" content="3FAo_8IXWcs13XVG94h0Xm_WXdfpmIu2JkQAQ3m0CvU">
+<script>try{if(localStorage.getItem("pi_th")==="halloween")document.documentElement.classList.add("th-halloween")}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_mt")==="1"&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("mt")}catch(e){}</script>
 
 <meta charset="utf-8">
@@ -209,12 +210,39 @@ html.mt body{overflow:hidden}
 .wheelw .hub{width:17%;z-index:3;border:0;padding:0;font-size:0;overflow:visible;
  background:radial-gradient(circle,#fff6c8,#f2c14e 45%,#a86f0b 70%,#ffe39a 76%,#7a4d00 82%);box-shadow:0 0 0 2px #5a3800,0 6px 18px #000a,0 0 24px #ffcb0577}
 .wheelw .hub img{width:80%;height:80%;border-radius:50%;object-fit:cover;pointer-events:none;box-shadow:inset 0 0 0 2px #7a4d00,0 0 0 2px #7a4d00;background:#0c1a1e}
+
+/* ===== Tema Halloween ===== */
+#hw,#hwtop,#hwbar{display:none}
+html.th-halloween #hwtop{display:block;position:absolute;top:0;left:0;right:0;height:0;z-index:60;pointer-events:none}
+html.th-halloween{--pk:#ff7a18!important;--la:#8e44ec!important;--ab:#160a22!important;--lr:#5b2a86!important}
+html.th-halloween #hwbar{display:block;background:linear-gradient(90deg,#2b123d,#5b2a86,#2b123d);color:#ffb347;text-align:center;font-weight:800;font-size:14px;padding:8px 12px;letter-spacing:.3px;border-bottom:2px solid #ff7a18}
+html.th-halloween #hw{display:block;position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+#hwtop .web{position:absolute;top:0;width:min(20vw,110px);color:#ffffffb0;filter:drop-shadow(0 0 2px #0008)}
+#hwtop .web.l{left:0}#hwtop .web.r{right:0;transform:scaleX(-1)}
+#hwtop .spd{position:absolute;top:0;left:min(13vw,72px);font-size:22px;animation:spd 5s ease-in-out infinite;transform-origin:top}
+#hwtop .spd::before{content:"";position:absolute;left:50%;bottom:90%;width:1px;height:200px;background:#fff9}
+@keyframes spd{0%,100%{top:40px}50%{top:110px}}
+#hw .bat{position:absolute;left:-60px;font-size:30px;filter:drop-shadow(0 2px 4px #000a);animation:bat 14s linear infinite}
+#hw .bat:nth-child(1){top:22%;animation-delay:0s}
+#hw .bat:nth-child(2){top:48%;font-size:22px;animation-delay:5s;animation-duration:17s}
+#hw .bat:nth-child(3){top:70%;font-size:26px;animation-delay:10s;animation-duration:12s}
+@keyframes bat{0%{transform:translateX(0) translateY(0) scale(1)}25%{transform:translateX(30vw) translateY(-40px) scale(.9)}50%{transform:translateX(60vw) translateY(20px) scale(1.05)}75%{transform:translateX(90vw) translateY(-30px) scale(.95)}100%{transform:translateX(calc(100vw + 120px)) translateY(0) scale(1)}}
+@media (prefers-reduced-motion:reduce){#hw .bat,#hwtop .spd{animation:none}#hw .bat{display:none}}
+html.th-halloween nav b::after{content:" 🎃";font-size:.8em}
+html.th-halloween #mystery{background:radial-gradient(1200px 600px at 50% 0,#5b2a86,#160a22 70%)}
+html.th-halloween #mystery h2::after{content:" 🎃"}
+html.th-halloween .wheelw .rim{background:radial-gradient(circle closest-side,transparent 79.5%,#1a0a26 80%,#ffb347 81.5%,#c2560a 83%,#1a0a26 84%,#1b0b29 84.8%,#3a1257 90%,#1b0b29 95%,#1a0a26 95.6%,#ffb347 97.8%,#6b2a00 100%);box-shadow:0 0 0 3px #1a0a26,0 0 60px #ff7a1877,inset 0 0 18px #0008}
+html.th-halloween .wheelw .rim i{background:radial-gradient(circle at 40% 35%,#fff,#ffd8a8 35%,#ff7a18 70%,#a33c00);box-shadow:0 0 8px 2px #ff7a18cc}
+html.th-halloween .wheelw .rim i:nth-child(odd){background:radial-gradient(circle at 40% 35%,#fff,#e2c6ff 35%,#9b4dff 70%,#4a1a85);box-shadow:0 0 8px 2px #9b4dffcc}
+html.th-halloween .wheelw.spin .rim{box-shadow:0 0 0 3px #1a0a26,0 0 110px #ff7a18,inset 0 0 18px #0008}
+html.th-halloween .wheelw .hub{background:radial-gradient(circle,#ffd8a8,#ff7a18 45%,#6b2a00 70%,#ffb347 76%,#2b123d 82%)}
 </style>
 </head>
 <body>
 <div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
+<div id="hwtop" aria-hidden="true"><span class="web l"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="web r"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="spd">🕷️</span></div><div id="hw" aria-hidden="true"><span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span></div><div id="hwbar"></div>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
-<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
+<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
 <nav>
   <b>POKE<i>ISLAS</i></b>
   <div class="links"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 PokeRuleta</a><a href="#grading">Graduadas</a><a href="#vender">Vender</a><a href="#envios">Envíos</a></div>
@@ -569,7 +597,7 @@ function drawWheel(cv,pz){if(cv.id==="wh")LW={cv,pz};else LP={cv,pz};const s=cv.
    x.drawImage(im,-dw/2,top+(bh-dh)*.35,dw,dh);x.restore();
    const sh=x.createRadialGradient(0,0,R*.12,0,0,R);sh.addColorStop(0,"rgba(0,0,0,.55)");sh.addColorStop(.35,"rgba(0,0,0,0)");sh.addColorStop(.9,"rgba(0,0,0,0)");sh.addColorStop(1,"rgba(0,0,0,.35)");x.fillStyle=sh;x.fillRect(-R,-R,2*R,2*R)}
   // brillos
-  let sd=(i+1)*9301;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;x.fillStyle="rgba(255,255,255,.9)";
+  let sd=(i+1)*9301;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;x.fillStyle=document.documentElement.classList.contains("th-halloween")?"rgba(160,255,120,.95)":"rgba(255,255,255,.9)";
   const n=Math.max(2,Math.round(w*(im?5:9)));for(let k=0;k<n;k++){const rr=R*(.3+rnd()*.66),th=(rnd()-.5)*w*.9,z=1+rnd()*(s/120);x.globalAlpha=.35+rnd()*.6;star(x,Math.cos(th)*rr,Math.sin(th)*rr,z)}x.globalAlpha=1;
   // nombre solo si no hay foto
   if(!im&&w>.12){const fs=Math.max(10,s/26);x.fillStyle=lum(col)>150?"#111":"#fff";x.textAlign="right";x.font="800 "+fs+"px 'DM Sans',system-ui,sans-serif";x.shadowColor="rgba(0,0,0,.45)";x.shadowBlur=4;x.fillText(String(p.name||"").slice(0,17),R-14,fs*.35);
@@ -629,7 +657,7 @@ function wheelTap(ev){if(spinning)return;const p=tapPrize($("#wh"),ev);if(!p||St
  const w=$(".wheelw");w.classList.remove("tap");void w.offsetWidth;w.classList.add("tap");showPrize(p,ev)}
 function showRes(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);$("#mri").style.display=p.img?"":"none";$("#mri").src=p.img||"";$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");confetti();fanfare()}
 let CFid=0;
-function confetti(ox,oy){if(reduced())return;const id=++CFid,c=$("#cf2");c.width=innerWidth;c.height=innerHeight;const x=c.getContext("2d"),col=["#ffcb05","#f26b1d","#1f7a5c","#ffffff","#e1306c","#2a7de1"],B=ox!=null,g=B?.3:0,P2=Array.from({length:B?130:170},()=>B?{x:ox,y:oy,vx:(Math.random()-.5)*18,vy:-5-Math.random()*12,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.35,c:col[Math.random()*6|0]}:{x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:col[Math.random()*6|0]});let n=0;(function f(){if(id!==CFid)return;x.clearRect(0,0,c.width,c.height);P2.forEach(p=>{p.vy+=g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++n<(B?170:240))requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
+function confetti(ox,oy){if(reduced())return;const id=++CFid,c=$("#cf2");c.width=innerWidth;c.height=innerHeight;const x=c.getContext("2d"),HW=document.documentElement.classList.contains("th-halloween"),col=HW?["#ff7a18","#8e44ec","#7CFF6B","#ffb347","#2b123d","#ffffff"]:["#ffcb05","#f26b1d","#1f7a5c","#ffffff","#e1306c","#2a7de1"],EM=["🎃","🦇","👻"],B=ox!=null,g=B?.3:0,P2=Array.from({length:B?130:170},()=>B?{x:ox,y:oy,vx:(Math.random()-.5)*18,vy:-5-Math.random()*12,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.35,c:col[Math.random()*6|0]}:{x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:col[Math.random()*6|0]});let n=0;(function f(){if(id!==CFid)return;x.clearRect(0,0,c.width,c.height);P2.forEach(p=>{p.vy+=g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);if(HW&&p.e===undefined)p.e=Math.random()<.28?EM[Math.random()*3|0]:"";if(HW&&p.e){x.font=(p.s*2.6|0)+"px serif";x.textAlign="center";x.fillText(p.e,0,0)}else{x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6)}x.restore()});if(++n<(B?170:240))requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 async function openTicket(token){const d=await req("/api/mbox",{action:"ticket",token});MBtk={...d.ticket,box:d.box};MBpend=null;if(d.box)MBsel=d.box.id;renderMB()}
 async function claim(sid,quiet){try{const d=await req("/api/mbox",{action:"claim",session:sid});
   if(d.token){remPend(sid);addTK(d.token);await openTicket(d.token);if(!quiet)toast("¡Pago confirmado! Ya puedes girar la ruleta","ok");return true}
@@ -766,7 +794,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -782,7 +810,7 @@ function applySite(){
  applyShip()}
 async function loadSite(){["pk","la","ab","lr"].forEach(k=>{ORIGC[k]=getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim()});
  $$("[data-imgkey]").forEach(el=>{el._orig=el.src});
- try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
+ try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
 function sedBuild(){const seen={},by={};
  tnodes().forEach(n=>{const k=hkey(n._o);if(seen[k])return;seen[k]=1;const g=grp(n.parentElement);(by[g]=by[g]||[]).push({k,o:n._o,c:n.nodeValue.trim()})});
  phs().forEach(el=>{const k="p"+hkey(el._po);if(seen[k])return;seen[k]=1;(by["Formulario de venta"]=by["Formulario de venta"]||[]).push({k,o:el._po,c:el.getAttribute("placeholder")})});
@@ -815,6 +843,16 @@ document.getElementById("snd").textContent=SND?"🔊 Sonido activado":"🔇 Soni
 draw();cdraw();
 (async()=>{const pin=ss.get("pi_pin");if(pin){try{await req("/api/admin",{pin,action:"check"});APIN=pin;adm(true)}catch(_){ss.set("pi_pin",null)}}})();
 (()=>{const r=$(".rim");if(!r)return;let h="";for(let k=0;k<24;k++){const t=k/24*Math.PI*2;h+=`<i style="left:${(50+44.9*Math.sin(t)).toFixed(2)}%;top:${(50-44.9*Math.cos(t)).toFixed(2)}%"></i>`}r.innerHTML=h})();
+/* ---- tema de temporada (Halloween) ---- */
+var THEME={name:"normal",banner:""};const HWDEF="🎃 Ofertas de Halloween hasta el 31 de octubre 👻";
+function applyTheme(){const hw=THEME.name==="halloween";document.documentElement.classList.toggle("th-halloween",hw);try{localStorage.setItem("pi_th",THEME.name)}catch(_){}
+ const bar=$("#hwbar");if(bar)bar.textContent=THEME.banner||HWDEF;const b=$("#atheme");if(b)b.textContent=hw?"🎃 Quitar Halloween":"🎃 Halloween";
+ if(LW&&!spinning)drawWheel(LW.cv,LW.pz)}
+$("#atheme").onclick=async ev=>{const hw=THEME.name!=="halloween";let banner=THEME.banner||"";
+ if(hw){const m=prompt("Se activará la decoración de Halloween para todos los clientes.\n\nTexto de la franja de arriba (puedes dejarlo así o borrarlo):",THEME.banner||HWDEF);if(m===null)return;banner=m.trim().slice(0,160)}
+ else if(!confirm("¿Quitar la decoración de Halloween y volver al aspecto normal?"))return;
+ const done=busy(ev.currentTarget,"Guardando…");
+ try{const d=await req("/api/site",{action:"admin_theme",pin:APIN,name:hw?"halloween":"normal",banner});THEME=d.theme;done();applyTheme();toast(hw?"🎃 Decoración de Halloween activada ✓":"Aspecto normal restaurado ✓","ok")}catch(err){done();applyTheme();toast("No se ha cambiado: "+err.message,"err")}};
 /* ---- modo mantenimiento ---- */
 var MAINT={on:false,msg:""};const MDEF="Estamos mejorando la tienda. ¡Volvemos muy pronto!";
 function applyMaint(){const on=!!MAINT.on;document.documentElement.classList.toggle("mt",on&&!ADMIN);try{localStorage.setItem("pi_mt",on?"1":"0")}catch(_){}

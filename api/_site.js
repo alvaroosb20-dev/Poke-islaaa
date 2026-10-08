@@ -18,5 +18,11 @@ async function getMaint() {
   try { const m = parse(await cmd(["GET", "maint"])) || {}; return { on: !!m.on, msg: typeof m.msg === "string" ? m.msg : "" }; }
   catch (_) { return { on: false, msg: "" }; }
 }
+// Tema de temporada: { name: "normal" | "halloween", banner }
+const THEMES = ["normal", "halloween"];
+async function getTheme() {
+  try { const t = parse(await cmd(["GET", "theme"])) || {}; return { name: THEMES.includes(t.name) ? t.name : "normal", banner: typeof t.banner === "string" ? t.banner : "" }; }
+  catch (_) { return { name: "normal", banner: "" }; }
+}
 const MAINT_MSG = "La tienda está en mantenimiento ahora mismo. Vuelve en un rato, ¡gracias!";
-module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG };
+module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme };
