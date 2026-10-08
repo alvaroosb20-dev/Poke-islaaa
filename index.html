@@ -236,6 +236,22 @@ html.th-halloween .wheelw .rim i{background:radial-gradient(circle at 40% 35%,#f
 html.th-halloween .wheelw .rim i:nth-child(odd){background:radial-gradient(circle at 40% 35%,#fff,#e2c6ff 35%,#9b4dff 70%,#4a1a85);box-shadow:0 0 8px 2px #9b4dffcc}
 html.th-halloween .wheelw.spin .rim{box-shadow:0 0 0 3px #1a0a26,0 0 110px #ff7a18,inset 0 0 18px #0008}
 html.th-halloween .wheelw .hub{background:radial-gradient(circle,#ffd8a8,#ff7a18 45%,#6b2a00 70%,#ffb347 76%,#2b123d 82%)}
+
+/* ===== Buscador y páginas del catálogo ===== */
+#tienda .flt{display:flex;gap:8px;margin:4px 0 12px;scroll-margin-top:90px}
+#tienda .flt .sw{flex:1;position:relative;min-width:0}
+#tienda .flt input{width:100%;box-sizing:border-box;padding:12px 12px 12px 38px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font:inherit;font-size:16px}
+#tienda .flt input:focus{outline:2px solid var(--pk);outline-offset:1px}
+#tienda .flt .sw::before{content:"🔍";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.7;pointer-events:none}
+#tienda .flt select{flex:0 0 auto;max-width:34%;padding:0 10px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font:inherit;font-size:14px}
+#pcount{margin:-6px 0 14px;font-size:14px;opacity:.85;min-height:1em}
+#pcount .lnk2{background:none;border:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;padding:0}
+#tienda .empty{text-align:center;padding:30px 10px;opacity:.9}
+#pager{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:22px}
+#pager button{min-width:44px;height:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font-weight:700;font-size:15px;cursor:pointer}
+#pager button.on{background:var(--pk);color:var(--ab);border-color:var(--pk)}
+#pager button:disabled{opacity:.4;cursor:default}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -260,8 +276,11 @@ html.th-halloween .wheelw .hub{background:radial-gradient(circle,#ffd8a8,#ff7a18
 
 <section id="tienda"><div class="w">
   <h2>Colección</h2><p class="sub">Las cartas son las protagonistas. Todo 100% auténtico, con garantía y confianza.</p>
+  <div class="flt"><label class="sw"><span class="vh">Buscar</span><input id="q" type="search" placeholder="Buscar carta o nota…" autocomplete="off" enterkeyhint="search"></label><select id="fsort" aria-label="Ordenar"><option value="rec">Orden</option><option value="asc">Precio ↑</option><option value="desc">Precio ↓</option></select></div>
   <div class="cats" id="cats"></div>
+  <p id="pcount"></p>
   <div class="grid" id="grid"></div>
+  <div id="pager"></div>
 </div></section>
 
 <section id="mystery"><div class="w">
@@ -317,7 +336,7 @@ html.th-halloween .wheelw .hub{background:radial-gradient(circle,#ffd8a8,#ff7a18
 
 <footer id="contacto"><div class="w">
   <div><b style="font:800 24px 'Bricolage Grotesque'">POKE<span style="color:var(--pk)">ISLAS</span></b><p style="opacity:.8">Pokémon Grade · Canarias · España</p><p style="margin-top:10px">Envíos seguros a toda España 🇪🇸<br>Canarias 🇮🇨</p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a></div>
-  <div><h4>Categorías</h4><a href="#tienda" data-go="Cartas graduadas">Cartas graduadas</a><a href="#tienda" data-go="Álbumes vintage">Vintage japonés</a><a href="#tienda" data-go="Figuras">Figuras</a><a href="#tienda" data-go="Cuadros">Cuadros</a></div>
+  <div><h4>Categorías</h4><a href="#tienda" data-go="Cartas graduadas">Cartas graduadas</a><a href="#tienda" data-go="Destacados">Cartas destacadas</a><a href="#tienda">Todas las cartas</a><a href="#mystery">PokeRuleta</a></div>
   <div><h4>Información</h4><a href="#envios">Envíos</a><a href="#" data-legal="devoluciones">Devoluciones</a><a href="#" data-legal="condiciones">Condiciones de compra</a></div>
   <div><h4>Legal</h4><a href="#" data-legal="aviso">Aviso legal</a><a href="#" data-legal="privacidad">Privacidad</a><a href="#" data-legal="cookies">Cookies</a><a href="#" id="al">Acceso administrador</a></div>
 </div></footer>
@@ -448,16 +467,31 @@ const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.
 
 /* ================= TIENDA ================= */
 const CATS=["Todo","Destacados","Cartas graduadas","Cartas sueltas","Colecciones","Álbumes vintage","Figuras","Stickers","Cuadros"];
-let P=[],PLOAD="loading",cur="Todo",cart=ls.get("pi",{}),payNonce=null;
+let P=[],PLOAD="loading",cur="Todo",FQ="",FG="all",FS="rec",PG=1,cart=ls.get("pi",{}),payNonce=null;const PER=18;
 const pimg=p=>p.img||IMG[p.i]||"";
-const visibleP=()=>P.filter(p=>cur=="Todo"||(cur=="Destacados"?p.f:p.c==cur));
+// Buscador y filtros del catálogo
+const norm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+const gkey=g=>norm(g).replace(/\s+/g," ");const isG=p=>!!p.g&&/\d/.test(p.g);
+function grades(){const m=new Map();P.forEach(p=>{if(isG(p)&&!m.has(gkey(p.g)))m.set(gkey(p.g),String(p.g).trim())});
+ const num=g=>{const x=String(g).match(/\d+(?:[.,]\d+)?/);return x?parseFloat(x[0].replace(",",".")):-1};
+ return [...m.values()].sort((a,b)=>{const ca=norm(a).split(" ")[0],cb=norm(b).split(" ")[0];return ca.localeCompare(cb)||num(b)-num(a)})}
+const visibleP=()=>{const q=norm(FQ).split(/\s+/).filter(Boolean);let l=P.filter(p=>{
+  if(FG==="feat"&&!p.f)return false;if(FG==="graded"&&!isG(p))return false;if(FG==="raw"&&isG(p))return false;if(FG.startsWith("g:")&&gkey(p.g)!==FG.slice(2))return false;
+  if(q.length){const h=norm([p.n,p.g,p.d,p.c].join(" "));if(!q.every(w=>h.includes(w)))return false}return true});
+ if(FS==="asc")l=[...l].sort((a,b)=>a.pr-b.pr);else if(FS==="desc")l=[...l].sort((a,b)=>b.pr-a.pr);return l};
 function saveCart(){ls.set("pi",cart);payNonce=null}
 function draw(){
- $("#cats").innerHTML=CATS.map(c=>`<button class="${c==cur?"on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+ const gs=grades(),chips=[["all","Todas"],["feat","⭐ Destacadas"],["graded","Graduadas"],...gs.map(g=>["g:"+gkey(g),g]),["raw","Sin graduar"]];
+ if(FG.startsWith("g:")&&!gs.some(g=>"g:"+gkey(g)===FG))FG="all";
+ $("#cats").innerHTML=chips.map(([k,t])=>`<button class="${k===FG?"on":""}" data-fg="${esc(k)}">${esc(t)}</button>`).join("");
  const g=$("#grid");
- if(PLOAD==="loading"){g.innerHTML='<article class="p sk"></article>'.repeat(4);return}
- if(PLOAD!=="ok"){g.innerHTML=`<div class="msg err" style="grid-column:1/-1">No se pudo cargar el catálogo: ${esc(PLOAD)} <button class="sbtn" id="retryP">Reintentar</button></div>`;return}
- const l=visibleP();
+ if(PLOAD==="loading"){g.innerHTML='<article class="p sk"></article>'.repeat(4);$("#pager").innerHTML="";$("#pcount").textContent="";return}
+ if(PLOAD!=="ok"){g.innerHTML=`<div class="msg err" style="grid-column:1/-1">No se pudo cargar el catálogo: ${esc(PLOAD)} <button class="sbtn" id="retryP">Reintentar</button></div>`;$("#pager").innerHTML="";return}
+ const all=visibleP(),pages=Math.max(1,Math.ceil(all.length/PER));if(PG>pages)PG=pages;if(PG<1)PG=1;const l=all.slice((PG-1)*PER,PG*PER);
+ const filt=FQ.trim()||FG!=="all";$("#pcount").innerHTML=all.length?`${all.length} ${all.length===1?"carta":"cartas"}${FQ.trim()?` para «${esc(FQ.trim())}»`:""}${pages>1?` · página ${PG} de ${pages}`:""}${filt?' · <button class="lnk2" id="fclear">Quitar filtros</button>':""}`:"";
+ $("#pager").innerHTML=pages>1?`<button data-pg="${PG-1}" ${PG<=1?"disabled":""}>‹ Anterior</button>${Array.from({length:pages},(_,k)=>`<button data-pg="${k+1}" class="${k+1===PG?"on":""}" aria-label="Página ${k+1}">${k+1}</button>`).join("")}<button data-pg="${PG+1}" ${PG>=pages?"disabled":""}>Siguiente ›</button>`:"";
+ if(!all.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><p>No hay cartas que coincidan${FQ.trim()?` con «${esc(FQ.trim())}»`:""}.</p><button class="sbtn" id="fclear">Ver todas las cartas</button></div>`;return}
+
  g.innerHTML=l.map(p=>{const out=!(p.s>0);return `<article class="p"><div class="art" style="background:linear-gradient(150deg,${esc(p.h||"#1f7a5c")},#0c1a1e)">${pimg(p)?`<img src="${esc(pimg(p))}" alt="${esc(p.n)}" loading="lazy">`:""}${p.g?`<span class="tag">${esc(p.g)}</span>`:""}${out?'<div class="out">Agotado</div>':""}</div><h3>${esc(p.n)}</h3><small>${esc(p.c)}</small>${p.d?`<p class="pd">${esc(p.d)}</p>`:""}<div class="pr"><b>${e(p.pr)}</b>${p.o?`<s>${e(p.o)}</s>`:""}</div><button class="add" data-a="${p.id}" ${out?"disabled":""}>${out?"Agotado":"Añadir al carrito"}</button>${p.link&&!out?`<a class="buy" href="${esc(p.link)}" target="_blank" rel="noopener">Comprar ahora</a>`:""}${ADMIN?`<button class="ed" data-e="${p.id}">Editar</button><div class="mv"><button data-mv="${p.id}" data-d="-1" aria-label="Mover antes">◀ Antes</button><button data-mv="${p.id}" data-d="1" aria-label="Mover después">Después ▶</button></div>`:""}</article>`}).join("")||'<p class="sub">No hay productos en esta categoría todavía.</p>'}
 async function loadP(){PLOAD=P.length?PLOAD:"loading";if(!P.length)draw();try{const d=await req("/api/products",null,"GET");if(!Array.isArray(d))throw new Error("respuesta no válida");P=d;PLOAD="ok"}catch(err){PLOAD=err.message}draw();cdraw()}
 function cdraw(){
@@ -467,7 +501,7 @@ function cdraw(){
  const sh=ids.length?SHIP[$("#zone").value]:0;
  $("#sb").textContent=e(sb);$("#sh").textContent=e(sh);$("#tt").textContent=e(sb+sh);
  $("#n").textContent=ids.reduce((a,i)=>a+cart[i],0)}
-function goCats(){const c=$("#cats");if(c)c.scrollIntoView({behavior:"smooth",block:"start"})}
+function goCats(){const c=$("#tienda .flt");if(c)c.scrollIntoView({behavior:"smooth",block:"start"})}
 async function moveP(id,d){const l=visibleP(),k=l.findIndex(p=>p.id===id),n=l[k+d];if(k<0||!n)return;const i=P.indexOf(l[k]),j=P.indexOf(n);[P[i],P[j]]=[P[j],P[i]];draw();
  try{await req("/api/admin",{pin:APIN,action:"order",ids:P.map(p=>p.id)});toast("Orden guardado ✓","ok")}catch(err){toast("No se guardó el orden: "+err.message,"err");loadP()}}
 $("#pay").onclick=async()=>{const ids=Object.keys(cart);if(!ids.length){msg("#cartmsg","err","El carrito está vacío.");return}
@@ -752,8 +786,10 @@ $("#mbnew").onclick=()=>openBoxEd(null);$("#mbcfg").onclick=()=>openPanel("cajas
 
 /* ---- clics y cambios globales ---- */
 document.addEventListener("click",async ev=>{const t=ev.target,el=t.closest?t:null;if(!el)return;
- if(t.dataset.c){cur=t.dataset.c;draw();goCats()}
- const gl=t.closest("[data-go]");if(gl){ev.preventDefault();cur=gl.dataset.go;draw();goCats()}
+ if(t.dataset.fg){FG=t.dataset.fg;PG=1;draw()}
+ if(t.dataset.pg&&!t.disabled){PG=Number(t.dataset.pg);draw();goCats()}
+ if(t.id==="fclear"){FG="all";FQ="";PG=1;$("#q").value="";draw()}
+ const gl=t.closest("[data-go]");if(gl){ev.preventDefault();const v=gl.dataset.go;FG=v==="Destacados"?"feat":v==="Cartas graduadas"?"graded":"all";FQ="";PG=1;$("#q").value="";draw();goCats()}
  const lg=t.closest("[data-legal]");if(lg){ev.preventDefault();openLegal(lg.dataset.legal)}
  if(t.id==="legalx"||t.id==="legal")$("#legal").classList.remove("on");
  if(t.dataset.mv)moveP(Number(t.dataset.mv),Number(t.dataset.d));
@@ -794,7 +830,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -843,6 +879,9 @@ document.getElementById("snd").textContent=SND?"🔊 Sonido activado":"🔇 Soni
 draw();cdraw();
 (async()=>{const pin=ss.get("pi_pin");if(pin){try{await req("/api/admin",{pin,action:"check"});APIN=pin;adm(true)}catch(_){ss.set("pi_pin",null)}}})();
 (()=>{const r=$(".rim");if(!r)return;let h="";for(let k=0;k<24;k++){const t=k/24*Math.PI*2;h+=`<i style="left:${(50+44.9*Math.sin(t)).toFixed(2)}%;top:${(50-44.9*Math.cos(t)).toFixed(2)}%"></i>`}r.innerHTML=h})();
+$("#q").addEventListener("input",ev=>{FQ=ev.target.value;PG=1;draw()});
+$("#q").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();ev.target.blur()}});
+$("#fsort").onchange=ev=>{FS=ev.target.value;PG=1;draw()};
 /* ---- tema de temporada (Halloween) ---- */
 var THEME={name:"normal",banner:""};const HWDEF="🎃 Ofertas de Halloween hasta el 31 de octubre 👻";
 function applyTheme(){const hw=THEME.name==="halloween";document.documentElement.classList.toggle("th-halloween",hw);try{localStorage.setItem("pi_th",THEME.name)}catch(_){}
