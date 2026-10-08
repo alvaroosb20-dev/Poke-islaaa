@@ -189,6 +189,26 @@ html.mt body{overflow:hidden}
 #mant a{color:var(--pk);font-weight:700}
 #mant .madm{display:inline-block;margin-top:34px;font-size:12px;font-weight:400;opacity:.45;color:#fff}
 #mtbar{background:#c3302b;color:#fff;border-radius:999px;padding:3px 10px;font-size:12px}
+
+/* ===== PokeRuleta: aspecto de ruleta de concurso ===== */
+.wheelw{width:min(92vw,470px);aspect-ratio:1}
+.wheelw .rim{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:0;
+ background:radial-gradient(circle closest-side,transparent 79.5%,#5a3800 80%,#ffe9a3 81.5%,#c48a12 83%,#5a3800 84%,#3b0d12 84.8%,#5c1119 90%,#3b0d12 95%,#5a3800 95.6%,#ffe9a3 97.8%,#7a4d00 100%);
+ box-shadow:0 0 0 3px #5a3800,0 0 50px #ffcb0566,inset 0 0 18px #0008}
+.wheelw .rim i{position:absolute;width:3.6%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+ background:radial-gradient(circle at 40% 35%,#fff,#fff6c8 35%,#ffcf3d 70%,#c88a00);box-shadow:0 0 6px 2px #ffd54acc;animation:bulb 1.1s steps(1) infinite}
+.wheelw .rim i:nth-child(odd){animation-delay:.55s}
+@keyframes bulb{50%{background:radial-gradient(circle at 40% 35%,#fff3c4,#e0a93a 60%,#8a5a00);box-shadow:0 0 2px #0000}}
+.wheelw.spin .rim i{animation-duration:.25s}.wheelw.spin .rim i:nth-child(odd){animation-delay:.125s}
+.wheelw .rim{transition:box-shadow .3s}.wheelw.spin .rim{box-shadow:0 0 0 3px #5a3800,0 0 110px #ffcb05,inset 0 0 18px #0008}
+.wheelw.win .rim{animation:winr 1.5s ease-out}@keyframes winr{30%{box-shadow:0 0 0 3px #5a3800,0 0 160px #ffcb05,0 0 60px #fff inset}}
+.wheelw canvas,.wheelw.spin canvas,.wheelw.win canvas{position:absolute;left:10%;top:10%;width:80%;height:80%;aspect-ratio:auto;box-shadow:0 0 0 2px #5a3800,0 0 24px #000a;animation:none;z-index:1}
+.wheelw.tap canvas{animation:none}
+.wheelw .ptr{top:2%;width:9%;height:10.5%;border:0;background:linear-gradient(#fff2b0,#d79a1c 55%,#8a5a00);clip-path:polygon(0 0,100% 0,50% 100%);filter:none;transform:translateX(-50%);transform-origin:50% 0;z-index:4}
+.wheelw .ptr::after{content:"";position:absolute;inset:9% 17% 24%;background:linear-gradient(#ff7a6b,#d3141f 60%,#8f0a10);clip-path:polygon(0 0,100% 0,50% 100%)}
+.wheelw .hub{width:17%;z-index:3;border:0;padding:0;font-size:0;overflow:visible;
+ background:radial-gradient(circle,#fff6c8,#f2c14e 45%,#a86f0b 70%,#ffe39a 76%,#7a4d00 82%);box-shadow:0 0 0 2px #5a3800,0 6px 18px #000a,0 0 24px #ffcb0577}
+.wheelw .hub img{width:80%;height:80%;border-radius:50%;object-fit:cover;pointer-events:none;box-shadow:inset 0 0 0 2px #7a4d00,0 0 0 2px #7a4d00;background:#0c1a1e}
 </style>
 </head>
 <body>
@@ -222,7 +242,7 @@ html.mt body{overflow:hidden}
   <div class="mbtabs" id="mbtabs"></div>
   <p id="mbnone" class="sub" style="display:none"></p>
   <div class="mbmain" id="mbmain">
-    <div><div class="wheelw"><div class="ptr"></div><canvas id="wh"></canvas><div class="hub">🎁</div></div><button class="lnk" id="snd" style="display:block;margin:12px auto 0">🔊 Sonido activado</button><small style="display:block;text-align:center;opacity:.7;margin-top:2px">👆 Toca una carta para verla en grande</small></div>
+    <div><div class="wheelw"><div class="rim" aria-hidden="true"></div><div class="ptr"></div><canvas id="wh"></canvas><div class="hub"><img id="hubimg" alt="" src="/icon-192.png?v=2"></div></div><button class="lnk" id="snd" style="display:block;margin:12px auto 0">🔊 Sonido activado</button><small style="display:block;text-align:center;opacity:.7;margin-top:2px">👆 Toca una carta para verla en grande</small></div>
     <div class="mbinfo" id="mbinfo"></div>
   </div>
   <p class="sub" style="margin-top:18px;font-size:13px">Solo para mayores de 18 años. Las probabilidades de cada premio están publicadas junto a la ruleta. El premio se elige en el servidor de forma aleatoria y queda registrado.</p>
@@ -530,18 +550,35 @@ function fanfare(){bells();bell(1319,.8);bell(1976,.95);bell(2637,1.1)}
 
 /* ---- dibujo de la ruleta ---- */
 const IMGC={};let LW=null;
-function cimg(src){if(!src)return null;let i=IMGC[src];if(!i){i=new Image();i.onload=()=>{if(LW)drawWheel(LW.cv,LW.pz)};i.src=src;IMGC[src]=i}return i.complete&&i.naturalWidth?i:null}
+function cimg(src){if(!src)return null;let i=IMGC[src];if(!i){i=new Image();i.onload=()=>{if(LW)drawWheel(LW.cv,LW.pz);if(LP&&LP.cv.isConnected)drawWheel(LP.cv,LP.pz)};i.src=src;IMGC[src]=i}return i.complete&&i.naturalWidth?i:null}
 function lum(h){const n=parseInt(String(h||"#444444").slice(1),16);return .299*(n>>16)+.587*((n>>8)&255)+.114*(n&255)}
-function drawWheel(cv,pz){if(cv.id==="wh")LW={cv,pz};const s=cv.clientWidth;if(!s)return;const dpr=window.devicePixelRatio||1;cv.width=cv.height=Math.round(s*dpr);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,s,s);const c=s/2,R=c-5,tot=pz.reduce((a,p)=>a+p.p,0);
+let LP=null;
+function star(x,px,py,r){x.beginPath();x.moveTo(px,py-r);x.quadraticCurveTo(px,py,px+r,py);x.quadraticCurveTo(px,py,px,py+r);x.quadraticCurveTo(px,py,px-r,py);x.quadraticCurveTo(px,py,px,py-r);x.fill()}
+// Ruleta estilo "concurso": cada sector se rellena con la foto del premio, con brillos y separadores dorados
+function drawWheel(cv,pz){if(cv.id==="wh")LW={cv,pz};else LP={cv,pz};const s=cv.clientWidth;if(!s)return;const dpr=window.devicePixelRatio||1;cv.width=cv.height=Math.round(s*dpr);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,s,s);const c=s/2,R=c-1,tot=pz.reduce((a,p)=>a+p.p,0);
  if(!pz.length||!tot){x.fillStyle="#1a262a";x.beginPath();x.arc(c,c,R,0,7);x.fill();x.fillStyle="#f4efe3";x.font="700 16px 'DM Sans',system-ui,sans-serif";x.textAlign="center";x.fillText("Sin premios activos",c,c);return}
- let a=-Math.PI/2;
- pz.forEach(p=>{const w=p.p/tot*2*Math.PI;const gr=x.createRadialGradient(c,c,R*.15,c,c,R);gr.addColorStop(0,p.color||"#444");gr.addColorStop(1,shade(p.color||"#444444",-.25));x.beginPath();x.moveTo(c,c);x.arc(c,c,R,a,a+w);x.closePath();x.fillStyle=gr;x.fill();x.strokeStyle="#0c1a1e";x.lineWidth=2;x.stroke();
-  if(w>.12){x.save();x.translate(c,c);x.rotate(a+w/2);const im=w>.4&&cimg(p.img),fs=Math.max(10,s/28);x.fillStyle=lum(p.color)>150?"#111":"#fff";x.textAlign="right";x.font="700 "+fs+"px 'DM Sans',system-ui,sans-serif";x.fillText(String(p.name||"").slice(0,im?11:17),R-12,fs*.35);
-   if(w>.3&&p.value){x.font="600 "+(fs*.8)+"px 'DM Sans',system-ui,sans-serif";x.globalAlpha=.85;x.fillText(e(p.value),R-12,fs*1.35);x.globalAlpha=1}
-   if(im){const z=Math.min(R*.26,w*R*.5);x.save();x.beginPath();x.arc(R*.5,0,z/2,0,7);x.clip();x.drawImage(im,R*.5-z/2,-z/2,z,z);x.restore();x.beginPath();x.arc(R*.5,0,z/2,0,7);x.lineWidth=2;x.strokeStyle="#fff";x.stroke()}
-   x.restore()}a+=w});
- for(let k=0;k<24;k++){const t=k/24*Math.PI*2;x.beginPath();x.arc(c+Math.cos(t)*(R-1),c+Math.sin(t)*(R-1),2.4,0,7);x.fillStyle=k%2?"#fff":"#ffcb05";x.fill()}
- x.beginPath();x.arc(c,c,R,0,7);x.lineWidth=5;x.strokeStyle="#ffcb05";x.stroke()}
+ let a=-Math.PI/2;const segs=[];
+ pz.forEach((p,i)=>{const w=p.p/tot*2*Math.PI,col=p.color||"#444444";segs.push([a,w]);
+  x.save();x.beginPath();x.moveTo(c,c);x.arc(c,c,R,a,a+w);x.closePath();x.clip();
+  // fondo: color del premio con destello radial (como un rayo de luz)
+  const gr=x.createRadialGradient(c,c,R*.1,c,c,R);gr.addColorStop(0,shade(col,.55));gr.addColorStop(.45,col);gr.addColorStop(1,shade(col,-.35));x.fillStyle=gr;x.fillRect(0,0,s,s);
+  const im=cimg(p.img);
+  x.translate(c,c);x.rotate(a+w/2);
+  if(im){// foto del premio rellenando el sector, con la parte de arriba hacia fuera
+   x.save();x.rotate(Math.PI/2);const hw=Math.min(R,R*Math.sin(Math.min(w,Math.PI)/2)*1.08)+R*.04,top=-R,bot=-R*.16,bw=hw*2,bh=bot-top,k=Math.max(bw/im.naturalWidth,bh/im.naturalHeight),dw=im.naturalWidth*k,dh=im.naturalHeight*k;
+   x.drawImage(im,-dw/2,top+(bh-dh)*.35,dw,dh);x.restore();
+   const sh=x.createRadialGradient(0,0,R*.12,0,0,R);sh.addColorStop(0,"rgba(0,0,0,.55)");sh.addColorStop(.35,"rgba(0,0,0,0)");sh.addColorStop(.9,"rgba(0,0,0,0)");sh.addColorStop(1,"rgba(0,0,0,.35)");x.fillStyle=sh;x.fillRect(-R,-R,2*R,2*R)}
+  // brillos
+  let sd=(i+1)*9301;const rnd=()=>(sd=(sd*16807)%2147483647)/2147483647;x.fillStyle="rgba(255,255,255,.9)";
+  const n=Math.max(2,Math.round(w*(im?5:9)));for(let k=0;k<n;k++){const rr=R*(.3+rnd()*.66),th=(rnd()-.5)*w*.9,z=1+rnd()*(s/120);x.globalAlpha=.35+rnd()*.6;star(x,Math.cos(th)*rr,Math.sin(th)*rr,z)}x.globalAlpha=1;
+  // nombre solo si no hay foto
+  if(!im&&w>.12){const fs=Math.max(10,s/26);x.fillStyle=lum(col)>150?"#111":"#fff";x.textAlign="right";x.font="800 "+fs+"px 'DM Sans',system-ui,sans-serif";x.shadowColor="rgba(0,0,0,.45)";x.shadowBlur=4;x.fillText(String(p.name||"").slice(0,17),R-14,fs*.35);
+   if(w>.3&&p.value){x.font="700 "+(fs*.8)+"px 'DM Sans',system-ui,sans-serif";x.globalAlpha=.9;x.fillText(e(p.value),R-14,fs*1.35);x.globalAlpha=1}x.shadowBlur=0}
+  x.restore();a+=w});
+ // separadores dorados
+ if(segs.length>1)segs.forEach(([a0])=>{x.save();x.translate(c,c);x.rotate(a0);const g=x.createLinearGradient(0,-3,0,3);g.addColorStop(0,"#8a5a00");g.addColorStop(.5,"#ffe27a");g.addColorStop(1,"#8a5a00");x.fillStyle=g;x.shadowColor="rgba(0,0,0,.5)";x.shadowBlur=4;x.fillRect(R*.08,-Math.max(1.5,s/220),R*.92,Math.max(3,s/110));x.restore()});
+ // borde interior dorado
+ x.beginPath();x.arc(c,c,R-1.5,0,7);x.lineWidth=3;x.strokeStyle="#ffd54a";x.stroke()}
 function shade(h,f){const n=parseInt(h.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255,t=f<0?0:255,p=Math.abs(f);return "rgb("+Math.round((t-r)*p+r)+","+Math.round((t-g)*p+g)+","+Math.round((t-b)*p+b)+")"}
 function setRot(d){wRot=d;$("#wh").style.transform=`rotate(${d}deg)`}
 function segAt(pz,rot){const tot=pz.reduce((a,p)=>a+p.p,0),ang=((-rot)%360+360)%360;let acc=0;for(let i=0;i<pz.length;i++){acc+=pz[i].p/tot*360;if(ang<acc)return i}return pz.length-1}
@@ -556,7 +593,7 @@ function targetFor(pz,id){const tot=pz.reduce((a,p)=>a+p.p,0),i=pz.findIndex(p=>
 
 /* ---- pantalla de la PokeRuleta ---- */
 function curBox(){if(MBtk&&MBtk.box)return MBtk.box;return MB.find(b=>b.id===MBsel)||MB[0]}
-function renderMB(){if(!$("#mystery"))return;$("#mbadm").style.display=ADMIN?"flex":"none";const b=curBox(),t=MBtk&&MBtk.box?MBtk:null;
+function renderMB(){if(!$("#mystery"))return;$("#mbadm").style.display=ADMIN?"flex":"none";const b=curBox(),t=MBtk&&MBtk.box?MBtk:null;const hi=$("#hubimg");if(hi){const u=(b&&b.img)||"/icon-192.png?v=2";if(hi.getAttribute("src")!==u)hi.src=u}
  $("#mbtabs").innerHTML=t||MB.length<2?"":MB.map(x=>`<button class="${b&&x.id===b.id?"on":""}" data-mbs="${x.id}">${esc(x.name)}</button>`).join("");
  const m=`<p class="msg ${MBMSG.t}" id="mbmsg" ${MBMSG.m?"":"hidden"}>${esc(MBMSG.m)}</p>`;
  if(!b){const demo=[["#e63946",5],["#2a7de1",25],["#7a4fd1",10],["#f26b1d",20],["#ffcb05",5],["#1f7a5c",35]].map((x,i)=>({id:"d"+i,name:"???",color:x[0],p:x[1],value:0}));
@@ -638,7 +675,7 @@ $("#mbpl").addEventListener("input",ev=>{const r=ev.target.closest(".prow"),f=ev
  if(f==="n")p.name=v;else if(f==="d")p.desc=v;else if(f==="v")p.value=Math.max(0,Math.round(parseFloat(v||0)*100));else if(f==="p")p.p=Math.max(0,Math.min(100,Math.round(parseFloat(v||0)*100)/100));else if(f==="c")p.color=v;else if(f==="s")p.stock=v===""?"":Math.max(0,parseInt(v,10)||0);updEd()});
 $("#mbpl").addEventListener("change",async ev=>{const r=ev.target.closest(".prow"),f=ev.target.dataset.f;if(!r)return;const p=EB.prizes[+r.dataset.i];
  if(f==="r")p.rarity=ev.target.value;if(f==="on"){p.on=ev.target.checked?1:0;r.classList.toggle("off",!p.on);updEd()}if(f==="s")renderEd();
- if(f==="img"&&ev.target.files[0]){const d=await shr(ev.target.files[0],360);if(!d)return msg("#mbmsg2","err","No se pudo leer la imagen.");p.newImg=d;p.rmImg=0;renderEd()}});
+ if(f==="img"&&ev.target.files[0]){const d=await shr(ev.target.files[0],560);if(!d)return msg("#mbmsg2","err","No se pudo leer la imagen.");p.newImg=d;p.rmImg=0;renderEd()}});
 $("#mbpl").addEventListener("click",ev=>{const a=ev.target.dataset.act;if(!a)return;const i=+ev.target.closest(".prow").dataset.i,L=EB.prizes;
  if(a==="rm"&&!confirm("¿Eliminar el premio «"+L[i].name+"»?"))return;if(a==="rm")L.splice(i,1);if(a==="rmimg"){L[i].newImg=null;L[i].rmImg=1}
  if(a==="up"&&i>0)[L[i-1],L[i]]=[L[i],L[i-1]];if(a==="dn"&&i<L.length-1)[L[i+1],L[i]]=[L[i],L[i+1]];renderEd()});
@@ -777,6 +814,7 @@ $("#sedsave").onclick=async()=>{const texts={...SITE.texts};
 document.getElementById("snd").textContent=SND?"🔊 Sonido activado":"🔇 Sonido desactivado";
 draw();cdraw();
 (async()=>{const pin=ss.get("pi_pin");if(pin){try{await req("/api/admin",{pin,action:"check"});APIN=pin;adm(true)}catch(_){ss.set("pi_pin",null)}}})();
+(()=>{const r=$(".rim");if(!r)return;let h="";for(let k=0;k<24;k++){const t=k/24*Math.PI*2;h+=`<i style="left:${(50+44.9*Math.sin(t)).toFixed(2)}%;top:${(50-44.9*Math.cos(t)).toFixed(2)}%"></i>`}r.innerHTML=h})();
 /* ---- modo mantenimiento ---- */
 var MAINT={on:false,msg:""};const MDEF="Estamos mejorando la tienda. ¡Volvemos muy pronto!";
 function applyMaint(){const on=!!MAINT.on;document.documentElement.classList.toggle("mt",on&&!ADMIN);try{localStorage.setItem("pi_mt",on?"1":"0")}catch(_){}
