@@ -48,6 +48,17 @@ const activePrizes = (b) => (b.prizes || []).filter((p) => p.on);
 const available = (b) => activePrizes(b).filter((p) => cents(p.p) > 0 && (p.left == null || p.left > 0));
 const sums100 = (b) => { const a = activePrizes(b); return a.length > 0 && a.reduce((s, p) => s + cents(p.p), 0) === 10000; };
 const sellable = (b) => !!(b && b.active && sums100(b) && available(b).length > 0);
+// Motivo por el que una caja no está a la venta (null = sí está a la venta)
+function why(b) {
+  if (!b) return "La caja no existe";
+  if (!b.active) return "No tiene marcada la casilla «Caja activa»";
+  const a = activePrizes(b);
+  if (!a.length) return "No tiene ningún premio marcado como «Activo»";
+  const s = a.reduce((t, p) => t + cents(p.p), 0);
+  if (s !== 10000) return "Las probabilidades de los premios activos suman " + String(s / 100).replace(".", ",") + " % y tienen que sumar 100 %";
+  if (!available(b).length) return "Todos los premios están agotados (stock 0)";
+  return null;
+}
 
 // Probabilidad real de cada premio disponible (si uno se agota, los demás se reparten su parte)
 function effective(b) {
@@ -69,7 +80,7 @@ function pub(b) {
 
 // Vista de administración: incluye premios inactivos, stock y URLs de imagen
 function adm(b) {
-  return { ...b, img: boxImg(b), prizes: (b.prizes || []).map((p) => ({ ...p, img: prizeImg(b, p) })) };
+  return { ...b, why: why(b), img: boxImg(b), prizes: (b.prizes || []).map((p) => ({ ...p, img: prizeImg(b, p) })) };
 }
 
 const isData = (v) => typeof v === "string" && v.startsWith("data:image/");
@@ -215,4 +226,4 @@ const getTicket = async (tok) => {
   return r && r[0] ? parse(r[0]) : null;
 };
 
-module.exports = { SHIP, RAR, getBox, allBoxesRaw, withStock, available, sellable, pub, adm, saveBox, deleteBox, draw, restock, ensureTicket, getTicket, effective };
+module.exports = { SHIP, RAR, why, getBox, allBoxesRaw, withStock, available, sellable, pub, adm, saveBox, deleteBox, draw, restock, ensureTicket, getTicket, effective };

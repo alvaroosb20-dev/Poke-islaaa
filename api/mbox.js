@@ -15,8 +15,15 @@ const brief = (t) => ({
 });
 
 module.exports = async (req, res) => {
-  if (req.method !== "POST") return fail(res, 405, "Método no permitido");
   res.setHeader("Cache-Control", "no-store");
+  if (req.method === "GET") { // consulta pública de solo lectura (cajas a la venta)
+    try {
+      const all = await M.allBoxesRaw(), boxes = [];
+      for (const x of all) { const s = await M.withStock(x); if (M.sellable(s)) boxes.push(M.pub(s)); }
+      return res.status(200).json({ boxes, creadas: all.length, aLaVenta: boxes.length });
+    } catch (e) { return fail(res, 500, "Error del servidor: " + e.message); }
+  }
+  if (req.method !== "POST") return fail(res, 405, "Método no permitido");
   const b = req.body || {};
   try {
     // ---------- Administración (requiere PIN) ----------
