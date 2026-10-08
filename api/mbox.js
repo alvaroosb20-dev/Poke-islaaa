@@ -81,7 +81,7 @@ module.exports = async (req, res) => {
     if (b.action === "buy") {
       if ((await getMaint()).on) return fail(res, 503, MAINT_MSG);
       const box = await M.withStock(await M.getBox(Number(b.boxId)));
-      if (!M.sellable(box)) return fail(res, 409, "Esta Mystery Box no está disponible ahora mismo");
+      if (!M.sellable(box)) return fail(res, 409, "Esta PokeRuleta no está disponible ahora mismo");
       const ENVIOS = await shipTable(), env = ENVIOS[b.zone];
       if (!env) return fail(res, 400, "Elige una zona de envío válida");
       try {
@@ -95,7 +95,7 @@ module.exports = async (req, res) => {
       f.append("line_items[0][quantity]", "1");
       f.append("line_items[0][price_data][currency]", "eur");
       f.append("line_items[0][price_data][unit_amount]", String(box.price)); // el precio sale de la base de datos, nunca del navegador
-      f.append("line_items[0][price_data][product_data][name]", "Mystery Box · " + box.name);
+      f.append("line_items[0][price_data][product_data][name]", "PokeRuleta · " + box.name);
       f.append("shipping_address_collection[allowed_countries][0]", "ES");
       f.append("shipping_options[0][shipping_rate_data][type]", "fixed_amount");
       f.append("shipping_options[0][shipping_rate_data][display_name]", "Envío del premio " + env[0]);
@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
     if (b.action === "claim") {
       if (!SESSION.test(String(b.session || ""))) return fail(res, 400, "Enlace de pago no válido");
       const s = await stripe("GET", "checkout/sessions/" + b.session);
-      if (!s.metadata || s.metadata.kind !== "mbox") return fail(res, 400, "Este pago no corresponde a una Mystery Box");
+      if (!s.metadata || s.metadata.kind !== "mbox") return fail(res, 400, "Este pago no corresponde a una PokeRuleta");
       const pi = typeof s.payment_intent === "string" ? s.payment_intent : (s.payment_intent && s.payment_intent.id) || "";
       if (s.payment_status === "paid") {
         await setPurchase(s.id, { kind: "mbox", boxId: Number(s.metadata.boxId), status: "pagado", pi, paid: s.amount_total, ...customer(s) }, "verificación");

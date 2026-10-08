@@ -1,3 +1,1 @@
-{
-  "rewrites": [{ "source": "/admin/mystery-box", "destination": "/index.html" }]
-}
+{"rewrites": [{"source": "/admin/mystery-box", "destination": "/index.html"}, {"source": "/admin/pokeruleta", "destination": "/index.html"}]}

@@ -1,4 +1,4 @@
-// Lógica de las Mystery Box: cajas, premios, stock, sorteo seguro y tickets de giro.
+// Lógica de las PokeRuletas: cajas, premios, stock, sorteo seguro y tickets de giro.
 const crypto = require("crypto");
 const { cmd, parse, hvals } = require("./_db");
 const { putImg, delImg, imgUrl, checkImg } = require("./_img");
@@ -211,7 +211,7 @@ async function ensureTicket(s) {
   const boxId = Number(s.metadata && s.metadata.boxId), box = await getBox(boxId);
   const c = customer(s);
   const t = {
-    token: tok, boxId, boxName: box ? box.name : "Mystery Box",
+    token: tok, boxId, boxName: box ? box.name : "PokeRuleta",
     price: s.amount_subtotal != null ? s.amount_subtotal : s.amount_total, total: s.amount_total,
     session: s.id, pi: typeof s.payment_intent === "string" ? s.payment_intent : (s.payment_intent && s.payment_intent.id) || "",
     ...c, zone: (s.metadata && s.metadata.zone) || "", created: Date.now(), status: "pending", prize: null, ship: "Pendiente",

@@ -1,4 +1,4 @@
-// Registro de compras (tienda y Mystery Box) con su estado de pago.
+// Registro de compras (tienda y PokeRuleta) con su estado de pago.
 const { cmd, parse, hvals } = require("./_db");
 
 const STATUS = {

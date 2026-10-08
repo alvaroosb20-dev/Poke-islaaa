@@ -68,7 +68,7 @@ async function pagado(s) {
   let extra = "";
   if (kind === "mbox") {
     const link = (process.env.SITE_URL || "https://poke-isla.com") + "/?caja=" + tok + "#mystery";
-    extra = `<p style="background:#fff8d6;padding:14px;border-radius:10px"><b>🎁 Tu Mystery Box está lista.</b><br>Gira la ruleta aquí: <a href="${link}">${link}</a><br><small>Guarda este enlace: solo se puede girar una vez.</small></p>`;
+    extra = `<p style="background:#fff8d6;padding:14px;border-radius:10px"><b>🎁 Tu PokeRuleta está lista.</b><br>Gira la ruleta aquí: <a href="${link}">${link}</a><br><small>Guarda este enlace: solo se puede girar una vez.</small></p>`;
   } else {
     const items = String((s.metadata && s.metadata.items) || "").split(",").filter(Boolean).map((x) => x.split(":").map(Number));
     try { await descontar(items); } catch (e) { console.error("stock", e.message); }
@@ -85,7 +85,7 @@ async function pagado(s) {
       const html = `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#0c1a1e"><h1 style="margin:0 0 4px">POKE <span style="color:#e0a800">ISLAS</span></h1><p style="margin:0 0 20px;color:#555">Pokémon Grade · Canarias · España</p><h2>¡Gracias por tu compra, ${nombre}!</h2><p>Hemos recibido tu pedido y tu pago. Ya estamos preparándolo y te avisaremos cuando salga el envío.</p>${extra}${tabla}<p style="margin-top:18px"><b>Dirección de envío:</b><br>${esc(c.address) || "-"}</p><p>Si tienes cualquier duda, responde a este correo o escríbenos por Instagram <a href="https://www.instagram.com/poke_islas/">@poke_islas</a>.</p></div>`;
       await enviar(c.email, "Gracias por tu compra en Poke Islas", html, process.env.VENTAS_EMAIL || "pokeislatcg@gmail.com");
     }
-    const aviso = `<h2>Nueva venta${kind === "mbox" ? " · Mystery Box" : ""}</h2><p><b>Cliente:</b> ${esc(c.name)} · ${esc(c.email)} · ${esc(c.phone)}</p><p><b>Zona de envío:</b> ${esc(s.metadata && s.metadata.zone)}</p><p><b>Dirección:</b> ${esc(c.address) || "-"}</p><p><b>Pago Stripe:</b> ${esc(pi)}</p>${tabla}`;
+    const aviso = `<h2>Nueva venta${kind === "mbox" ? " · PokeRuleta" : ""}</h2><p><b>Cliente:</b> ${esc(c.name)} · ${esc(c.email)} · ${esc(c.phone)}</p><p><b>Zona de envío:</b> ${esc(s.metadata && s.metadata.zone)}</p><p><b>Dirección:</b> ${esc(c.address) || "-"}</p><p><b>Pago Stripe:</b> ${esc(pi)}</p>${tabla}`;
     await enviar(process.env.VENTAS_EMAIL || "pokeislatcg@gmail.com", "Nueva venta: " + eur(s.amount_total) + " - " + (c.name || c.email || ""), aviso, c.email);
   } catch (e) { console.error("correo", e.message); }
 }
