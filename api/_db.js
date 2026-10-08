@@ -1,12 +1,23 @@
+// Acceso a la base de datos (Upstash Redis de Vercel) y catálogo de productos.
 const URL_ = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
 const TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 
 async function cmd(args) {
   if (!URL_ || !TOKEN) throw new Error("Falta conectar la base de datos (Storage) en Vercel");
   const r = await fetch(URL_, { method: "POST", headers: { Authorization: "Bearer " + TOKEN, "Content-Type": "application/json" }, body: JSON.stringify(args) });
-  const d = await r.json();
+  const d = await r.json().catch(() => ({ error: "Respuesta no válida de la base de datos" }));
   if (!r.ok || d.error) throw new Error(d.error || "Error de base de datos");
   return d.result;
+}
+
+const parse = (x) => { try { return typeof x === "string" ? JSON.parse(x) : x; } catch (_) { return null; } };
+
+// Convierte la respuesta de HGETALL (lista plana o pares) en un array de objetos
+function hvals(raw) {
+  const out = [];
+  if (Array.isArray(raw)) for (let i = 0; i < raw.length; i += 2) { const o = parse(raw[i + 1]); if (o) out.push(o); }
+  else if (raw && typeof raw === "object") for (const v of Object.values(raw)) { const o = parse(v); if (o) out.push(o); }
+  return out;
 }
 
 const SEED = [
@@ -20,25 +31,34 @@ const SEED = [
   { id: 8, n: "Álbum de stickers japonés", c: "Stickers", pr: 1900, s: 20, f: 0, i: "stk", h: "#2a7de1" },
 ];
 
-function toList(raw) {
-  const out = [];
-  if (Array.isArray(raw)) for (let k = 0; k < raw.length; k += 2) out.push(JSON.parse(raw[k + 1]));
-  else if (raw && typeof raw === "object") for (const v of Object.values(raw)) out.push(typeof v === "string" ? JSON.parse(v) : v);
-  const o = (p) => (p.ord == null ? 1e9 : p.ord);
-  return out.sort((a, b) => o(a) - o(b) || a.id - b.id);
-}
+const sortProducts = (l) => {
+  const o = (p) => (Number.isFinite(p.ord) ? p.ord : 1e9);
+  return l.sort((a, b) => o(a) - o(b) || a.id - b.id);
+};
 
 async function getAll() {
-  let raw = await cmd(["HGETALL", "products"]);
-  if ((!raw || !raw.length) && (await cmd(["SET", "seeded", "1", "NX"])) === "OK") {
+  let list = hvals(await cmd(["HGETALL", "products"]));
+  if (!list.length && (await cmd(["SET", "seeded", "1", "NX"])) === "OK") {
     await cmd(["HSET", "products", ...SEED.flatMap((p) => [String(p.id), JSON.stringify(p)])]);
-    raw = await cmd(["HGETALL", "products"]);
+    list = SEED.map((p) => ({ ...p }));
   }
+  // Limpieza única de las cajas antiguas guardadas como productos
   if ((await cmd(["SET", "mb_removed", "1", "NX"])) === "OK") {
     await cmd(["HDEL", "products", "101", "102", "103"]);
-    raw = await cmd(["HGETALL", "products"]);
+    list = list.filter((p) => ![101, 102, 103].includes(p.id));
   }
-  return toList(raw);
+  // Migración: fotos que estaban dentro del producto pasan al almacén de imágenes
+  const { putImg } = require("./_img");
+  for (const p of list) {
+    if (typeof p.img === "string" && p.img.startsWith("data:image/")) {
+      try {
+        p.iv = await putImg("p" + p.id, p.img);
+        delete p.img;
+        await cmd(["HSET", "products", String(p.id), JSON.stringify(p)]);
+      } catch (_) { delete p.img; }
+    } else delete p.img;
+  }
+  return sortProducts(list);
 }
 
-module.exports = { cmd, getAll };
+module.exports = { cmd, parse, hvals, getAll, sortProducts };
