@@ -252,10 +252,44 @@ html.th-halloween .wheelw .hub{background:radial-gradient(circle,#ffd8a8,#ff7a18
 #pager button.on{background:var(--pk);color:var(--ab);border-color:var(--pk)}
 #pager button:disabled{opacity:.4;cursor:default}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ===== Minijuegos del modo mantenimiento ===== */
+html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
+#mgame{margin:26px auto 0;max-width:440px;text-align:center}
+#mgame h3{color:var(--pk);font-size:20px;margin:0 0 12px}
+#mgame .gtabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+#mgame .gtabs button,#mgame .gbtn{border:1.5px solid #ffffff40;background:#ffffff14;color:#fff;border-radius:999px;padding:9px 13px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+#mgame .gtabs button.on,#mgame .gbtn{background:var(--pk);color:var(--ab);border-color:var(--pk)}
+#mgame .gbtn{margin-top:10px;padding:11px 20px}
+#mgame .ginfo{display:flex;justify-content:space-between;gap:8px;font-size:13px;opacity:.9;margin:0 2px 10px}
+#mgame .gmsg{min-height:1.2em;margin:12px 0 0}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;perspective:800px}
+.mc{position:relative;aspect-ratio:.72;border:0;padding:0;background:none;cursor:pointer;transform-style:preserve-3d;transition:transform .45s}
+.mc.up{transform:rotateY(180deg)}
+.mc .bk,.mc .fr{position:absolute;inset:0;border-radius:9px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.mc .bk{display:grid;place-items:center;background:repeating-linear-gradient(45deg,#1f7a5c 0 8px,#1a6a50 8px 16px);border:3px solid var(--pk);color:var(--pk);font-weight:900;font-size:20px;letter-spacing:1px}
+.mc .fr{transform:rotateY(180deg);background:#fff;border:3px solid #fff}
+.mc.ok .fr{border-color:#3ddc84;box-shadow:0 0 14px #3ddc84}
+.mc img,.vc .vi img{width:100%;height:100%;object-fit:cover;display:block}
+.gtx{display:flex;flex-direction:column;justify-content:center;height:100%;padding:4px;color:#0c1a1e;font-size:11px;line-height:1.2;background:linear-gradient(150deg,#ffe58a,#fff)}
+.gtx i{font-style:normal;font-weight:800;color:#c3302b;margin-top:4px}
+.cwrap{position:relative}
+#gcv{display:block;width:100%;height:min(62vh,440px);border-radius:14px;background:radial-gradient(circle at 50% 0,#28424a,#0c1a1e);border:2px solid #ffffff30;touch-action:none}
+.cov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#0c1a1ecc;border-radius:14px;padding:16px}
+.cov[hidden]{display:none}
+.gq{font-size:18px;font-weight:800;margin:4px 0 10px}
+.vs{display:flex;align-items:center;gap:8px}
+.vsx{font-weight:900;color:var(--pk)}
+.vc{flex:1;min-width:0;border:2px solid #ffffff30;background:#ffffff10;color:#fff;border-radius:14px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:4px;font:inherit;text-align:center}
+.vc .vi{aspect-ratio:.72;border-radius:9px;overflow:hidden;background:#fff}
+.vc b{font-size:13px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vc small{color:var(--pk);font-weight:700}
+.vc .vp{font-style:normal;font-weight:900;font-size:18px}
+.vc.win{border-color:#3ddc84;box-shadow:0 0 16px #3ddc8488}.vc.lose{opacity:.6}
 </style>
 </head>
 <body>
-<div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
+<div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><div id="mgame"></div><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
 <div id="hwtop" aria-hidden="true"><span class="web l"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="web r"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="spd">🕷️</span></div><div id="hw" aria-hidden="true"><span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span></div><div id="hwbar"></div>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
 <div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
@@ -892,9 +926,73 @@ $("#atheme").onclick=async ev=>{const hw=THEME.name!=="halloween";let banner=THE
  else if(!confirm("¿Quitar la decoración de Halloween y volver al aspecto normal?"))return;
  const done=busy(ev.currentTarget,"Guardando…");
  try{const d=await req("/api/site",{action:"admin_theme",pin:APIN,name:hw?"halloween":"normal",banner});THEME=d.theme;done();applyTheme();toast(hw?"🎃 Decoración de Halloween activada ✓":"Aspecto normal restaurado ✓","ok")}catch(err){done();applyTheme();toast("No se ha cambiado: "+err.message,"err")}};
+/* ---- minijuegos del modo mantenimiento ---- */
+const GM={tab:"mem",stop:null};
+const gRec=(k,v)=>{const key="pi_g_"+k;if(v===undefined)return ls.get(key,null);ls.set(key,v)};
+const gPool=()=>P.filter(p=>p&&p.n);
+const gPic=p=>pimg(p)||"";
+const gShuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const gFace=p=>gPic(p)?`<img src="${esc(gPic(p))}" alt="">`:`<span class="gtx"><b>${esc(p.n)}</b>${p.g?`<i>${esc(p.g)}</i>`:""}</span>`;
+function gamesInit(){const w=$("#mgame");if(!w||w._on)return;w._on=1;
+ w.innerHTML=`<h3>🎮 Mientras esperas, ¡juega!</h3><div class="gtabs"><button data-gt="mem">🃏 Memory</button><button data-gt="catch">📦 Atrapa cartas</button><button data-gt="val">💰 ¿Cuál vale más?</button></div><div id="gbox"></div>`;
+ w.addEventListener("click",ev=>{const b=ev.target.closest("[data-gt]");if(b)gameOpen(b.dataset.gt)});gameOpen("mem")}
+function gameOpen(t){if(GM.stop){GM.stop();GM.stop=null}GM.tab=t;$$("#mgame .gtabs button").forEach(b=>b.classList.toggle("on",b.dataset.gt===t));
+ const box=$("#gbox");if(PLOAD==="loading"){box.innerHTML='<p class="gmsg">Cargando cartas…</p>';const k=setTimeout(()=>gameOpen(t),700);GM.stop=()=>clearTimeout(k);return}
+ if(PLOAD!=="ok"||gPool().length<2){box.innerHTML=`<p class="gmsg">Cargando cartas… <button class="gbtn" id="gretry">Reintentar</button></p>`;$("#gretry").onclick=async()=>{await loadP();gameOpen(t)};return}
+ ({mem:gMem,catch:gCatch,val:gVal})[t](box)}
+/* Memory: encuentra las parejas */
+function gMem(box){const pool=gShuf(gPool()),pick=[];const seen=new Set();for(const p of pool){const k=gPic(p)||p.n;if(seen.has(k))continue;seen.add(k);pick.push(p);if(pick.length===6)break}
+ while(pick.length<6)pick.push(pool[pick.length%pool.length]);
+ const cards=gShuf([...pick.map((p,i)=>({p,k:i})),...pick.map((p,i)=>({p,k:i}))]);let open=[],done=0,moves=0,t0=0,tm=null,lock=false;const rec=gRec("mem");
+ box.innerHTML=`<div class="ginfo"><span id="gmv">Movimientos: 0</span><span id="gtm">0 s</span><span>Récord: ${rec?rec+" mov.":"—"}</span></div><div class="mem">${cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Carta ${i+1}"><span class="bk">PI</span><span class="fr">${gFace(c.p)}</span></button>`).join("")}</div><p class="gmsg" id="gend"></p>`;
+ GM.stop=()=>clearInterval(tm);
+ box.querySelector(".mem").onclick=ev=>{const b=ev.target.closest(".mc");if(!b||lock||b.classList.contains("up"))return;if(!t0){t0=Date.now();tm=setInterval(()=>{const e=$("#gtm");if(e)e.textContent=Math.round((Date.now()-t0)/1000)+" s"},500)}
+  b.classList.add("up");tick();open.push(b);if(open.length<2)return;moves++;$("#gmv").textContent="Movimientos: "+moves;const[a,c]=open;open=[];
+  if(cards[a.dataset.i].k===cards[c.dataset.i].k){a.classList.add("ok");c.classList.add("ok");done++;if(done===6){clearInterval(tm);const s=Math.round((Date.now()-t0)/1000),best=!rec||moves<rec;if(best)gRec("mem",moves);
+    $("#gend").innerHTML=`🎉 ¡Completado en ${moves} movimientos y ${s} s!${best?" <b>¡Nuevo récord!</b>":""}<br><button class="gbtn" id="gagain">Jugar otra vez</button>`;$("#gagain").onclick=()=>gameOpen("mem");try{bells()}catch(_){}}}
+  else{lock=true;setTimeout(()=>{a.classList.remove("up");c.classList.remove("up");lock=false},800)}}}
+/* Atrapa cartas: mueve el sobre con el dedo */
+function gCatch(box){const rec=gRec("catch")||0;
+ box.innerHTML=`<div class="ginfo"><span id="gsc">Puntos: 0</span><span id="glv">❤️❤️❤️</span><span>Récord: ${rec}</span></div><div class="cwrap"><canvas id="gcv"></canvas><div class="cov" id="gcov"><p>Arrastra el sobre para atrapar las cartas.<br>✨ Graduadas = 3 puntos · ❌ Evita las falsas<br>Si se te cae una carta buena, pierdes una vida.</p><button class="gbtn" id="gstart">¡Empezar!</button></div></div>`;
+ const cv=$("#gcv"),x=cv.getContext("2d"),pool=gPool(),ims={};let W=0,H=0,px=0,items=[],sc=0,lv=3,run=false,last=0,spawn=0,sp=1,raf=0;
+ const img=p=>{const s=gPic(p);if(!s)return null;if(!ims[s]){const i=new Image();i.src=s;ims[s]=i}return ims[s].complete&&ims[s].naturalWidth?ims[s]:null};
+ function size(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;W=r.width;H=r.height;cv.width=W*d;cv.height=H*d;x.setTransform(d,0,0,d,0,0);if(!px)px=W/2}
+ size();const onR=()=>size();addEventListener("resize",onR);
+ const mv=ev=>{const r=cv.getBoundingClientRect();px=Math.max(30,Math.min(W-30,ev.clientX-r.left))};
+ cv.addEventListener("pointerdown",mv);cv.addEventListener("pointermove",mv);
+ function hud(){$("#gsc").textContent="Puntos: "+sc;$("#glv").textContent="❤️".repeat(lv)+"🖤".repeat(3-lv)}
+ function rr(X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()}
+ function frame(t){const dt=Math.min(40,t-(last||t));last=t;x.clearRect(0,0,W,H);
+  spawn-=dt;if(spawn<=0){const fake=Math.random()<.22,p=pool[Math.random()*pool.length|0];items.push({x:20+Math.random()*(W-40),y:-50,v:(.09+Math.random()*.05)*sp,p,fake,gold:!fake&&p.g&&/\d/.test(p.g),r:(Math.random()-.5)*.4});spawn=Math.max(380,1000-sc*12)}
+  sp=1+sc/60;const bw=Math.min(90,W*.24),by=H-46;
+  items=items.filter(it=>{it.y+=it.v*dt;const w=Math.max(34,Math.min(52,W*.12)),h=w*1.36;x.save();x.translate(it.x,it.y);x.rotate(it.r);
+   rr(-w/2,-h/2,w,h,5);x.fillStyle=it.fake?"#7a1020":"#fff";x.fill();
+   if(it.fake){x.fillStyle="#fff";x.font="bold 22px system-ui";x.textAlign="center";x.textBaseline="middle";x.fillText("✖",0,1)}
+   else{const im=img(it.p);if(im){x.save();rr(-w/2+3,-h/2+3,w-6,h-6,3);x.clip();const k=Math.max((w-6)/im.naturalWidth,(h-6)/im.naturalHeight);x.drawImage(im,-im.naturalWidth*k/2,-im.naturalHeight*k/2,im.naturalWidth*k,im.naturalHeight*k);x.restore()}else{x.fillStyle="#1f7a5c";rr(-w/2+3,-h/2+3,w-6,h-6,3);x.fill()}}
+   x.lineWidth=it.gold?3:1.5;x.strokeStyle=it.gold?"#ffcb05":"#0006";rr(-w/2,-h/2,w,h,5);x.stroke();x.restore();
+   if(it.y>by-20&&it.y<by+16&&Math.abs(it.x-px)<bw/2+12){if(it.fake){lv--;tick()}else{sc+=it.gold?3:1;try{tick()}catch(_){}}hud();return false}
+   if(it.y>H+30){if(!it.fake){lv--;hud()}return false}return true});
+  // sobre
+  x.save();x.translate(px,by);rr(-bw/2,-14,bw,30,8);const g=x.createLinearGradient(0,-14,0,16);g.addColorStop(0,"#ffcb05");g.addColorStop(1,"#f26b1d");x.fillStyle=g;x.fill();x.lineWidth=2;x.strokeStyle="#0c1a1e";x.stroke();
+  x.fillStyle="#0c1a1e";x.font="800 11px system-ui";x.textAlign="center";x.textBaseline="middle";x.fillText("POKE ISLAS",0,1);x.restore();
+  if(lv<=0){run=false;const best=sc>rec;if(best)gRec("catch",sc);const o=$("#gcov");o.innerHTML=`<p>Fin de la partida<br><b style="font-size:28px">${sc} puntos</b>${best?"<br>🏆 ¡Nuevo récord!":""}</p><button class="gbtn" id="gstart">Jugar otra vez</button>`;o.hidden=false;$("#gstart").onclick=start;return}
+  if(run)raf=requestAnimationFrame(frame)}
+ function start(){items=[];sc=0;lv=3;sp=1;last=0;spawn=0;hud();$("#gcov").hidden=true;cv.scrollIntoView({behavior:"smooth",block:"center"});run=true;raf=requestAnimationFrame(frame)}
+ $("#gstart").onclick=start;
+ GM.stop=()=>{run=false;cancelAnimationFrame(raf);removeEventListener("resize",onR)}}
+/* ¿Cuál vale más? */
+function gVal(box){const pool=gPool().filter(p=>p.pr>0);let st=0;const rec=gRec("val")||0;
+ if(new Set(pool.map(p=>p.pr)).size<2){box.innerHTML='<p class="gmsg">Este juego necesita más cartas con precio.</p>';return}
+ function round(){let a,b;do{[a,b]=gShuf(pool)}while(a.pr===b.pr);
+  box.innerHTML=`<div class="ginfo"><span>Racha: ${st}</span><span>Récord: ${Math.max(rec,gRec("val")||0)}</span></div><p class="gq">¿Cuál vale más?</p><div class="vs">${[a,b].map((p,i)=>`<button class="vc" data-v="${i}"><span class="vi">${gFace(p)}</span><b>${esc(p.n)}</b>${p.g?`<small>${esc(p.g)}</small>`:""}<em class="vp" hidden>${e(p.pr)}</em></button>`).join('<span class="vsx">VS</span>')}</div><p class="gmsg" id="gvm"></p>`;
+  box.querySelector(".vs").onclick=ev=>{const c=ev.target.closest(".vc");if(!c||box._lock)return;box._lock=1;const pick=+c.dataset.v,ok=[a,b][pick].pr>[a,b][1-pick].pr;
+   box.querySelectorAll(".vp").forEach(e=>e.hidden=false);box.querySelectorAll(".vc").forEach((e,i)=>e.classList.add([a,b][i].pr>[a,b][1-i].pr?"win":"lose"));
+   if(ok){st++;try{tick()}catch(_){}$("#gvm").innerHTML="✅ ¡Correcto!";setTimeout(()=>{box._lock=0;round()},1300)}
+   else{const best=st>(gRec("val")||0);if(best)gRec("val",st);$("#gvm").innerHTML=`❌ ¡Fallaste! Racha final: <b>${st}</b>${best&&st?" · 🏆 ¡Nuevo récord!":""}<br><button class="gbtn" id="gagain">Jugar otra vez</button>`;$("#gagain").onclick=()=>{box._lock=0;st=0;round()}}}}
+ box._lock=0;round()}
 /* ---- modo mantenimiento ---- */
 var MAINT={on:false,msg:""};const MDEF="Estamos mejorando la tienda. ¡Volvemos muy pronto!";
-function applyMaint(){const on=!!MAINT.on;document.documentElement.classList.toggle("mt",on&&!ADMIN);try{localStorage.setItem("pi_mt",on?"1":"0")}catch(_){}
+function applyMaint(){const on=!!MAINT.on;document.documentElement.classList.toggle("mt",on&&!ADMIN);if(on&&!ADMIN)setTimeout(gamesInit,0);else if(GM.stop){GM.stop();GM.stop=null;const w=$("#mgame");if(w){w._on=0;w.innerHTML=""}}try{localStorage.setItem("pi_mt",on?"1":"0")}catch(_){}
  const m=$("#mantmsg");if(m)m.textContent=MAINT.msg||MDEF;const w=$("#mtbar");if(w)w.hidden=!on;const b=$("#amant");if(b){b.textContent=on?"🚧 Abrir tienda":"🚧 Mantenimiento";b.title=on?"La web está en mantenimiento: pulsa para abrirla a los clientes":"Cerrar la web a los clientes mientras la preparas"}}
 $("#amant").onclick=async ev=>{const on=!MAINT.on;let msg=MAINT.msg||"";
  if(on){const m=prompt("La web quedará cerrada para los clientes (tú seguirás viéndola como admin).\n\nMensaje que verán los clientes:",MAINT.msg||MDEF);if(m===null)return;msg=m.trim().slice(0,300)}
