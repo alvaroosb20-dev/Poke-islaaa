@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/admin/mystery-box", "destination": "/index.html" }]
+}
