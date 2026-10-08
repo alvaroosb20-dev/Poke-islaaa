@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const { cmd, parse } = require("./_db");
 const M = require("./_mbox");
-const { shipTable } = require("./_site");
+const { shipTable, getMaint, MAINT_MSG } = require("./_site");
 const { checkPin, ipOf } = require("./_auth");
 const { stripe, SESSION, customer } = require("./_stripe");
 const { getPurchase, setPurchase, listPurchases } = require("./_orders");
@@ -79,6 +79,7 @@ module.exports = async (req, res) => {
     }
 
     if (b.action === "buy") {
+      if ((await getMaint()).on) return fail(res, 503, MAINT_MSG);
       const box = await M.withStock(await M.getBox(Number(b.boxId)));
       if (!M.sellable(box)) return fail(res, 409, "Esta Mystery Box no está disponible ahora mismo");
       const ENVIOS = await shipTable(), env = ENVIOS[b.zone];

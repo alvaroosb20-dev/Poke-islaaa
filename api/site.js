@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
       const d = (await S.getData()).data;
       const imgs = {};
       for (const k of IMG_KEYS) if (d.iv && d.iv[k]) imgs[k] = imgUrl("s_" + k, d.iv[k]);
-      return res.status(200).json({ data: d, imgs });
+      return res.status(200).json({ data: d, imgs, maint: await S.getMaint() });
     }
     if (!String(b.action).startsWith("admin_")) return fail(res, 400, "Acción no válida");
     const bad = await checkPin(req, b.pin);
@@ -61,6 +61,15 @@ module.exports = async (req, res) => {
       const check = (await S.getData()).data; // confirmación desde la base de datos
       if (JSON.stringify(check.texts) !== JSON.stringify(out.texts) || JSON.stringify(check.ship) !== JSON.stringify(out.ship)) return fail(res, 500, "La base de datos no confirmó el guardado");
       return res.status(200).json({ ok: true, data: check });
+    }
+    if (b.action === "admin_maint") {
+      const msg = typeof b.msg === "string" ? b.msg.trim() : "";
+      if (msg.length > 300) return fail(res, 400, "El mensaje es demasiado largo (máx. 300 caracteres)");
+      const m = { on: !!b.on, msg, at: Date.now() };
+      await cmd(["SET", "maint", JSON.stringify(m)]);
+      const chk = await S.getMaint();
+      if (chk.on !== m.on) return fail(res, 500, "La base de datos no confirmó el cambio");
+      return res.status(200).json({ ok: true, maint: chk });
     }
     if (b.action === "admin_img") {
       if (!IMG_KEYS.includes(b.key)) return fail(res, 400, "Imagen no válida");

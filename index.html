@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>try{if(localStorage.getItem("pi_mt")==="1"&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("mt")}catch(e){}</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>POKE ISLAS · Pokémon Grade · Canarias</title>
@@ -173,11 +175,25 @@ button.ld{cursor:progress;opacity:.85}
 /* ---- páginas legales ---- */
 #legal .bx{max-width:760px;max-height:calc(100vh - 32px);overflow:auto}#legal h3{font-size:22px;margin:14px 0 6px}#legal h4{margin:12px 0 4px}#legal p,#legal li{font-size:15px;line-height:1.55;opacity:.9}#legal ul{padding-left:20px}
 @media(max-width:420px){.prow .r3{grid-template-columns:1fr 1fr}.ov .bx,.ov2 .bx{padding:16px}}
+
+/* modo mantenimiento */
+#mant{display:none}
+html.mt #mant{display:flex;position:fixed;inset:0;z-index:9999;background:var(--ab);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px 16px;overflow:auto}
+html.mt body{overflow:hidden}
+#mant>div{max-width:440px}
+#mant .mlogo{font-size:30px;font-weight:900;letter-spacing:1px;color:#fff}#mant .mlogo i{font-style:normal;color:var(--pk)}
+#mant .mic{font-size:54px;margin:18px 0 6px}
+#mant h2{font-size:26px;margin:0 0 10px;color:var(--pk)}
+#mant p{margin:8px 0;line-height:1.5;opacity:.92}
+#mant a{color:var(--pk);font-weight:700}
+#mant .madm{display:inline-block;margin-top:34px;font-size:12px;font-weight:400;opacity:.45;color:#fff}
+#mtbar{background:#c3302b;color:#fff;border-radius:999px;padding:3px 10px;font-size:12px}
 </style>
 </head>
 <body>
+<div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
-<div id="abar"><span>Modo administrador</span><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
+<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
 <nav>
   <b>POKE<i>ISLAS</i></b>
   <div class="links"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 Mystery Box</a><a href="#grading">Graduadas</a><a href="#vender">Vender</a><a href="#envios">Envíos</a></div>
@@ -437,7 +453,7 @@ async function handleReturn(){const q=new URLSearchParams(location.search),pg=q.
  else if(pg==="ok"){cart={};saveCart();cdraw();toast("¡Pago recibido! Gracias por tu compra.","ok")}}
 
 /* ================= ADMINISTRADOR ================= */
-function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB()}
+function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint()}
 async function login(){const pin=prompt("PIN de administrador");if(!pin)return;
  try{await req("/api/admin",{pin,action:"check"});APIN=pin;ss.set("pi_pin",pin);adm(true);toast("Modo administrador activado","ok")}catch(err){toast(err.message,"err")}}
 $("#al").onclick=ev=>{ev.preventDefault();login()};
@@ -712,7 +728,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -728,7 +744,7 @@ function applySite(){
  applyShip()}
 async function loadSite(){["pk","la","ab","lr"].forEach(k=>{ORIGC[k]=getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim()});
  $$("[data-imgkey]").forEach(el=>{el._orig=el.src});
- try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
+ try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
 function sedBuild(){const seen={},by={};
  tnodes().forEach(n=>{const k=hkey(n._o);if(seen[k])return;seen[k]=1;const g=grp(n.parentElement);(by[g]=by[g]||[]).push({k,o:n._o,c:n.nodeValue.trim()})});
  phs().forEach(el=>{const k="p"+hkey(el._po);if(seen[k])return;seen[k]=1;(by["Formulario de venta"]=by["Formulario de venta"]||[]).push({k,o:el._po,c:el.getAttribute("placeholder")})});
@@ -760,6 +776,16 @@ $("#sedsave").onclick=async()=>{const texts={...SITE.texts};
 document.getElementById("snd").textContent=SND?"🔊 Sonido activado":"🔇 Sonido desactivado";
 draw();cdraw();
 (async()=>{const pin=ss.get("pi_pin");if(pin){try{await req("/api/admin",{pin,action:"check"});APIN=pin;adm(true)}catch(_){ss.set("pi_pin",null)}}})();
+/* ---- modo mantenimiento ---- */
+var MAINT={on:false,msg:""};const MDEF="Estamos mejorando la tienda. ¡Volvemos muy pronto!";
+function applyMaint(){const on=!!MAINT.on;document.documentElement.classList.toggle("mt",on&&!ADMIN);try{localStorage.setItem("pi_mt",on?"1":"0")}catch(_){}
+ const m=$("#mantmsg");if(m)m.textContent=MAINT.msg||MDEF;const w=$("#mtbar");if(w)w.hidden=!on;const b=$("#amant");if(b){b.textContent=on?"🚧 Abrir tienda":"🚧 Mantenimiento";b.title=on?"La web está en mantenimiento: pulsa para abrirla a los clientes":"Cerrar la web a los clientes mientras la preparas"}}
+$("#amant").onclick=async ev=>{const on=!MAINT.on;let msg=MAINT.msg||"";
+ if(on){const m=prompt("La web quedará cerrada para los clientes (tú seguirás viéndola como admin).\n\nMensaje que verán los clientes:",MAINT.msg||MDEF);if(m===null)return;msg=m.trim().slice(0,300)}
+ else if(!confirm("¿Abrir la tienda otra vez a los clientes?"))return;
+ const done=busy(ev.currentTarget,"Guardando…");
+ try{const d=await req("/api/site",{action:"admin_maint",pin:APIN,on,msg});MAINT=d.maint;done();applyMaint();toast(MAINT.on?"Web en mantenimiento ✓ Los clientes no pueden verla ni comprar":"Tienda abierta otra vez ✓",MAINT.on?"info":"ok")}catch(err){done();applyMaint();toast("No se ha cambiado: "+err.message,"err")}};
+$("#mantadm").onclick=ev=>{ev.preventDefault();login()};
 loadSite();loadP();initMB();handleReturn();
 if(location.pathname.replace(/\/$/,"")==="/admin/mystery-box")setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 

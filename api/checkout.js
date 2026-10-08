@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const { cmd, parse } = require("./_db");
-const { shipTable } = require("./_site");
+const { shipTable, getMaint, MAINT_MSG } = require("./_site");
 const { stripe } = require("./_stripe");
 const { setPurchase } = require("./_orders");
 
@@ -8,6 +8,7 @@ module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
   res.setHeader("Cache-Control", "no-store");
   try {
+    if ((await getMaint()).on) return res.status(503).json({ error: MAINT_MSG });
     const { items, zone, nonce } = req.body || {};
     const ENVIOS = await shipTable();
     const env = ENVIOS[zone];

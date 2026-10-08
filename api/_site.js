@@ -13,4 +13,10 @@ async function shipTable() {
   for (const z in ZONES) { const v = data.ship && data.ship[z]; out[z] = [ZONES[z], Number.isSafeInteger(v) && v >= 0 ? v : DEF[z]]; }
   return out;
 }
-module.exports = { ZONES, DEF, getData, shipTable };
+// Modo mantenimiento: { on, msg }. Si la base de datos falla, la tienda sigue abierta.
+async function getMaint() {
+  try { const m = parse(await cmd(["GET", "maint"])) || {}; return { on: !!m.on, msg: typeof m.msg === "string" ? m.msg : "" }; }
+  catch (_) { return { on: false, msg: "" }; }
+}
+const MAINT_MSG = "La tienda está en mantenimiento ahora mismo. Vuelve en un rato, ¡gracias!";
+module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG };
