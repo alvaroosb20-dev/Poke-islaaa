@@ -10,6 +10,8 @@ Datos de la tienda:
 - Pago con tarjeta y otros métodos de Stripe desde el carrito. No se guardan datos de tarjeta.
 - Compramos y vendemos cartas sueltas, colecciones y productos de coleccionismo: el formulario "QUIERO VENDER" de la web.
 - Contacto: Instagram @poke_islas (https://www.instagram.com/poke_islas/).
+- Mystery Box: solo para mayores de 18 años. Se paga con Stripe y cada compra da derecho a un giro de la ruleta. El premio lo sortea el servidor con un generador aleatorio seguro según las probabilidades publicadas junto a la ruleta; si un premio se agota deja de poder salir. El premio se envía a la dirección del pago y su estado se ve en «Mis Mystery Boxes».
+- Las condiciones de compra, devoluciones y privacidad están en los enlaces del pie de la web.
 - Productos 100% auténticos con garantía. Las cartas graduadas dependen de la disponibilidad e incluyen número de certificación.
 
 Reglas:
