@@ -505,18 +505,18 @@ let P=[],PLOAD="loading",cur="Todo",FQ="",FG="all",FS="rec",PG=1,cart=ls.get("pi
 const pimg=p=>p.img||IMG[p.i]||"";
 // Buscador y filtros del catálogo
 const norm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
-const gkey=g=>norm(g).replace(/\s+/g," ");const isG=p=>!!p.g&&/\d/.test(p.g);
+const gkey=g=>norm(g).replace(/\s+/g," ");const isG=p=>!!p.g&&/\d/.test(p.g);const gNums=p=>p.g?(String(p.g).match(/\d+(?:[.,]\d+)?/g)||[]).map(n=>Math.floor(parseFloat(n.replace(",",".")))):[];
 function grades(){const m=new Map();P.forEach(p=>{if(isG(p)&&!m.has(gkey(p.g)))m.set(gkey(p.g),String(p.g).trim())});
  const num=g=>{const x=String(g).match(/\d+(?:[.,]\d+)?/);return x?parseFloat(x[0].replace(",",".")):-1};
  return [...m.values()].sort((a,b)=>{const ca=norm(a).split(" ")[0],cb=norm(b).split(" ")[0];return ca.localeCompare(cb)||num(b)-num(a)})}
 const visibleP=()=>{const q=norm(FQ).split(/\s+/).filter(Boolean);let l=P.filter(p=>{
-  if(FG==="feat"&&!p.f)return false;if(FG==="graded"&&!isG(p))return false;if(FG==="raw"&&isG(p))return false;if(FG.startsWith("g:")&&gkey(p.g)!==FG.slice(2))return false;
+  if(FG==="feat"&&!p.f)return false;if(FG==="graded"&&!isG(p))return false;if(FG==="raw"&&isG(p))return false;if(FG.startsWith("n:")&&!gNums(p).includes(Number(FG.slice(2))))return false;
   if(q.length){const h=norm([p.n,p.g,p.d,p.c].join(" "));if(!q.every(w=>h.includes(w)))return false}return true});
  if(FS==="asc")l=[...l].sort((a,b)=>a.pr-b.pr);else if(FS==="desc")l=[...l].sort((a,b)=>b.pr-a.pr);return l};
 function saveCart(){ls.set("pi",cart);payNonce=null}
 function draw(){
- const gs=grades(),chips=[["all","Todas"],["feat","⭐ Destacadas"],["graded","Graduadas"],...gs.map(g=>["g:"+gkey(g),g]),["raw","Sin graduar"]];
- if(FG.startsWith("g:")&&!gs.some(g=>"g:"+gkey(g)===FG))FG="all";
+ const chips=[["all","Todas"],["feat","⭐ Destacadas"],["n:10","Grado 10"],["n:9","Grado 9"],["n:8","Grado 8"]];
+ if(!chips.some(c=>c[0]===FG)&&FG!=="graded")FG="all";
  $("#cats").innerHTML=chips.map(([k,t])=>`<button class="${k===FG?"on":""}" data-fg="${esc(k)}">${esc(t)}</button>`).join("");
  const g=$("#grid");
  if(PLOAD==="loading"){g.innerHTML='<article class="p sk"></article>'.repeat(4);$("#pager").innerHTML="";$("#pcount").textContent="";return}
