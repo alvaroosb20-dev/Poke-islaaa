@@ -59,6 +59,17 @@ async function getAll() {
       } catch (e) { console.error("migración foto producto", p.id, e.message); } // la foto sigue guardada en el producto
     } else delete p.img;
   }
+  // Recuperación única: fotos que sí están en el almacén pero que un guardado antiguo desenlazó del producto
+  if (list.some((p) => !p.iv && !p.img) && (await cmd(["SET", "imgrec:1", "1", "NX"])) === "OK") {
+    for (const p of list) {
+      if (p.iv || p.img) continue;
+      if (Number(await cmd(["EXISTS", "img:p" + p.id])) === 1) {
+        p.iv = Date.now();
+        const raw = parse((await cmd(["HMGET", "products", String(p.id)]))[0]);
+        if (raw && !raw.iv) await cmd(["HSET", "products", String(p.id), JSON.stringify({ ...raw, iv: p.iv })]);
+      }
+    }
+  }
   return sortProducts(list);
 }
 
