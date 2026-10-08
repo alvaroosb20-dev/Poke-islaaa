@@ -34,6 +34,8 @@ module.exports = async (req, res) => {
         const v = String(Date.now());
         await cmd(["SET", "diag", v, "EX", "60"]);
         out.db = (await cmd(["GET", "diag"])) === v;
+        const all = ((await cmd(["HGETALL", "products"])) || []).filter((_, i) => i % 2).map(parse).filter(Boolean);
+        out.fotos = { guardadas: all.filter((p) => p.iv).length, antiguas: all.filter((p) => !p.iv && typeof p.img === "string" && p.img.startsWith("data:")).length, deEjemplo: all.filter((p) => !p.iv && !p.img && p.i).length, sinFoto: all.filter((p) => !p.iv && !p.img && !p.i).length };
         out.counts = { productos: Number(await cmd(["HLEN", "products"])) || 0, cajas: Number(await cmd(["HLEN", "mbox"])) || 0, compras: Number(await cmd(["HLEN", "purchases"])) || 0, giros: Number(await cmd(["LLEN", "mb:log"])) || 0 };
       } catch (e) { out.dbError = e.message; }
       return res.status(200).json(out);
@@ -57,7 +59,8 @@ module.exports = async (req, res) => {
       if (p.o != null && !int(p.o, 100000000)) return res.status(400).json({ error: "Precio anterior no válido" });
       if (!int(p.s, 1000000)) return res.status(400).json({ error: "Stock no válido" });
       if (p.link && !/^https:\/\/buy\.stripe\.com\/[A-Za-z0-9_-]+$/.test(String(p.link))) return res.status(400).json({ error: "El enlace de pago debe empezar por https://buy.stripe.com/" });
-      if (p.img) checkImg(p.img);
+      const newImg = typeof p.img === "string" && p.img.startsWith("data:image/") ? p.img : null; // una URL o null = foto sin cambios
+      if (newImg) checkImg(newImg);
 
       const prev = parse((await cmd(["HMGET", "products", String(p.id)]))[0]) || {};
       const row = {
@@ -66,8 +69,11 @@ module.exports = async (req, res) => {
         h: /^#[0-9a-f]{6}$/i.test(String(p.h || "")) ? p.h : "#1f7a5c", d: txt(p.d, 1000) || null,
         iv: prev.iv || null, ord: Number.isFinite(prev.ord) ? prev.ord : null,
       };
-      if (p.img) row.iv = await putImg("p" + p.id, p.img);
+      if (newImg) row.iv = await putImg("p" + p.id, newImg);
       else if (p.rmImg) { await delImg("p" + p.id); row.iv = null; row.i = null; }
+      else if (!row.iv && typeof prev.img === "string" && prev.img.startsWith("data:image/")) {
+        try { row.iv = await putImg("p" + p.id, prev.img); } catch (_) { row.img = prev.img; } // conserva la foto antigua
+      }
       Object.keys(row).forEach((k) => (row[k] === null || row[k] === "") && delete row[k]);
       await cmd(["HSET", "products", String(row.id), JSON.stringify(row)]);
       // Se relee de la base de datos para confirmar que se ha guardado
@@ -80,7 +86,7 @@ module.exports = async (req, res) => {
       if (!Array.isArray(ids) || !ids.length || ids.length > 500 || !ids.every(Number.isSafeInteger)) return res.status(400).json({ error: "Orden no válido" });
       const rows = await cmd(["HMGET", "products", ...ids.map(String)]);
       const args = [];
-      rows.forEach((r, i) => { const p = parse(r); if (!p) return; p.ord = i; delete p.img; args.push(String(ids[i]), JSON.stringify(p)); });
+      rows.forEach((r, i) => { const p = parse(r); if (!p) return; p.ord = i; args.push(String(ids[i]), JSON.stringify(p)); });
       if (args.length) await cmd(["HSET", "products", ...args]);
       return res.status(200).json({ ok: true, products: await getAll() });
     }
