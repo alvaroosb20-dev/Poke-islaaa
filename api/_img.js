@@ -6,7 +6,8 @@ const KEY = /^[a-z0-9_]{1,60}$/;
 const MAX = 1500000; // ~1,1 MB de imagen
 
 function checkImg(data) {
-  if (typeof data !== "string" || !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(data)) throw new Error("Imagen no válida (usa JPG, PNG o WebP)");
+  const m = typeof data === "string" && data.match(/^data:image\/(jpeg|jpg|png|webp|gif);base64,/i);
+  if (!m || /[^A-Za-z0-9+/=\s]/.test(data.slice(m[0].length))) throw new Error("Imagen no válida (usa JPG, PNG o WebP)");
   if (data.length > MAX) throw new Error("Imagen demasiado grande");
 }
 
