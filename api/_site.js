@@ -24,5 +24,8 @@ async function getTheme() {
   try { const t = parse(await cmd(["GET", "theme"])) || {}; return { name: THEMES.includes(t.name) ? t.name : "normal", banner: typeof t.banner === "string" ? t.banner : "" }; }
   catch (_) { return { name: "normal", banner: "" }; }
 }
+async function getPromo() {
+  try { const p = parse(await cmd(["GET", "promo"])) || {}; return { on: p.on !== false }; } catch (_) { return { on: true }; }
+}
 const MAINT_MSG = "La tienda está en mantenimiento ahora mismo. Vuelve en un rato, ¡gracias!";
-module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme };
+module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme, getPromo };

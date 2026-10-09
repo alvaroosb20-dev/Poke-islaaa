@@ -373,14 +373,36 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 #rvthx{text-align:center;font-size:18px;padding:20px 0}
 
 .rvform{display:grid;gap:12px}.rvform .fl{justify-self:start}#rvsend{width:100%}
+
+/* ===== Anuncio emergente PokeRuleta ===== */
+#promo{position:fixed;inset:0;z-index:95;display:grid;place-items:center;padding:16px;background:#0008;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .3s}
+#promo[hidden]{display:none}#promo.on{opacity:1}
+#promo .prob{position:relative;width:min(92vw,400px);max-height:92vh;overflow:auto;text-align:center;color:#fff;border-radius:26px;padding:22px 20px 18px;
+ background:radial-gradient(circle at 50% 0,#7a1fa2,#2b0b4a 55%,#12051f);box-shadow:0 0 0 2px #ffcb05,0 0 60px #d4145a88,0 30px 80px #000c;transform:scale(.7) translateY(30px);transition:transform .45s cubic-bezier(.2,1.4,.4,1)}
+#promo.on .prob{transform:none}
+#promo .prox{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:0;background:#ffffff22;color:#fff;font-size:18px;cursor:pointer;z-index:2}
+#promo .wm{position:relative;width:min(62vw,230px);aspect-ratio:1;margin:4px auto 6px}
+#promo .wm::before{content:"";position:absolute;inset:-7%;border-radius:50%;background:conic-gradient(#ffcb05,#ff8a00,#ffe27a,#c48a12,#ffcb05);box-shadow:0 0 30px #ffcb0599}
+#promo .wm::after{content:"";position:absolute;top:-9%;left:50%;width:15%;height:17%;transform:translateX(-50%);background:linear-gradient(#ff6b5b,#c3121b);clip-path:polygon(0 0,100% 0,50% 100%);filter:drop-shadow(0 3px 4px #000a);z-index:2}
+#prowh{position:relative;width:100%;height:100%;border-radius:50%;display:block;animation:prospin 7s linear infinite}
+@keyframes prospin{to{transform:rotate(360deg)}}
+#promo .protag{display:inline-block;background:#ffcb05;color:#2b0b4a;font-weight:900;font-size:12px;letter-spacing:1px;border-radius:999px;padding:4px 10px;margin-top:6px}
+#promo h2{font-size:28px;line-height:1.1;margin:10px 0 6px;color:#fff;text-shadow:0 2px 12px #000}
+#promo p{margin:0 0 8px;opacity:.9;line-height:1.4}
+#promo .proprice{font-size:17px;margin-bottom:12px}#promo .proprice b{color:#ffe14a;font-size:22px}
+#promo #progo{width:100%;border:0;font-size:18px;box-shadow:0 0 24px #ffcb0588;animation:propulse 1.6s ease-in-out infinite}
+@keyframes propulse{50%{transform:scale(1.04)}}
+#promo #prono{display:block;margin:10px auto 0;color:#fff;opacity:.7}
+@media (prefers-reduced-motion:reduce){#prowh,#promo #progo{animation:none}}
+
+#promo .hubm{position:absolute;inset:0;margin:auto;width:24%;height:24%;border-radius:50%;background:radial-gradient(circle,#fff6c8,#f2c14e 45%,#a86f0b 72%,#ffe39a 80%,#7a4d00 86%);box-shadow:0 4px 12px #000a;display:grid;place-items:center;z-index:1}#promo .hubm img{width:78%;height:78%;border-radius:50%;object-fit:cover}
 </style>
 </head>
 <body>
 <div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><div id="mgame"></div><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
 <div id="hwtop" aria-hidden="true"><span class="web l"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="web r"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="spd">🕷️</span></div><div id="hw" aria-hidden="true"><span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span></div><div id="hwbar"></div>
-<a id="adtop" href="#mystery"><span class="adg">🎰</span><b>¡NUEVA POKERULETA!</b><span class="adt">Gira y llévate cartas graduadas al instante</span><span class="adb">JUGAR AHORA ›</span></a>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
-<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
+<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="apromo">📣 Anuncio</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
 <nav>
   <b>POKE<i>ISLAS</i></b>
   <div class="links"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 PokeRuleta</a><a href="#grading">Graduadas</a><a href="#resenas">Reseñas</a><a href="#vender">Vender</a><a href="#envios">Envíos</a></div>
@@ -510,6 +532,10 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
  <p class="msg" id="mbmsg2" hidden></p>
  <div class="rw"><button type="button" class="sbtn" id="mbsave">Guardar</button><button type="button" class="sbtn o" id="mbcancel">Cancelar</button></div>
  <button type="button" id="mbdel" style="background:none;border:0;color:#c3302b;font-weight:700">Eliminar caja</button></div></div>
+<div id="promo" role="dialog" aria-modal="true" aria-labelledby="proT" hidden><div class="prob"><button class="prox" id="prox" aria-label="Cerrar anuncio">✕</button>
+ <div class="wm"><canvas id="prowh"></canvas><span class="hubm"><img src="/icon-192.png?v=2" alt=""></span></div><span class="protag">🎰 NUEVO EN POKE ISLAS</span>
+ <h2 id="proT">¡Prueba la PokeRuleta!</h2><p>Gira la ruleta y llévate una carta Pokémon al instante. ¡Cada giro tiene premio!</p>
+ <div class="proprice" id="proprice"></div><button class="btn pk big" id="progo">🎰 JUGAR AHORA</button><button class="lnk" id="prono">Ahora no</button></div></div>
 <div class="ov" id="rvf"><div class="bx"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;margin:0">Tu reseña</h2><button class="sbtn o" id="rvx">Cerrar</button></div>
  <div class="rvform"><div class="rvq"><b style="font-size:13px">¿Cuántas estrellas nos das?</b><div id="rvpick" role="radiogroup" aria-label="Valoración"></div></div>
  <label>Tu nombre<input id="rvn" maxlength="40" autocomplete="given-name" placeholder="Ej. Laura G."></label>
@@ -1050,7 +1076,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -1066,7 +1092,7 @@ function applySite(){
  applyShip()}
 async function loadSite(){["pk","la","ab","lr"].forEach(k=>{ORIGC[k]=getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim()});
  $$("[data-imgkey]").forEach(el=>{el._orig=el.src});
- try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
+ try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();PROMO=d.promo||{on:true};applyPromo();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
 function sedBuild(){const seen={},by={};
  tnodes().forEach(n=>{const k=hkey(n._o);if(seen[k])return;seen[k]=1;const g=grp(n.parentElement);(by[g]=by[g]||[]).push({k,o:n._o,c:n.nodeValue.trim()})});
  phs().forEach(el=>{const k="p"+hkey(el._po);if(seen[k])return;seen[k]=1;(by["Formulario de venta"]=by["Formulario de venta"]||[]).push({k,o:el._po,c:el.getAttribute("placeholder")})});
@@ -1102,6 +1128,17 @@ draw();cdraw();
 $("#q").addEventListener("input",ev=>{FQ=ev.target.value;PG=1;draw()});
 $("#q").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();ev.target.blur()}});
 $("#fsort").onchange=ev=>{FS=ev.target.value;PG=1;draw()};
+/* ---- anuncio emergente de la PokeRuleta al entrar ---- */
+var PROMO={on:true},PROMOT=null;
+function applyPromo(){const b=$("#apromo");if(b)b.textContent=PROMO.on?"📣 Anuncio: activado":"📣 Anuncio: desactivado";if(!PROMOT)PROMOT=setTimeout(maybePromo,1400)}
+function maybePromo(n){n=n||0;const b=MB&&MB[0];if(!b&&n<8&&!MBERR){setTimeout(()=>maybePromo(n+1),800);return}if(!PROMO.on||!b||MAINT.on||ADMIN||ss.get("pi_pin")||ss.get("pi_promo")||location.search.includes("caja=")||$(".ov.on"))return;
+ $("#proprice").innerHTML=`Giro por solo <b>${e(b.price)}</b>`;$("#promo").hidden=false;requestAnimationFrame(()=>{$("#promo").classList.add("on");drawWheel($("#prowh"),b.prizes)});
+ document.documentElement.style.overflow="hidden";ss.set("pi_promo","1");setTimeout(()=>$("#progo").focus(),400)}
+function closePromo(go){const p=$("#promo");p.classList.remove("on");document.documentElement.style.overflow="";setTimeout(()=>p.hidden=true,300);if(go)setTimeout(()=>$("#mystery").scrollIntoView({behavior:"smooth"}),150)}
+$("#prox").onclick=()=>closePromo();$("#prono").onclick=()=>closePromo();$("#progo").onclick=()=>closePromo(1);
+$("#promo").addEventListener("click",ev=>{if(ev.target.id==="promo")closePromo()});
+document.addEventListener("keydown",ev=>{if(ev.key==="Escape"&&!$("#promo").hidden)closePromo()});
+$("#apromo").onclick=async ev=>{const on=!PROMO.on;const done=busy(ev.currentTarget,"Guardando…");try{const d=await req("/api/site",{action:"admin_promo",pin:APIN,on});PROMO=d.promo;done();applyPromo();toast(on?"Anuncio de la PokeRuleta activado ✓ (sale una vez por visita)":"Anuncio desactivado ✓","ok")}catch(err){done();toast(err.message,"err")}};
 /* ---- tema de temporada (Halloween) ---- */
 var THEME={name:"normal",banner:""};const HWDEF="🎃 Ofertas de Halloween hasta el 31 de octubre 👻";
 function applyTheme(){const hw=THEME.name==="halloween";document.documentElement.classList.toggle("th-halloween",hw);try{localStorage.setItem("pi_th",THEME.name)}catch(_){}
