@@ -173,7 +173,7 @@ async function deleteBox(id) {
 
 // Sorteo: número aleatorio criptográfico del servidor, ponderado por las probabilidades.
 // Reserva el stock de forma atómica (HINCRBY); si otro jugador se llevó la última unidad, repite.
-async function draw(boxId) {
+async function draw(boxId, dry) { // dry = giro de prueba del admin: no descuenta stock
   for (let attempt = 0; attempt < 8; attempt++) {
     const box = await withStock(await getBox(boxId));
     if (!box || !sums100(box)) throw new Error("Esta caja no está disponible ahora");
@@ -183,7 +183,7 @@ async function draw(boxId) {
     const rnd = crypto.randomInt(0, total);
     let acc = 0, prize = cand[cand.length - 1];
     for (const p of cand) { acc += cents(p.p); if (rnd < acc) { prize = p; break; } }
-    if (prize.left != null) {
+    if (prize.left != null && !dry) {
       const n = Number(await cmd(["HINCRBY", "mbstk:" + boxId, prize.id, "-1"]));
       if (n < 0) { await cmd(["HINCRBY", "mbstk:" + boxId, prize.id, "1"]); continue; }
     }

@@ -342,6 +342,8 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 #pz .bx.g3 .c4d .tin::before,#mres .bx.g3 .c4d .tin::before{filter:blur(2px) brightness(1.3);inset:-5px}
 #pz.fxing .bx>:not(#pzt):not(#pzx),#mres.fxing .bx>:not(#mrt){animation:fxIn .5s .95s both}
 @media (prefers-reduced-motion:reduce){.c4d .tin{transform:none!important}}
+
+.admt{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.admt #wtest{background:#7a4fd1;color:#fff;border-color:#7a4fd1}
 </style>
 </head>
 <body>
@@ -762,10 +764,14 @@ function renderMB(){if(!$("#mystery"))return;$("#mbadm").style.display=ADMIN?"fl
  else cta=`<label class="zl">Envío del premio<select id="mbz">${Object.keys(SHIP).map(z=>`<option value="${z}" ${z===MBz?"selected":""}>${ZN[z]} · ${e(SHIP[z])}</option>`).join("")}</select></label><button class="btn pk big" id="mbbuy">COMPRAR Y GIRAR · ${e(b.price)}</button><small style="opacity:.75">Pago seguro con Stripe. Después del pago podrás girar la ruleta una vez.</small>`;
  $("#mbinfo").innerHTML=`<div class="mbbox">${b.img?`<img src="${esc(b.img)}" alt="">`:"🎁"}</div><h3>${esc(b.name)}</h3>${b.desc?`<p>${esc(b.desc)}</p>`:""}<div class="mbprice">${e(b.price)}</div>${cta}${m}
   ${ADMIN?`<h4 style="margin-top:6px">Premios y probabilidades <small style="font-weight:400;opacity:.7">(solo lo ves tú, como administrador)</small></h4><ul class="mbpz">${b.prizes.map(p=>`<li class="g${ri(p.rarity)}"><i style="background:${esc(p.color)}"></i>${p.img?`<img src="${esc(p.img)}" alt="">`:""}<span>${esc(p.name)}${rar(p.rarity)}<small>Valor ${e(p.value)}${p.left!=null?` · Quedan ${p.left}`:""}${p.desc?" · "+esc(p.desc):""}</small></span><b>${pReal(b,p)!=null?String(pReal(b,p)).replace(".",",")+"%":"…"}</b></li>`).join("")}${(b.soldOut||[]).map(p=>`<li class="so"><i></i><span>${esc(p.name)}${rar(p.rarity)}<small>Valor ${e(p.value)}</small></span><b>Agotado</b></li>`).join("")}</ul>`:""}
-  <h4>Condiciones</h4><ul class="cond"><li>Solo mayores de 18 años.</li><li>Un giro por compra. El premio lo sortea el servidor con un generador aleatorio seguro según las probabilidades asignadas a cada premio, y queda registrado.</li><li>Todos los sectores de la ruleta tienen el mismo tamaño por diseño: el tamaño no indica la probabilidad. Cada premio tiene su propia probabilidad de salir.</li><li>Si un premio se agota, deja de poder salir.</li><li>El premio se envía a la dirección indicada en el pago.</li></ul>${ADMIN?`<button class="sbtn" data-bedit="${b.id}">Editar esta caja</button>`:""}`}
+  <h4>Condiciones</h4><ul class="cond"><li>Solo mayores de 18 años.</li><li>Un giro por compra. El premio lo sortea el servidor con un generador aleatorio seguro según las probabilidades asignadas a cada premio, y queda registrado.</li><li>Todos los sectores de la ruleta tienen el mismo tamaño por diseño: el tamaño no indica la probabilidad. Cada premio tiene su propia probabilidad de salir.</li><li>Si un premio se agota, deja de poder salir.</li><li>El premio se envía a la dirección indicada en el pago.</li></ul>${ADMIN?`<div class="admt"><button class="sbtn" id="wtest">🧪 Probar ruleta (sin pagar)</button><button class="sbtn" data-bedit="${b.id}">Editar esta caja</button></div>`:""}`}
 async function mbWhy(){try{const d=await req("/api/mbox",{action:"admin_list",pin:APIN}),el=$("#mbwhy");if(!el)return;
  el.innerHTML=d.boxes.length?`<p class="msg err"><b>Modo administrador:</b> ninguna caja está a la venta, por eso no sale el botón de pagar. Arregla esto:</p>`+d.boxes.map(x=>`<div class="prow"><b>${esc(x.name)} · ${e(x.price)}</b><span>⚠️ ${esc(x.why||"Está bien configurada; pulsa Reintentar.")}</span><button class="sbtn" data-bedit="${x.id}">Arreglar esta caja</button></div>`).join(""):`<p class="msg err"><b>Modo administrador:</b> todavía no has creado ninguna PokeRuleta, por eso no sale el botón de pagar.</p><button class="sbtn" id="pnew">+ Crear PokeRuleta</button>`}
  catch(err){const el=$("#mbwhy");if(el)el.innerHTML=`<p class="msg err">${esc(err.message)}</p>`}}
+async function testSpin(){const b=curBox();if(spinning||!ADMIN||!b)return;spinning=true;const bt=$("#wtest"),done=busy(bt,"Sorteando (prueba)…");msgMB("","");
+ let d;try{d=await req("/api/mbox",{action:"admin_test_spin",pin:APIN,boxId:b.id})}catch(err){done();spinning=false;msgMB("err",err.message);return}
+ const to=targetFor(b.prizes,d.prize.id);if(to!=null){const w=$(".wheelw");w.classList.add("spin");$("#wh").scrollIntoView({behavior:reduced()?"auto":"smooth",block:"center"});await animateWheel(to,reduced()?1200:6500,b.prizes);w.classList.remove("spin");w.classList.add("win");setTimeout(()=>w.classList.remove("win"),1600);await sleep(450)}
+ spinning=false;done();showRes(d.prize,null);$("#mrid").textContent="🧪 Giro de PRUEBA del administrador: no se ha cobrado, no descuenta stock y no cuenta como venta."}
 async function spinNow(){if(spinning||!MBtk||MBtk.status!=="pending")return;spinning=true;const bt=$("#wgo"),done=busy(bt,"Sorteando premio…");msgMB("","");
  let d;try{d=await req("/api/mbox",{action:"spin",token:MBtk.token})}catch(err){done();spinning=false;msgMB("err",err.message);return}
  if(bt)bt.innerHTML='<span class="spn"></span>Girando…';
@@ -976,6 +982,7 @@ document.addEventListener("click",async ev=>{const t=ev.target,el=t.closest?t:nu
  if(t.id==="snd"){SND=!SND;ls.set("pi_snd",SND);t.textContent=SND?"🔊 Sonido activado":"🔇 Sonido desactivado"}
  if(t.id==="wh"||t.classList.contains("hub"))wheelTap(ev);
  if(t.id==="wgo")spinNow();
+ if(t.id==="wtest")testSpin();
  if(t.dataset.spin)goSpin(t.dataset.spin);
  if(t.id==="pnew")openBoxEd(null);
  if(t.id==="pcsv"&&PDATA.orders)csv("compras.csv",[["Fecha","Tipo","Estado","Importe (€)","Nombre","Email","Teléfono","Dirección","Sesión Stripe","Pago Stripe"],...PDATA.orders.purchases.map(p=>[fdate(p.created),p.kind==="mbox"?"PokeRuleta":"Tienda",STL[p.status]||p.status,((p.paid!=null?p.paid:(p.price||0)+(p.ship||0))/100).toFixed(2).replace(".",","),p.name,p.email,p.phone,p.address,p.id,p.pi])]);
