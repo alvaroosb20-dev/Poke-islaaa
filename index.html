@@ -1109,7 +1109,8 @@ async function openPanel(tab){PANEL=tab;$("#mbl").classList.add("on");$$("#ptabs
   else if(tab==="estado"){const d=await req("/api/admin",{pin:APIN,action:"status"});
    body.innerHTML=`<div class="prow"><b>${d.db?"✅ Base de datos conectada":"❌ Base de datos no disponible"}</b>${d.dbError?`<small>${esc(d.dbError)}</small>`:""}${d.db?`<span>${pl(d.counts.productos,"producto")} · ${pl(d.counts.cajas,"caja")} · ${pl(d.counts.compras,"compra")} · ${pl(d.counts.giros,"giro")}</span>`:""}</div>`+
     `<div class="prow"><b>Variables de entorno en Vercel</b>${Object.entries(d.vars).map(([k,v])=>`<span>${v?"✅":"⚠️"} ${esc(k)}${v?"":" — sin configurar"}</span>`).join("")}${d.stripeMode?`<span>Stripe en modo <b>${d.stripeMode}</b>${d.stripeMode==="prueba"?" (no se cobra de verdad)":""}</span>`:""}</div>`+
-    `<div class="prow"><b>Prueba de la web</b><span id="stest"><span class="spn d"></span> Comprobando servicios…</span></div>`;
+    `<div class="prow"><b>Prueba de la web</b><span id="stest"><span class="spn d"></span> Comprobando servicios…</span></div>`+
+    `<div class="prow"><b>✉️ Prueba de correos</b><span>Envía un correo de prueba (los códigos para entrar y los avisos usan este sistema).</span><div class="cpn"><input id="mtto" type="email" placeholder="email de prueba (que no sea el tuyo de Resend)"><button class="sbtn" id="mtgo">Enviar prueba</button></div><span id="mtres"></span></div>`;
    const chk=[["Catálogo","/api/products",null,"GET"],["PokeRuleta","/api/mbox",{action:"public"}],["Web","/api/site",{action:"get"}],["Pagos (estado)","/api/order",{action:"status",session:"cs_test_comprobacion000"}]],out=[];
    for(const[n,u,b,m]of chk){try{await req(u,b,m);out.push("✅ "+n)}catch(err){out.push((err.status&&err.status<500&&err.status!==404?"✅ ":"❌ ")+n+(err.status&&err.status<500&&err.status!==404?"":": "+err.message))}}
    const st=$("#stest");if(st)st.innerHTML=out.map(esc).join("<br>")}
@@ -1352,6 +1353,10 @@ document.addEventListener("click",async ev=>{const t=ev.target;
   if(!(v>0))return msg("#ncmsg","err","Escribe cuánto descuenta.");const done=busy(t,"Creando…");try{const d=await req("/api/admin",{pin:APIN,action:"coupon_save",coupon:c});done();PDATA.cp=d.items;drawCP($("#mblb"));toast("Código "+c.code+" creado ✓","ok")}catch(err){done();msg("#ncmsg","err",err.message)}}
  if(t.dataset&&t.dataset.cptog){const c=(PDATA.cp||[]).find(x=>x.code===t.dataset.cptog);if(!c)return;try{const d=await req("/api/admin",{pin:APIN,action:"coupon_save",coupon:{...c,on:c.on?0:1}});PDATA.cp=d.items;drawCP($("#mblb"))}catch(err){toast(err.message,"err")}}
  if(t.dataset&&t.dataset.cpdel){if(!confirm("¿Borrar el código "+t.dataset.cpdel+"?"))return;try{const d=await req("/api/admin",{pin:APIN,action:"coupon_del",code:t.dataset.cpdel});PDATA.cp=d.items;drawCP($("#mblb"))}catch(err){toast(err.message,"err")}}});
+document.addEventListener("click",async ev=>{if(ev.target.id!=="mtgo")return;const done=busy(ev.target,"Enviando…"),r=$("#mtres");
+ try{const d=await req("/api/admin",{pin:APIN,action:"mail_test",to:$("#mtto").value.trim()});done();
+  r.innerHTML=d.ok?`✅ Enviado desde <b>${esc(d.from)}</b>. Mira la bandeja de entrada (y spam).`:`❌ No se pudo enviar desde <b>${esc(d.from)}</b>.<br>Motivo que da Resend: <b>${esc(d.error)}</b>`+(/domain|verif|own email|testing emails/i.test(d.error)?"<br>👉 Hay que verificar el dominio poke-isla.com en Resend (Domains → Add domain) y añadir sus registros DNS.":"")}
+ catch(err){done();r.textContent="❌ "+err.message}});
 /* ---- códigos de descuento en el carrito ---- */
 var CP=null,CPsub=0;
 const cartItems=()=>Object.keys(cart).map(i=>({id:+i,qty:cart[i]}));

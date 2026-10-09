@@ -92,6 +92,13 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true, products: await getAll() });
     }
 
+    if (action === "mail_test") {
+      const to = String(req.body.to || "").trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) return res.status(400).json({ error: "Escribe un email válido" });
+      const { sendMail, wrap } = require("./_mail");
+      try { await sendMail(to, "Prueba de correo de Poke Islas", wrap("<p>Si te llega este correo, los emails de la web funcionan bien ✅</p>")); return res.status(200).json({ ok: true, from: process.env.EMAIL_FROM || "Poke Islas <pedidos@poke-isla.com>" }); }
+      catch (e) { return res.status(200).json({ ok: false, error: e.message, from: process.env.EMAIL_FROM || "Poke Islas <pedidos@poke-isla.com>" }); }
+    }
     if (action === "coupons") return res.status(200).json({ items: await CP.listCoupons() });
     if (action === "coupon_save") {
       let c;
