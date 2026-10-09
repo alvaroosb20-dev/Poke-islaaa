@@ -6,6 +6,7 @@ const { customer } = require("./_stripe");
 
 const SHIP = ["Pendiente", "Preparando", "Enviado", "Entregado"];
 const RAR = ["Común", "Raro", "Épico", "Legendario"];
+const FX = ["auto", "fuego", "agua", "rayo", "hielo", "psiquico", "fantasma", "planta", "dragon", "hada", "estrella"];
 const isInt = (v, min = 0) => Number.isSafeInteger(v) && v >= min;
 const cents = (p) => Math.round(Number(p) * 100); // probabilidad en centésimas de %
 
@@ -73,7 +74,7 @@ const prizeImg = (b, p) => imgUrl("z" + b.id + "_" + p.id, p.iv);
 function pub(b) {
   return {
     id: b.id, name: b.name, desc: b.desc, price: b.price, img: boxImg(b),
-    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), value: p.value, p: 1, color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
+    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), value: p.value, p: 1, fx: p.fx || "auto", color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
     soldOut: activePrizes(b).filter((p) => p.left === 0).map((p) => ({ name: p.name, rarity: p.rarity || "Común", value: p.value })),
   };
 }
@@ -119,7 +120,7 @@ async function saveBox(input) {
     if (isData(p.img)) checkImg(p.img);
     return {
       id: pid, name: str(p.name, 120, true, "el nombre del premio " + n), desc: str(p.desc, 300, false, "Descripción"),
-      value: p.value, p: Math.round(pr * 100) / 100, rarity: RAR.includes(p.rarity) ? p.rarity : "Común",
+      value: p.value, p: Math.round(pr * 100) / 100, rarity: RAR.includes(p.rarity) ? p.rarity : "Común", fx: FX.includes(p.fx) ? p.fx : "auto",
       color: /^#[0-9a-f]{6}$/i.test(String(p.color || "")) ? p.color.toLowerCase() : "#444444",
       on: p.on ? 1 : 0, stock, iv: prevP[pid] ? prevP[pid].iv || null : null,
       _img: isData(p.img) ? p.img : null, _rm: !!p.rmImg, _stock0: p.stock0,
