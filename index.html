@@ -396,6 +396,27 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 @media (prefers-reduced-motion:reduce){#prowh,#promo #progo{animation:none}}
 
 #promo .hubm{position:absolute;inset:0;margin:auto;width:24%;height:24%;border-radius:50%;background:radial-gradient(circle,#fff6c8,#f2c14e 45%,#a86f0b 72%,#ffe39a 80%,#7a4d00 86%);box-shadow:0 4px 12px #000a;display:grid;place-items:center;z-index:1}#promo .hubm img{width:78%;height:78%;border-radius:50%;object-fit:cover}
+
+/* ===== Cupones, cuenta y sorteo ===== */
+.cpn{display:flex;gap:8px;margin-top:12px}.cpn input{flex:1;min-width:0;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--tx);font:inherit;font-size:16px;text-transform:uppercase}
+.cpn input::placeholder{text-transform:none}.tot.cpl{color:#1f7a5c;font-weight:700}#cpq{font-size:12px}
+.accb{white-space:nowrap}
+.accent{background:#ffcb0526;border:1.5px solid #ffcb05;border-radius:12px;padding:10px 12px;margin:6px 0 10px}
+#acc h4{margin:14px 0 6px}
+#sorteo{padding-top:24px}
+.gwbox{display:grid;gap:18px;align-items:center;background:linear-gradient(135deg,#2b0b4a,#7a1fa2 55%,#d4145a);color:#fff;border-radius:24px;padding:20px;box-shadow:0 20px 50px #2b0b4a55}
+@media(min-width:760px){.gwbox{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);padding:30px}}
+.gwbox h2{color:#fff;margin:10px 0 4px}.gwbox .sub{color:#fff;opacity:.85}.gwbox a{color:#ffe14a}
+.gwl img{width:100%;max-height:380px;object-fit:contain;border-radius:16px;filter:drop-shadow(0 18px 30px #000a)}
+.gwcd{display:flex;gap:8px;margin:12px 0 6px}.gwcd span{background:#0006;border-radius:12px;padding:8px 10px;min-width:58px;text-align:center}.gwcd b{display:block;font-size:24px;color:#ffe14a}.gwcd small{font-size:11px;opacity:.8}
+.gwbox .accent{background:#ffffff1a;border-color:#ffe14a}.gwr{font-size:14px;padding:4px 0}
+#sorteo .protag{display:inline-block;background:#ffcb05;color:#2b0b4a;font-weight:900;font-size:12px;letter-spacing:1px;border-radius:999px;padding:4px 10px}
+
+@media(max-width:520px){.accb .at{display:none}.accb{padding-left:12px;padding-right:12px}}
+
+.rvform[hidden],#acc3[hidden]{display:none!important}
+
+nav .ic{white-space:nowrap}@media(max-width:380px){nav .ic{padding-left:10px!important;padding-right:10px!important;font-size:14px}nav b{font-size:20px}}
 </style>
 </head>
 <body>
@@ -406,7 +427,7 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 <nav>
   <b>POKE<i>ISLAS</i></b>
   <div class="links"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 PokeRuleta</a><a href="#grading">Graduadas</a><a href="#resenas">Reseñas</a><a href="#vender">Vender</a><a href="#envios">Envíos</a></div>
-  <div class="r"><button class="ic" id="cb" aria-label="Abrir carrito">Carrito <span id="n">0</span></button><button class="ic burger" id="bg" aria-label="Menú">☰</button></div>
+  <div class="r"><button class="ic accb" id="accb" type="button">👤 Entrar</button><button class="ic" id="cb" aria-label="Abrir carrito">Carrito <span id="n">0</span></button><button class="ic burger" id="bg" aria-label="Menú">☰</button></div>
 </nav>
 <div id="menu"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 PokeRuleta</a><a href="#grading">Cartas graduadas</a><a href="#resenas">Reseñas</a><a href="#vender">Quiero vender</a><a href="#envios">Envíos</a><a href="#contacto">Contacto</a><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a></div>
 
@@ -478,6 +499,17 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
   <p class="sub" style="margin-top:14px">El coste exacto se ve en el carrito antes de pagar.</p>
 </div></section>
 
+<section id="sorteo" hidden><div class="w">
+  <div id="gwadm"></div>
+  <div id="gwpub" class="gwbox" hidden>
+   <div class="gwl"><img id="gwimg" alt="Carta del sorteo" hidden></div>
+   <div class="gwr2"><span class="protag">🎁 SORTEO DEL MES · <span id="gwmon"></span></span><h2>Sorteamos <span id="gwt"></span></h2><p id="gwd" class="sub"></p>
+    <p><b>Cada compra que hagas este mes = 1 participación.</b> Cuantas más compras, más opciones de ganar.</p>
+    <div class="gwcd" id="gwcd"></div><p class="sub" id="gwpart"></p><div id="gwme"></div>
+    <p style="font-size:13px;opacity:.75;margin-top:10px">Solo mayores de 18 años residentes en España. <a href="#" data-legal="sorteo">Bases legales del sorteo</a></p><div id="gwwin"></div></div>
+  </div>
+</div></section>
+
 <section id="resenas"><div class="w">
   <h2>⭐ Opiniones de clientes</h2><p class="sub">Lo que dicen quienes ya han comprado en POKE ISLAS.</p>
   <div class="rvhead"><div class="rvavg"><b id="rvavg">–</b><div><span id="rvstars"></span><br><small id="rvcount"></small></div></div><button class="btn pk" id="rvnew" style="border:0">✍️ Escribir una reseña</button></div>
@@ -497,7 +529,8 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
   <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0;font-size:28px">Tu carrito</h2><button class="ic" style="color:var(--tx);border-color:var(--line)" id="cx">Cerrar</button></div>
   <div id="items"></div>
   <select id="zone"><option value="canarias">Envío a Canarias</option><option value="peninsula">Envío a Península</option><option value="baleares">Envío a Baleares</option><option value="ceutamelilla">Envío a Ceuta / Melilla</option></select>
-  <div style="margin-top:12px"><div class="tot"><span>Subtotal</span><span id="sb">0,00 €</span></div><div class="tot"><span>Envío</span><span id="sh">0,00 €</span></div><div class="tot g"><span>Total</span><span id="tt">0,00 €</span></div></div>
+  <div class="cpn"><input id="cpc" maxlength="24" placeholder="¿Tienes un código de descuento?" autocapitalize="characters" autocomplete="off" aria-label="Código de descuento"><button class="sbtn" id="cpa" type="button">Aplicar</button></div><p class="msg" id="cpm" hidden></p>
+  <div style="margin-top:12px"><div class="tot"><span>Subtotal</span><span id="sb">0,00 €</span></div><div class="tot cpl" id="cpl" hidden><span id="cpn">Descuento</span><span><span id="cpd"></span> <button class="lnk2" id="cpq" type="button" hidden>Quitar</button></span></div><div class="tot"><span>Envío</span><span id="sh">0,00 €</span></div><div class="tot g"><span>Total</span><span id="tt">0,00 €</span></div></div>
   <p class="msg" id="cartmsg" hidden></p>
   <button class="btn pk" style="margin-top:14px;border:0" id="pay">PAGAR CON STRIPE</button>
   <small style="opacity:.7;text-align:center;margin-top:8px">🔒 Pago seguro con Stripe. No guardamos los datos de tu tarjeta.</small>
@@ -536,6 +569,12 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
  <div class="wm"><canvas id="prowh"></canvas><span class="hubm"><img src="/icon-192.png?v=2" alt=""></span></div><span class="protag">🎰 NUEVO EN POKE ISLAS</span>
  <h2 id="proT">¡Prueba la PokeRuleta!</h2><p>Gira la ruleta y llévate una carta Pokémon al instante. ¡Cada giro tiene premio!</p>
  <div class="proprice" id="proprice"></div><button class="btn pk big" id="progo">🎰 JUGAR AHORA</button><button class="lnk" id="prono">Ahora no</button></div></div>
+<div class="ov" id="acc"><div class="bx"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;margin:0">👤 Mi cuenta</h2><button class="sbtn o" id="accx">Cerrar</button></div>
+ <p class="msg" id="accm" hidden></p>
+ <form id="acc1f" novalidate><div id="acc1" class="rvform"><p style="margin:0">Entra con tu email, sin contraseñas: te enviamos un código de 6 cifras.</p><label>Tu email<input id="acce" type="email" autocomplete="email" inputmode="email" placeholder="tu@email.com"></label><button class="btn pk" id="acc1b" style="border:0">Enviarme el código</button><small style="opacity:.7">Con tu cuenta ves tus pedidos, tus giros de la PokeRuleta y tus participaciones en el sorteo del mes. Usa el mismo email con el que compras.</small></div></form>
+ <form id="acc2f" novalidate><div id="acc2" class="rvform" hidden><p style="margin:0">Te hemos enviado un código a <b id="accto"></b>. Mira también en la carpeta de spam.</p><label>Código<input id="accc" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" style="font-size:26px;letter-spacing:8px;text-align:center"></label><button class="btn pk" id="acc2b" style="border:0">Entrar</button><button type="button" class="lnk" id="accback">Cambiar de email o pedir otro código</button></div></form>
+ <div id="acc3" hidden><p style="margin:0 0 10px">Has iniciado sesión como <b id="acceml"></b></p><div id="accd"></div><button class="sbtn o" id="accout" style="margin-top:12px">Cerrar sesión</button></div>
+</div></div>
 <div class="ov" id="rvf"><div class="bx"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;margin:0">Tu reseña</h2><button class="sbtn o" id="rvx">Cerrar</button></div>
  <div class="rvform"><div class="rvq"><b style="font-size:13px">¿Cuántas estrellas nos das?</b><div id="rvpick" role="radiogroup" aria-label="Valoración"></div></div>
  <label>Tu nombre<input id="rvn" maxlength="40" autocomplete="given-name" placeholder="Ej. Laura G."></label>
@@ -545,7 +584,7 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
  <p class="msg" id="rvmsg" hidden></p><button class="btn pk" id="rvsend" style="border:0">Enviar reseña</button>
  <small style="opacity:.7">Tu reseña se publicará cuando la revisemos. Al enviarla aceptas que mostremos tu nombre, comentario y foto en la web.</small></div>
  <div id="rvthx" hidden>🙌 ¡Gracias por tu reseña!<br><small>La publicaremos en cuanto la revisemos.</small></div></div></div>
-<div class="ov" id="mbl"><div class="bx wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="mblt" style="font-size:24px;margin:0">Panel de administración</h2><button class="sbtn o" id="mblx">Cerrar</button></div><div class="sedt ptabs" id="ptabs"><button data-pt="compras">Compras</button><button data-pt="giros">PokeRuleta</button><button data-pt="cajas">Cajas</button><button data-pt="clientes">Clientes</button><button data-pt="ventas">Quiero vender</button><button data-pt="estado">Estado</button></div><div id="mblb" style="display:grid;gap:10px"></div></div></div>
+<div class="ov" id="mbl"><div class="bx wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="mblt" style="font-size:24px;margin:0">Panel de administración</h2><button class="sbtn o" id="mblx">Cerrar</button></div><div class="sedt ptabs" id="ptabs"><button data-pt="compras">Compras</button><button data-pt="giros">PokeRuleta</button><button data-pt="descuentos">Descuentos</button><button data-pt="cajas">Cajas</button><button data-pt="clientes">Clientes</button><button data-pt="ventas">Quiero vender</button><button data-pt="estado">Estado</button></div><div id="mblb" style="display:grid;gap:10px"></div></div></div>
 <div class="ov" id="pz"><div class="bx" id="pzb"><button class="sbtn o" id="pzx" style="justify-self:end">Cerrar ✕</button><div class="c4d" id="pzt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="pzi" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="pzh" style="font-size:24px;text-align:center"></h3><p id="pzr" style="text-align:center"></p><p class="val" id="pzv" style="text-align:center"></p><p id="pzd" style="opacity:.85;text-align:center"></p><p id="pzp" style="opacity:.7;text-align:center;font-size:13px"></p><button class="btn pk" id="pzbuy" style="border:0;text-align:center">COMPRAR Y GIRAR</button></div></div>
 <div class="ov" id="mres"><div class="bx"><h2>🎉 ¡HAS GANADO!</h2><p>Has conseguido:</p><div class="c4d" id="mrt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="mri" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="mrn" style="font-size:26px"></h3><p id="mrr"></p><p class="val" id="mrv"></p><p id="mrd" style="opacity:.8"></p><small id="mrid" style="opacity:.6"></small>
  <div style="display:grid;gap:8px;margin-top:8px"><a class="btn pk" href="#mine" id="mrsee">VER PREMIO</a><button class="sbtn o" id="mrback" style="color:#f4efe3;border-color:#ffffff55">VOLVER A POKERULETA</button></div></div></div>
@@ -558,6 +597,17 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 <button type="button" class="sbtn" id="sedsave">Guardar cambios</button></div></div>
 <div class="ov" id="legal" role="dialog" aria-label="Información legal"><div class="bx">
 <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><b style="font:800 18px 'Bricolage Grotesque'">POKE ISLAS · Información legal</b><button class="sbtn o" id="legalx">Cerrar</button></div>
+<section data-sec="sorteo" hidden>
+<h3>Bases legales del sorteo mensual</h3>
+<h4>1. Organizador</h4><p>POKE ISLAS ([Nombre y apellidos o razón social], NIF [NIF], domicilio en [Dirección], Santa Cruz de Tenerife), organiza cada mes natural un sorteo promocional gratuito entre sus clientes.</p>
+<h4>2. Quién puede participar</h4><p>Personas mayores de 18 años con residencia en España que hayan realizado al menos una compra pagada en poke-isla.com durante el mes del sorteo. Quedan excluidos el organizador y sus familiares directos.</p>
+<h4>3. Cómo se participa</h4><p>Cada compra pagada en la web durante el mes (horario de Canarias) suma automáticamente una participación al email usado en el pago. No hay que hacer nada más ni pagar nada extra por participar. Las compras canceladas o reembolsadas no cuentan.</p>
+<h4>4. Premio</h4><p>El premio de cada mes es la carta que se indica en la web en el apartado «Sorteo del mes». No se puede cambiar por dinero. El envío del premio es gratuito a cualquier punto de España.</p>
+<h4>5. Cómo se elige al ganador</h4><p>En los primeros días del mes siguiente, el organizador elige un ganador al azar entre todas las participaciones mediante un generador de números aleatorios seguro. El sorteo queda registrado. Se contacta al ganador por email; si no responde en 15 días, se podrá sortear de nuevo el premio.</p>
+<h4>6. Publicación</h4><p>El ganador acepta que su nombre (nombre e inicial del apellido) se publique en la web como ganador del mes.</p>
+<h4>7. Protección de datos</h4><p>Los datos de participación son los de la compra y se usan solo para gestionar el sorteo y entregar el premio. Más información en la política de privacidad.</p>
+<h4>8. Fiscalidad y aceptación</h4><p>El premio está sujeto a la normativa fiscal vigente. Participar supone aceptar estas bases. El organizador puede modificarlas o cancelar el sorteo por causa justificada, informando en la web.</p>
+</section>
 <section data-sec="aviso" hidden>
 <h3>Aviso legal</h3>
 <p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de los datos del titular de este sitio web:</p>
@@ -663,15 +713,18 @@ function cdraw(){
  const ids=Object.keys(cart).filter(i=>P.find(x=>x.id==i));let sb=0;
  $("#items").innerHTML=ids.map(i=>{const p=P.find(x=>x.id==i),q=cart[i];sb+=p.pr*q;return `<div class="it"><span>${esc(p.n)} × ${q}</span><span>${e(p.pr*q)} <button data-r="${i}">Quitar</button></span></div>`}).join("")||"<p>Tu carrito está vacío. Añade una carta de la colección.</p>";
  const sh=ids.length?SHIP[$("#zone").value]:0;
- $("#sb").textContent=e(sb);$("#sh").textContent=e(sh);$("#tt").textContent=e(sb+sh);
+ if(CP&&!ids.length){CP=null;$("#cpc").value="";msg("#cpm","","")}
+ if(CP&&CPsub!==sb&&ids.length){CPsub=sb;applyCP(CP.code,true)}
+ const dc=CP&&CPsub===sb?Math.min(CP.discount,sb):0;$("#cpl").hidden=!dc;if(dc){$("#cpn").textContent="Descuento "+CP.code+" ("+CP.label+")";$("#cpd").textContent="-"+e(dc)}$("#cpq").hidden=!CP;
+ $("#sb").textContent=e(sb);$("#sh").textContent=e(sh);$("#tt").textContent=e(sb+sh-dc);
  $("#n").textContent=ids.reduce((a,i)=>a+cart[i],0)}
 function goCats(){const c=$("#tienda .flt");if(c)c.scrollIntoView({behavior:"smooth",block:"start"})}
 async function moveP(id,d){const l=visibleP(),k=l.findIndex(p=>p.id===id),n=l[k+d];if(k<0||!n)return;const i=P.indexOf(l[k]),j=P.indexOf(n);[P[i],P[j]]=[P[j],P[i]];draw();
  try{await req("/api/admin",{pin:APIN,action:"order",ids:P.map(p=>p.id)});toast("Orden guardado ✓","ok")}catch(err){toast("No se guardó el orden: "+err.message,"err");loadP()}}
 $("#pay").onclick=async()=>{const ids=Object.keys(cart);if(!ids.length){msg("#cartmsg","err","El carrito está vacío.");return}
  payNonce=payNonce||nonce();const done=busy($("#pay"),"Abriendo pago seguro…");msg("#cartmsg","","");
- try{const d=await req("/api/checkout",{zone:$("#zone").value,items:ids.map(i=>({id:+i,qty:cart[i]})),nonce:payNonce});location.href=d.url}
- catch(err){done();payNonce=null;msg("#cartmsg","err",err.message);if(err.status===409)loadP()}};
+ try{const d=await req("/api/checkout",{zone:$("#zone").value,items:ids.map(i=>({id:+i,qty:cart[i]})),nonce:payNonce,coupon:CP?CP.code:undefined,acct:accTok()||undefined});location.href=d.url}
+ catch(err){done();payNonce=null;msg("#cartmsg","err",err.message);if(err.status===409)loadP();if(err.status===400&&CP&&/código/i.test(err.message)){CP=null;cdraw()}}};
 $("#zone").onchange=()=>{payNonce=null;cdraw()};
 $("#bg").onclick=()=>$("#menu").classList.toggle("on");
 $("#cb").onclick=()=>{msg("#cartmsg","","");$("#cart").classList.add("on")};
@@ -700,7 +753,7 @@ async function handleReturn(){const q=new URLSearchParams(location.search),pg=q.
  else if(pg==="ok"){cart={};saveCart();cdraw();toast("¡Pago recibido! Gracias por tu compra.","ok")}}
 
 /* ================= ADMINISTRADOR ================= */
-function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint();loadMBP();loadRVAdm()}
+function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint();loadMBP();loadRVAdm();if(typeof loadGWAdm==="function"){drawGW();loadGWAdm()}}
 async function login(){const pin=prompt("PIN de administrador");if(!pin)return;
  try{await req("/api/admin",{pin,action:"check"});APIN=pin;ss.set("pi_pin",pin);adm(true);toast("Modo administrador activado","ok")}catch(err){toast(err.message,"err")}}
 $("#al").onclick=ev=>{ev.preventDefault();login()};
@@ -1016,6 +1069,7 @@ async function openPanel(tab){PANEL=tab;$("#mbl").classList.add("on");$$("#ptabs
    if(tab==="giros"){body.innerHTML=`<div class="rw2"><span>${d.tickets.length} compras de PokeRuleta</span><button class="sbtn o" id="gcsv">Descargar CSV</button></div>`+(d.tickets.map(t=>`<div class="prow"><b>${t.prize?"🎁 "+esc(t.prize.name)+" · "+e(t.prize.value):"⏳ Pendiente de girar"}</b><span>${esc(t.boxName)} · pagado ${e(t.price)} · ${fdate(t.created)}</span><span>${esc(t.name)} · ${esc(t.email)} ${esc(t.phone||"")}</span><span>📍 ${esc(t.address)||"-"}</span>${t.spin?`<small class="mono">Giro ${esc(t.spin.id)} · ${fdate(t.spin.at)} · nº aleatorio ${t.spin.rnd} de ${t.spin.total} · ${t.spin.candidates.length} premios posibles</small>`:""}<small class="mono">Stripe: ${esc(t.session)}${t.pi?" · "+esc(t.pi):""}</small>${t.prize?`<label>Estado del envío<select data-ship="${t.token}">${["Pendiente","Preparando","Enviado","Entregado"].map(s=>`<option ${s===t.ship?"selected":""}>${s}</option>`).join("")}</select></label>`:""}</div>`).join("")||"<p>Todavía no hay compras de PokeRuleta.</p>")}
    if(tab==="clientes"){const m={};d.purchases.filter(p=>p.status==="pagado"&&p.email).forEach(p=>{const c=m[p.email]=m[p.email]||{email:p.email,name:p.name,phone:p.phone,n:0,tot:0,last:0};c.n++;c.tot+=p.paid||0;c.last=Math.max(c.last,p.created);if(p.name)c.name=p.name});
     const l=Object.values(m).sort((a,b)=>b.tot-a.tot);body.innerHTML=`<p class="sub" style="margin:0">Clientes con al menos un pago confirmado (la tienda no tiene cuentas de usuario: se identifican por su correo de Stripe).</p>`+(l.map(c=>`<div class="prow"><b>${esc(c.name||c.email)}</b><span>${esc(c.email)} ${esc(c.phone||"")}</span><span>${c.n} compra${c.n>1?"s":""} · ${e(c.tot)} · última ${fdate(c.last)}</span></div>`).join("")||"<p>Todavía no hay clientes.</p>")}}
+  else if(tab==="descuentos"){const d=await req("/api/admin",{pin:APIN,action:"coupons"});PDATA.cp=d.items;drawCP(body)}
   else if(tab==="ventas"){const d=await req("/api/admin",{pin:APIN,action:"sales"});body.innerHTML=d.items.map(v=>`<div class="prow"><b>${esc(v.tipo)} · ${esc(v.nombre)}</b><span>${esc(v.email)} ${esc(v.whatsapp)}</span><span>${fdate(Date.parse(v.fecha))} · Precio orientativo: ${esc(v.precio)||"-"} · ${v.fotos} foto(s)</span>${v.desc?`<small>${esc(v.desc)}</small>`:""}${v.mensaje?`<small>${esc(v.mensaje)}</small>`:""}</div>`).join("")||"<p>Todavía no hay solicitudes de venta.</p>"}
   else if(tab==="estado"){const d=await req("/api/admin",{pin:APIN,action:"status"});
    body.innerHTML=`<div class="prow"><b>${d.db?"✅ Base de datos conectada":"❌ Base de datos no disponible"}</b>${d.dbError?`<small>${esc(d.dbError)}</small>`:""}${d.db?`<span>${pl(d.counts.productos,"producto")} · ${pl(d.counts.cajas,"caja")} · ${pl(d.counts.compras,"compra")} · ${pl(d.counts.giros,"giro")}</span>`:""}</div>`+
@@ -1053,7 +1107,7 @@ document.addEventListener("click",async ev=>{const t=ev.target,el=t.closest?t:nu
  if(t.id==="mbcheck"&&MBpend){const done=busy(t,"Comprobando…");const ok=await claim(MBpend.sid);if(!ok)done()}
  if(t.dataset.claim){const done=busy(t,"Comprobando…");const ok=await claim(t.dataset.claim);done();if(ok){drawMine();$("#mystery").scrollIntoView({behavior:"smooth"})}}
  if(t.id==="mbbuy"){const b=curBox();if(!b)return;MBnonce=MBnonce||nonce();const done=busy(t,"Abriendo pago seguro…");msgMB("","");
-  try{const d=await req("/api/mbox",{action:"buy",boxId:b.id,zone:MBz,nonce:MBnonce});location.href=d.url}catch(err){done();MBnonce=null;msgMB("err",err.message);if(err.status===409){await loadMB();renderMB()}}}
+  try{const d=await req("/api/mbox",{action:"buy",boxId:b.id,zone:MBz,nonce:MBnonce,acct:accTok()||undefined});location.href=d.url}catch(err){done();MBnonce=null;msgMB("err",err.message);if(err.status===409){await loadMB();renderMB()}}}
  if(t.id==="snd"){SND=!SND;ls.set("pi_snd",SND);t.textContent=SND?"🔊 Sonido activado":"🔇 Sonido desactivado"}
  if(t.id==="wh"||t.classList.contains("hub"))wheelTap(ev);
  if(t.id==="wgo")spinNow();
@@ -1076,7 +1130,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#gwadm,#gwcd,#gwme,#gwwin,#gwpart,#gwt,#gwd,#gwmon,#acc,#cpm,#cpn,#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -1224,7 +1278,7 @@ $("#amant").onclick=async ev=>{const on=!MAINT.on;let msg=MAINT.msg||"";
  try{const d=await req("/api/site",{action:"admin_maint",pin:APIN,on,msg});MAINT=d.maint;done();applyMaint();toast(MAINT.on?"Web en mantenimiento ✓ Los clientes no pueden verla ni comprar":"Tienda abierta otra vez ✓",MAINT.on?"info":"ok")}catch(err){done();applyMaint();toast("No se ha cambiado: "+err.message,"err")}};
 $("#mantadm").onclick=ev=>{ev.preventDefault();login()};
 /* ---- reseñas de clientes ---- */
-let RV={avg:0,count:0,items:[]},RVS=0,RVIMG=null;
+var RV={avg:0,count:0,items:[]},RVS=0,RVIMG=null;
 const stars=(n,cls)=>`<span class="stars ${cls||""}" aria-label="${n} de 5 estrellas">${[1,2,3,4,5].map(i=>`<i class="${i<=Math.round(n)?"on":""}">★</i>`).join("")}</span>`;
 async function loadRV(){try{RV=await req("/api/reviews",null,"GET")}catch(_){RV={avg:0,count:0,items:[],err:1}}drawRV();if(ADMIN)loadRVAdm()}
 function drawRV(){const l=$("#rvlist");if(!l)return;$("#rvavg").textContent=RV.count?String(RV.avg).replace(".",","):"–";$("#rvstars").innerHTML=stars(RV.avg);
@@ -1249,7 +1303,82 @@ document.addEventListener("click",async ev=>{const t=ev.target;
  if(t.dataset.rvrep){const r=prompt("Respuesta pública de POKE ISLAS a esta reseña (déjalo vacío para quitarla):");if(r===null)return;try{const cur=(await req("/api/reviews",{action:"admin_list",pin:APIN})).items.find(x=>x.id===t.dataset.rvrep);await req("/api/reviews",{action:"admin_ok",pin:APIN,id:t.dataset.rvrep,ok:cur?cur.ok:false,reply:r});toast("Respuesta guardada ✓","ok");loadRV()}catch(err){toast(err.message,"err")}}
  if(t.dataset.rvdel){if(!confirm("¿Borrar esta reseña? No se puede deshacer."))return;try{await req("/api/reviews",{action:"admin_del",pin:APIN,id:t.dataset.rvdel});toast("Reseña borrada","ok");loadRV()}catch(err){toast(err.message,"err")}}
  if(t.classList&&t.classList.contains("rvi"))openLB(t.src,t.alt)});
-loadSite();loadP();initMB();handleReturn();loadRV();
+function drawCP(body){const l=PDATA.cp||[],now=Date.now();
+ body.innerHTML=`<div class="rvad"><b>Nuevo código de descuento</b>
+ <div class="rw"><label>Código<input id="ncc" maxlength="24" placeholder="Ej. BIENVENIDA10" style="text-transform:uppercase"></label><label>Tipo<select id="nct"><option value="pct">% de descuento</option><option value="eur">€ de descuento</option></select></label></div>
+ <div class="rw"><label>Descuento<input id="ncv" type="number" min="1" step="1" placeholder="10"></label><label>Pedido mínimo (€)<input id="ncm" type="number" min="0" step="0.01" placeholder="Opcional"></label></div>
+ <div class="rw"><label>Usos máximos<input id="ncx" type="number" min="0" step="1" placeholder="Ilimitado"></label><label>Caduca el<input id="nce" type="date"></label></div>
+ <label>Nota interna (opcional)<input id="ncn" maxlength="80" placeholder="Ej. para seguidores de Instagram"></label>
+ <button class="sbtn" id="ncs">Crear código</button><p class="msg" id="ncmsg" hidden></p></div>`+
+ (l.map(c=>{const exp=c.exp&&now>c.exp,out=c.max&&c.uses>=c.max;return `<div class="prow"><b style="font-family:monospace;font-size:17px">${esc(c.code)}</b><span>${c.type==="pct"?c.val+"%":e(c.val)} de descuento${c.min?" · pedido mínimo "+e(c.min):""}${c.exp?" · caduca "+new Date(c.exp).toLocaleDateString("es-ES"):""}</span><span>Usado ${c.uses}${c.max?" de "+c.max:""} ${c.max===1?"vez":"veces"} · ${!c.on?'<span class="badge n">Desactivado</span>':exp?'<span class="badge r">Caducado</span>':out?'<span class="badge r">Agotado</span>':'<span class="badge g">Activo</span>'}${c.note?" · "+esc(c.note):""}</span><div class="admt"><button class="sbtn" data-cptog="${esc(c.code)}">${c.on?"Desactivar":"Activar"}</button><button class="sbtn o" data-cpdel="${esc(c.code)}">Borrar</button></div></div>`}).join("")||"<p>Todavía no hay códigos.</p>")}
+document.addEventListener("click",async ev=>{const t=ev.target;
+ if(t.id==="ncs"){const type=$("#nct").value,v=parseFloat($("#ncv").value),c={code:$("#ncc").value.trim().toUpperCase(),type,val:type==="pct"?Math.round(v):Math.round(v*100),min:$("#ncm").value?Math.round(parseFloat($("#ncm").value)*100):0,max:$("#ncx").value?parseInt($("#ncx").value,10):0,exp:$("#nce").value?new Date($("#nce").value+"T23:59:59").getTime():0,on:1,note:$("#ncn").value};
+  if(!(v>0))return msg("#ncmsg","err","Escribe cuánto descuenta.");const done=busy(t,"Creando…");try{const d=await req("/api/admin",{pin:APIN,action:"coupon_save",coupon:c});done();PDATA.cp=d.items;drawCP($("#mblb"));toast("Código "+c.code+" creado ✓","ok")}catch(err){done();msg("#ncmsg","err",err.message)}}
+ if(t.dataset&&t.dataset.cptog){const c=(PDATA.cp||[]).find(x=>x.code===t.dataset.cptog);if(!c)return;try{const d=await req("/api/admin",{pin:APIN,action:"coupon_save",coupon:{...c,on:c.on?0:1}});PDATA.cp=d.items;drawCP($("#mblb"))}catch(err){toast(err.message,"err")}}
+ if(t.dataset&&t.dataset.cpdel){if(!confirm("¿Borrar el código "+t.dataset.cpdel+"?"))return;try{const d=await req("/api/admin",{pin:APIN,action:"coupon_del",code:t.dataset.cpdel});PDATA.cp=d.items;drawCP($("#mblb"))}catch(err){toast(err.message,"err")}}});
+/* ---- códigos de descuento en el carrito ---- */
+var CP=null,CPsub=0;
+const cartItems=()=>Object.keys(cart).map(i=>({id:+i,qty:cart[i]}));
+async function applyCP(code,quiet){code=String(code||"").trim().toUpperCase();if(!code){CP=null;cdraw();return}
+ const b=$("#cpa"),done=quiet?()=>{}:busy(b,"…");try{const d=await req("/api/checkout",{action:"coupon",coupon:code,items:cartItems(),zone:$("#zone").value});done();CP=d;CPsub=d.subtotal;$("#cpc").value=d.code;payNonce=null;if(!quiet)msg("#cpm","ok","Código aplicado ✓ "+d.label);cdraw()}
+ catch(err){done();CP=null;payNonce=null;msg("#cpm","err",err.message);cdraw()}}
+$("#cpa").onclick=()=>applyCP($("#cpc").value);
+$("#cpc").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();applyCP($("#cpc").value)}});
+$("#cpq").onclick=()=>{CP=null;$("#cpc").value="";msg("#cpm","","");payNonce=null;cdraw()};
+
+/* ---- cuenta de cliente (código por email) ---- */
+var ACC=ls.get("pi_acct",null),ME=null,ACCmail="";
+const accTok=()=>ACC&&ACC.token||null;
+function accBtn(){const b=$("#accb");if(b)b.innerHTML=`<span aria-hidden="true">👤</span><span class="at"> ${ACC?"Mi cuenta":"Entrar"}</span>`;if(b)b.setAttribute("aria-label",ACC?"Mi cuenta":"Iniciar sesión");const g=$("#gwme");if(g)gwMe()}
+function accView(v){["#acc1","#acc2","#acc3"].forEach(s=>$(s).hidden=true);$(v).hidden=false}
+async function openAcc(){$("#acc").classList.add("on");msg("#accm","","");if(!ACC){accView("#acc1");setTimeout(()=>$("#acce").focus(),100);return}
+ accView("#acc3");$("#accd").innerHTML='<p><span class="spn d"></span> Cargando…</p>';
+ try{ME=await req("/api/account",{action:"me",token:accTok()});drawMe();gwMe()}catch(err){if(err.status===401){ACC=null;ls.set("pi_acct",null);accBtn();accView("#acc1");msg("#accm","info",err.message)}else $("#accd").innerHTML=`<p class="msg err">${esc(err.message)}</p>`}}
+const ST={pagado:"Pagado",reembolsado:"Reembolsado",pago_pendiente:"Pago en proceso"};
+function drawMe(){$("#acceml").textContent=ME.email;
+ $("#accd").innerHTML=`<div class="accent">🎟️ Este mes tienes <b>${ME.entries}</b> ${ME.entries===1?"participación":"participaciones"} en el sorteo.</div>
+ <h4>Mis pedidos</h4>${ME.orders.length?ME.orders.map(o=>`<div class="prow"><b>${o.kind==="mbox"?"🎰 PokeRuleta"+(o.box?" · "+esc(o.box):""):"🛒 "+esc(o.lines.join(" · ")||"Pedido")}</b><span>${new Date(o.at).toLocaleDateString("es-ES")} · ${e(o.total)} · ${ST[o.status]||esc(o.status)}</span></div>`).join(""):'<p class="sub">Todavía no tienes pedidos con este email.</p>'}
+ ${ME.spins.length?`<h4>Mis giros de la PokeRuleta</h4>`+ME.spins.map(t=>`<div class="prow"><b>${t.prize?"🎁 "+esc(t.prize):"⏳ Giro pendiente"}</b><span>${esc(t.box||"")} · ${new Date(t.at).toLocaleDateString("es-ES")}${t.prize?" · Envío: "+esc(t.ship||"Pendiente"):""}</span>${t.status==="pending"?`<button class="sbtn" data-spin="${esc(t.token)}">GIRAR AHORA</button>`:""}</div>`).join(""):""}`}
+$("#accb").onclick=openAcc;$("#accx").onclick=()=>$("#acc").classList.remove("on");
+$("#acc1f").onsubmit=async ev=>{ev.preventDefault();const email=$("#acce").value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return msg("#accm","err","Escribe un email válido.");
+ const done=busy($("#acc1b"),"Enviando código…");try{await req("/api/account",{action:"send_code",email});done();ACCmail=email;$("#accto").textContent=email;msg("#accm","","");accView("#acc2");$("#accc").value="";setTimeout(()=>$("#accc").focus(),100)}catch(err){done();msg("#accm","err",err.message)}};
+$("#acc2f").onsubmit=async ev=>{ev.preventDefault();const code=$("#accc").value.replace(/\D/g,"");if(code.length!==6)return msg("#accm","err","El código tiene 6 cifras.");
+ const done=busy($("#acc2b"),"Comprobando…");try{const d=await req("/api/account",{action:"verify",email:ACCmail,code});done();ACC={token:d.token,email:d.email};ls.set("pi_acct",ACC);accBtn();toast("¡Hola! Has iniciado sesión ✓","ok");openAcc()}catch(err){done();msg("#accm","err",err.message)}};
+$("#accback").onclick=()=>{accView("#acc1");msg("#accm","","")};
+$("#accout").onclick=async()=>{try{await req("/api/account",{action:"logout",token:accTok()})}catch(_){}ACC=null;ME=null;ls.set("pi_acct",null);accBtn();$("#acc").classList.remove("on");toast("Has cerrado sesión","info")};
+
+/* ---- sorteo del mes ---- */
+var GW=null,GWT=null;
+const monthName=k=>{const[y,m]=k.split("-").map(Number);return new Date(Date.UTC(y,m-1,15)).toLocaleDateString("es-ES",{month:"long",year:"numeric",timeZone:"UTC"})};
+async function loadGW(){try{GW=await req("/api/account",{action:"gw"})}catch(_){GW=null}drawGW();if(ADMIN)loadGWAdm()}
+function drawGW(){const s=$("#sorteo");if(!s)return;const on=GW&&GW.on;s.hidden=!on&&!ADMIN;$("#gwpub").hidden=!on;if(!on)return;
+ $("#gwimg").hidden=!GW.img;if(GW.img)$("#gwimg").src=GW.img;$("#gwt").textContent=GW.title;$("#gwd").textContent=GW.desc||"";$("#gwmon").textContent=monthName(GW.month);
+ $("#gwpart").textContent=GW.participants?`${GW.participants} ${GW.participants===1?"persona participa":"personas participan"} este mes`:"¡Sé el primero en participar este mes!";
+ $("#gwwin").innerHTML=GW.winners.length?"<h4>Ganadores anteriores</h4>"+GW.winners.map(w=>`<div class="gwr">🏆 <b>${esc(w.name)}</b> · ${esc(monthName(w.month))} · ${esc(w.prize)}</div>`).join(""):"";
+ clearInterval(GWT);const tick=()=>{let ms=Math.max(0,GW.endsAt-Date.now());const d=Math.floor(ms/864e5);ms%=864e5;const h=Math.floor(ms/36e5);ms%=36e5;const m=Math.floor(ms/6e4),sec=Math.floor(ms%6e4/1e3);
+  $("#gwcd").innerHTML=[[d,"días"],[h,"horas"],[m,"min"],[sec,"seg"]].map(([v,l])=>`<span><b>${String(v).padStart(2,"0")}</b><small>${l}</small></span>`).join("")};tick();GWT=setInterval(tick,1000);gwMe()}
+async function gwMe(){const el=$("#gwme");if(!el)return;if(!ACC){el.innerHTML=`<button class="sbtn" id="gwlog">👤 Inicia sesión para ver tus participaciones</button>`;return}
+ try{if(!ME)ME=await req("/api/account",{action:"me",token:accTok()});el.innerHTML=`<div class="accent">🎟️ Tienes <b>${ME.entries}</b> ${ME.entries===1?"participación":"participaciones"} este mes${ME.entries?" ¡Mucha suerte!":". Haz una compra para participar."}</div>`}catch(_){el.innerHTML=""}}
+async function loadGWAdm(){const box=$("#gwadm");if(!box)return;if(!ADMIN){box.innerHTML="";return}
+ try{const d=await req("/api/account",{action:"admin_gw",pin:APIN});const c=d.cfg;
+  const lst=k=>{const l=d.months[k]||[],tot=l.reduce((s,x)=>s+x.n,0),w=d.winners.find(x=>x.month===k);return `<div class="prow"><b>${esc(monthName(k))}: ${l.length} participantes · ${tot} participaciones</b>${w?`<span>🏆 Ganador: <b>${esc(w.name||"")}</b> · ${esc(w.email)} (${w.n} part.) · nº ${w.rnd+1} de ${w.total}</span>`:""}<span style="font-size:13px">${l.slice(0,30).map(x=>esc(x.email)+" ("+x.n+")").join(" · ")||"Sin compras todavía"}</span>${tot?`<button class="sbtn" data-gwdraw="${k}" data-redo="${w?1:0}">🎲 ${w?"Repetir sorteo":"Sortear ganador"} de ${esc(monthName(k))}</button>`:""}</div>`};
+  box.innerHTML=`<div class="rvad"><b>Admin · Sorteo del mes</b>
+  <label class="ck"><input type="checkbox" id="gwon" ${c.on?"checked":""}> Mostrar el sorteo en la web</label>
+  <label>Carta que se sortea<input id="gwti" maxlength="120" value="${esc(c.title||"")}" placeholder="Ej. Charizard ex PSA 10"></label>
+  <label>Descripción (opcional)<textarea id="gwde" rows="2" maxlength="400">${esc(c.desc||"")}</textarea></label>
+  <div class="rw"><label class="fl">📷 ${c.img?"Cambiar foto":"Añadir foto de la carta"}<input type="file" id="gwfi" accept="image/jpeg,image/png,image/webp" hidden></label>${c.img?'<button class="sbtn o" id="gwrm">Quitar foto</button>':""}</div><div id="gwpv">${c.img?`<img src="${esc(c.img)}" alt="" style="max-height:120px;border-radius:10px">`:""}</div>
+  <button class="sbtn" id="gwsave">Guardar sorteo</button><p class="msg" id="gwmsg" hidden></p>
+  <p style="font-size:13px;margin:6px 0 0">Cada compra pagada en el mes = 1 participación. Al terminar el mes, pulsa «Sortear ganador»: se elige al azar de forma segura, queda registrado y se le avisa por email.</p>
+  ${lst(d.previous)}${lst(d.current)}</div>`;GWNEW=null}catch(err){box.innerHTML=`<p class="msg err">${esc(err.message)}</p>`}}
+var GWNEW=null,GWRM=0;
+document.addEventListener("change",async ev=>{if(ev.target.id==="gwfi"&&ev.target.files[0]){const d=await shr(ev.target.files[0],900);if(d){GWNEW=d;GWRM=0;$("#gwpv").innerHTML=`<img src="${d}" alt="" style="max-height:120px;border-radius:10px">`}}});
+document.addEventListener("click",async ev=>{const t=ev.target;
+ if(t.id==="gwlog")openAcc();
+ if(t.id==="gwrm"){GWNEW=null;GWRM=1;$("#gwpv").innerHTML=""}
+ if(t.id==="gwsave"){const done=busy(t,"Guardando…");try{await req("/api/account",{action:"admin_gw_save",pin:APIN,cfg:{on:$("#gwon").checked,title:$("#gwti").value,desc:$("#gwde").value,img:GWNEW||null,rmImg:GWRM}});done();GWRM=0;toast("Sorteo guardado ✓","ok");loadGW()}catch(err){done();msg("#gwmsg","err",err.message)}}
+ if(t.dataset&&t.dataset.gwdraw){const k=t.dataset.gwdraw,redo=t.dataset.redo==="1";if(!confirm(redo?`Este mes ya tiene ganador. ¿Seguro que quieres REPETIR el sorteo de ${monthName(k)}?`:`¿Sortear ahora el ganador de ${monthName(k)}? Se le enviará un email.`))return;
+  const done=busy(t,"Sorteando…");try{const d=await req("/api/account",{action:"admin_gw_draw",pin:APIN,month:k,redo});done();alert(`🏆 Ganador de ${monthName(k)}:\n\n${d.winner.name||""}\n${d.winner.email}\n${d.winner.n} participaciones · número ${d.winner.rnd+1} de ${d.winner.total}\n\n${d.winner.mailed?"Se le ha enviado un email.":"No se pudo enviar el email: avísale tú."}`);loadGW()}catch(err){done();toast(err.message,"err")}}});
+loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 
 </script>

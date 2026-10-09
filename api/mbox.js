@@ -3,6 +3,7 @@ const { cmd, parse } = require("./_db");
 const M = require("./_mbox");
 const { shipTable, getMaint, MAINT_MSG } = require("./_site");
 const { checkPin, ipOf } = require("./_auth");
+const { emailOf } = require("./_acct");
 const { stripe, SESSION, customer } = require("./_stripe");
 const { getPurchase, setPurchase, listPurchases } = require("./_orders");
 
@@ -114,12 +115,14 @@ module.exports = async (req, res) => {
       f.append("metadata[boxId]", String(box.id));
       f.append("metadata[zone]", b.zone);
       f.append("payment_intent_data[metadata][kind]", "mbox");
+      const em = await emailOf(b.acct).catch(() => null);
+      if (em) { f.append("customer_email", em); f.append("metadata[account]", em); }
       f.append("success_url", base + "/?caja={CHECKOUT_SESSION_ID}#mystery");
       f.append("cancel_url", base + "/?cancelado={CHECKOUT_SESSION_ID}#mystery");
       // Si el mismo clic llega dos veces, Stripe devuelve la misma sesión (no se duplica la compra)
       const nonce = /^[a-z0-9]{8,40}$/i.test(String(b.nonce || "")) ? b.nonce : crypto.randomBytes(8).toString("hex");
       const s = await stripe("POST", "checkout/sessions", f, "mbox_" + box.id + "_" + nonce);
-      await setPurchase(s.id, { kind: "mbox", boxId: box.id, boxName: box.name, price: box.price, ship: env[1], zone: b.zone, status: "pendiente" }, "compra");
+      await setPurchase(s.id, { kind: "mbox", boxId: box.id, boxName: box.name, price: box.price, ship: env[1], zone: b.zone, status: "pendiente", ...(em ? { account: em } : {}) }, "compra");
       return res.status(200).json({ url: s.url });
     }
 

@@ -3,15 +3,17 @@ const { cmd, parse } = require("./_db");
 const { shipTable, getMaint, MAINT_MSG } = require("./_site");
 const { stripe } = require("./_stripe");
 const { setPurchase } = require("./_orders");
+const { evalCoupon } = require("./_coupons");
+const { emailOf } = require("./_acct");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
   res.setHeader("Cache-Control", "no-store");
   try {
-    if ((await getMaint()).on) return res.status(503).json({ error: MAINT_MSG });
-    const { items, zone, nonce } = req.body || {};
+    const { items, zone, nonce, coupon, action, acct } = req.body || {};
+    if (action !== "coupon" && (await getMaint()).on) return res.status(503).json({ error: MAINT_MSG });
     const ENVIOS = await shipTable();
-    const env = ENVIOS[zone];
+    const env = ENVIOS[zone] || (action === "coupon" ? ENVIOS.canarias : null);
     if (!env) return res.status(400).json({ error: "Elige una zona de envío válida" });
     if (!Array.isArray(items) || !items.length || items.length > 30) return res.status(400).json({ error: "El carrito está vacío o no es válido" });
     // Se agrupan cantidades del mismo producto y se validan
@@ -40,6 +42,12 @@ module.exports = async (req, res) => {
       lines.push({ id: p.id, n: p.n, q: qty[k], pr: p.pr });
       i++;
     }
+    // Código de descuento: se vuelve a comprobar aquí, nunca se fía del navegador
+    let cp = null;
+    if (coupon) {
+      try { cp = await evalCoupon(coupon, subtotal); } catch (e) { if (e.user) return res.status(400).json({ error: e.message }); throw e; }
+    }
+    if (action === "coupon") return res.status(200).json(cp ? { ...cp, subtotal } : { error: "Escribe un código" });
     f.append("metadata[kind]", "tienda");
     f.append("metadata[zone]", zone);
     f.append("metadata[items]", ids.map((k) => k + ":" + qty[k]).join(","));
@@ -53,8 +61,15 @@ module.exports = async (req, res) => {
     f.append("success_url", base + "/?pago={CHECKOUT_SESSION_ID}");
     f.append("cancel_url", base + "/?cancelado={CHECKOUT_SESSION_ID}");
     const key = /^[a-z0-9]{8,40}$/i.test(String(nonce || "")) ? nonce : crypto.randomBytes(8).toString("hex");
+    if (cp) {
+      const sc = await stripe("POST", "coupons", { amount_off: String(cp.discount), currency: "eur", duration: "once", max_redemptions: "1", name: ("Código " + cp.code).slice(0, 40) }, "cp_" + key + "_" + cp.code + "_" + cp.discount);
+      f.append("discounts[0][coupon]", sc.id);
+      f.append("metadata[coupon]", cp.code);
+    }
+    const em = await emailOf(acct).catch(() => null);
+    if (em) { f.append("customer_email", em); f.append("metadata[account]", em); }
     const s = await stripe("POST", "checkout/sessions", f, "shop_" + key);
-    await setPurchase(s.id, { kind: "tienda", lines, price: subtotal, ship: env[1], zone, status: "pendiente" }, "compra");
+    await setPurchase(s.id, { kind: "tienda", lines, price: subtotal, ship: env[1], zone, status: "pendiente", ...(cp ? { coupon: cp.code, discount: cp.discount } : {}), ...(em ? { account: em } : {}) }, "compra");
     res.status(200).json({ url: s.url });
   } catch (e) {
     res.status(e.stripe ? 400 : 500).json({ error: e.stripe ? e.message : "No se pudo iniciar el pago. Inténtalo de nuevo." });

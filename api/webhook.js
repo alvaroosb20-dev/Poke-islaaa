@@ -64,6 +64,8 @@ async function pagado(s) {
   const tok = kind === "mbox" ? await ensureTicket(s) : null; // idempotente: un ticket por pago
   // Stock y correos solo una vez por pago aunque Stripe repita el aviso
   if ((await cmd(["SET", "done:" + s.id, "1", "NX"])) !== "OK") return;
+  const cpc = s.metadata && s.metadata.coupon;
+  if (cpc && /^[A-Z0-9_-]{3,24}$/.test(cpc)) await cmd(["HINCRBY", "cpuse", cpc, "1"]).catch(() => {});
 
   let extra = "";
   if (kind === "mbox") {

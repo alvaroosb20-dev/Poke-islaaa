@@ -2,6 +2,7 @@
 const { cmd, parse, getAll } = require("./_db");
 const { putImg, delImg, checkImg } = require("./_img");
 const { checkPin } = require("./_auth");
+const CP = require("./_coupons");
 
 const int = (v, max) => Number.isSafeInteger(v) && v >= 0 && v <= max;
 const txt = (v, max) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -91,6 +92,20 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true, products: await getAll() });
     }
 
+    if (action === "coupons") return res.status(200).json({ items: await CP.listCoupons() });
+    if (action === "coupon_save") {
+      let c;
+      try { c = CP.cleanCoupon(req.body.coupon || {}); } catch (e) { return res.status(400).json({ error: e.message }); }
+      const prev = await CP.getCoupon(c.code);
+      c.created = prev && prev.created ? prev.created : Date.now();
+      await cmd(["HSET", "coupons", c.code, JSON.stringify(c)]);
+      return res.status(200).json({ ok: true, items: await CP.listCoupons() });
+    }
+    if (action === "coupon_del") {
+      const code = CP.norm(req.body.code);
+      await cmd(["HDEL", "coupons", code]);
+      return res.status(200).json({ ok: true, items: await CP.listCoupons() });
+    }
     if (action === "sales") {
       const raw = (await cmd(["LRANGE", "ventas", "0", "199"])) || [];
       return res.status(200).json({ items: raw.map(parse).filter(Boolean) });

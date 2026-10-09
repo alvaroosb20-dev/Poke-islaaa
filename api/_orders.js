@@ -37,6 +37,7 @@ async function setPurchase(sid, patch, src) {
       if (!(NEXT[cur.status] || []).includes(patch.status)) next.status = cur.status;
       else next.history = [...(cur.history || []), { at: Date.now(), status: patch.status, src: src || "" }].slice(-20);
     } else if (patch.status) next.status = cur.status;
+    if (next.status === "pagado" && !next.paidAt) next.paidAt = Date.now();
     await cmd(["HSET", "purchases", sid, JSON.stringify(next)]);
     if (next.pi) await cmd(["SET", "pi:" + next.pi, sid]);
     return next;
