@@ -327,6 +327,21 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
 .fx-estrella{animation:fxStar 1.2s cubic-bezier(.2,1.3,.4,1) both}
 @keyframes fxStar{0%{transform:scale(0) rotate(-200deg);filter:brightness(3)}70%{transform:scale(1.12) rotate(6deg)}100%{transform:none;filter:none}}
 @media (prefers-reduced-motion:reduce){[class*="fx-"]{animation:none!important}}
+
+/* ===== Carta en 4D (ventana del premio) ===== */
+.c4d{width:min(78vw,330px);aspect-ratio:1;margin:4px auto 2px;perspective:900px;touch-action:none;cursor:grab;position:relative}
+.c4d[hidden]{display:none}
+.c4d .tin{position:absolute;inset:0;transform-style:preserve-3d;transition:none;border-radius:20px;will-change:transform}
+.c4d .tbg,.c4d .tin>img,.c4d .shine,.c4d .glr{position:absolute;inset:0;border-radius:20px}
+.c4d .tbg{transform:translateZ(-30px);overflow:hidden;background:#0c1a1e}.c4d .tbg i{position:absolute;inset:-12%;background-size:cover;background-position:center 30%;filter:blur(18px) brightness(.5) saturate(1.6)}
+.c4d .tin::before{content:"";position:absolute;inset:-3px;border-radius:22px;background:conic-gradient(from var(--ang,0deg),#ffcb05,#ff4fd8,#4fd8ff,#7CFF6B,#ffcb05);transform:translateZ(-32px);filter:blur(1px)}
+#pz .bx .c4d .tin>img,#mres .bx .c4d .tin>img{margin:0;box-shadow:none;animation:none;width:100%;height:100%;max-height:none;object-fit:contain;transform:translateZ(46px);z-index:2;border-radius:0;mix-blend-mode:lighten}
+.c4d .shine{transform:translateZ(47px);pointer-events:none;mix-blend-mode:color-dodge;opacity:.35;
+ background:radial-gradient(circle at var(--mx,50%) var(--my,50%),#ffffff99,transparent 30%),linear-gradient(var(--ang,0deg),transparent 25%,#ff7ae655 40%,#7af0ff66 50%,#fff38a55 60%,transparent 75%);background-size:100% 100%,220% 220%;background-position:center,var(--mx,50%) var(--my,50%)}
+.c4d .glr{transform:translateZ(60px);pointer-events:none;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),#ffffff22,transparent 55%)}
+#pz .bx.g3 .c4d .tin::before,#mres .bx.g3 .c4d .tin::before{filter:blur(2px) brightness(1.3);inset:-5px}
+#pz.fxing .bx>:not(#pzt):not(#pzx),#mres.fxing .bx>:not(#mrt){animation:fxIn .5s .95s both}
+@media (prefers-reduced-motion:reduce){.c4d .tin{transform:none!important}}
 </style>
 </head>
 <body>
@@ -457,8 +472,8 @@ html.mt #mant{align-items:flex-start}#mant>div{margin:auto;width:100%}
  <div class="rw"><button type="button" class="sbtn" id="mbsave">Guardar</button><button type="button" class="sbtn o" id="mbcancel">Cancelar</button></div>
  <button type="button" id="mbdel" style="background:none;border:0;color:#c3302b;font-weight:700">Eliminar caja</button></div></div>
 <div class="ov" id="mbl"><div class="bx wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="mblt" style="font-size:24px;margin:0">Panel de administración</h2><button class="sbtn o" id="mblx">Cerrar</button></div><div class="sedt ptabs" id="ptabs"><button data-pt="compras">Compras</button><button data-pt="giros">PokeRuleta</button><button data-pt="cajas">Cajas</button><button data-pt="clientes">Clientes</button><button data-pt="ventas">Quiero vender</button><button data-pt="estado">Estado</button></div><div id="mblb" style="display:grid;gap:10px"></div></div></div>
-<div class="ov" id="pz"><div class="bx" id="pzb"><button class="sbtn o" id="pzx" style="justify-self:end">Cerrar ✕</button><img id="pzi" alt=""><h3 id="pzh" style="font-size:24px;text-align:center"></h3><p id="pzr" style="text-align:center"></p><p class="val" id="pzv" style="text-align:center"></p><p id="pzd" style="opacity:.85;text-align:center"></p><p id="pzp" style="opacity:.7;text-align:center;font-size:13px"></p><button class="btn pk" id="pzbuy" style="border:0;text-align:center">COMPRAR Y GIRAR</button></div></div>
-<div class="ov" id="mres"><div class="bx"><h2>🎉 ¡HAS GANADO!</h2><p>Has conseguido:</p><img id="mri" alt=""><h3 id="mrn" style="font-size:26px"></h3><p id="mrr"></p><p class="val" id="mrv"></p><p id="mrd" style="opacity:.8"></p><small id="mrid" style="opacity:.6"></small>
+<div class="ov" id="pz"><div class="bx" id="pzb"><button class="sbtn o" id="pzx" style="justify-self:end">Cerrar ✕</button><div class="c4d" id="pzt" hidden><div class="tin"><div class="tbg"><i></i></div><img id="pzi" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="pzh" style="font-size:24px;text-align:center"></h3><p id="pzr" style="text-align:center"></p><p class="val" id="pzv" style="text-align:center"></p><p id="pzd" style="opacity:.85;text-align:center"></p><p id="pzp" style="opacity:.7;text-align:center;font-size:13px"></p><button class="btn pk" id="pzbuy" style="border:0;text-align:center">COMPRAR Y GIRAR</button></div></div>
+<div class="ov" id="mres"><div class="bx"><h2>🎉 ¡HAS GANADO!</h2><p>Has conseguido:</p><div class="c4d" id="mrt" hidden><div class="tin"><div class="tbg"><i></i></div><img id="mri" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="mrn" style="font-size:26px"></h3><p id="mrr"></p><p class="val" id="mrv"></p><p id="mrd" style="opacity:.8"></p><small id="mrid" style="opacity:.6"></small>
  <div style="display:grid;gap:8px;margin-top:8px"><a class="btn pk" href="#mine" id="mrsee">VER PREMIO</a><button class="sbtn o" id="mrback" style="color:#f4efe3;border-color:#ffffff55">VOLVER A POKERULETA</button></div></div></div>
 <canvas id="cf2"></canvas><canvas id="fxc" aria-hidden="true"></canvas>
 <div class="ov" id="sed"><div class="bx"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;margin:0">Editar la web</h2><button class="sbtn o" id="sedx">Cerrar</button></div>
@@ -822,14 +837,23 @@ function playFx(el,kind,rare,ov){FXid++;const id=FXid,cv=$("#fxc");FXK.forEach(c
    else if(p.k==="leaf"){x.save();x.globalCompositeOperation="source-over";x.translate(p.x,p.y);x.rotate(p.ang*3);x.fillStyle=p.c;x.beginPath();x.ellipse(0,0,p.s,p.s*.45,0,0,7);x.fill();x.restore()}}
   x.globalCompositeOperation="source-over";x.globalAlpha=1;
   if(t<3.4||P.length)requestAnimationFrame(f);else{x.clearRect(0,0,W,H);const ov=el.closest(".bx");if(ov)ov.style.transform=""}})(t0)}
-function showPrize(p,ev){$("#pzb").className="bx g"+ri(p.rarity);$("#pzi").style.display=p.img?"":"none";$("#pzi").src=p.img||"";
+/* Carta en "4D": marco cuadrado, inclinación 3D con el dedo o el ratón, brillo holográfico y capas con profundidad */
+function card4d(w,src){w.hidden=!src;if(!src)return;w.querySelector(".tbg i").style.backgroundImage=`url("${String(src).replace(/"/g,"%22")}")`;w.querySelector("img").src=src;
+ if(w._t)return;w._t=1;const tin=w.querySelector(".tin");let tx=0,ty=0,cx=0,cy=0,touch=0,raf=0;
+ const set=(x,y)=>{tin.style.transform=`rotateX(${(-y*18).toFixed(2)}deg) rotateY(${(x*22).toFixed(2)}deg)`;tin.style.setProperty("--mx",(50+x*50).toFixed(1)+"%");tin.style.setProperty("--my",(50+y*50).toFixed(1)+"%");tin.style.setProperty("--ang",(x*60+y*30).toFixed(1)+"deg")};
+ const loop=now=>{if(!w.isConnected||w.closest(".ov:not(.on)")){raf=0;return}if(!touch){tx=Math.sin(now/1300)*.55;ty=Math.cos(now/1700)*.4}cx+=(tx-cx)*.12;cy+=(ty-cy)*.12;set(cx,cy);raf=requestAnimationFrame(loop)};
+ const mv=ev=>{const r=w.getBoundingClientRect();tx=Math.max(-1,Math.min(1,(ev.clientX-r.left)/r.width*2-1));ty=Math.max(-1,Math.min(1,(ev.clientY-r.top)/r.height*2-1));touch=1};
+ w.addEventListener("pointerdown",ev=>{mv(ev);try{w.setPointerCapture(ev.pointerId)}catch(_){}});w.addEventListener("pointermove",ev=>{if(ev.pointerType==="mouse"||touch)mv(ev)});
+ const up=()=>{touch=0};w.addEventListener("pointerup",up);w.addEventListener("pointercancel",up);w.addEventListener("pointerleave",up);
+ w._go=()=>{if(!raf&&!reduced())raf=requestAnimationFrame(loop)}}
+function showPrize(p,ev){$("#pzb").className="bx g"+ri(p.rarity);card4d($("#pzt"),p.img);if($("#pzt")._go)$("#pzt")._go();
  $("#pzh").textContent=p.name;$("#pzr").innerHTML=rar(p.rarity);$("#pzv").textContent=p.value?"Valor: "+e(p.value):"";
  $("#pzd").textContent=p.desc||"";$("#pzp").textContent=[ADMIN&&pReal(curBox(),p)!=null?"Probabilidad: "+String(pReal(curBox(),p)).replace(".",",")+"%":"",p.left!=null?"Quedan "+p.left:""].filter(Boolean).join(" · ");
  $("#pzbuy").textContent=MBtk&&MBtk.status==="pending"?"GIRAR RULETA":"COMPRAR Y GIRAR";
- $("#pz").classList.add("on");bells();playFx(p.img?$("#pzi"):$("#pzb"),fxOf(p),ri(p.rarity)>=3,$("#pz"))}
+ $("#pz").classList.add("on");bells();playFx(p.img?$("#pzt"):$("#pzb"),fxOf(p),ri(p.rarity)>=3,$("#pz"))}
 function wheelTap(ev){if(spinning)return;const p=tapPrize($("#wh"),ev);if(!p||String(p.id).startsWith("d"))return;
  const w=$(".wheelw");w.classList.remove("tap");void w.offsetWidth;w.classList.add("tap");showPrize(p,ev)}
-function showRes(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);$("#mri").style.display=p.img?"":"none";$("#mri").src=p.img||"";$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");fanfare();const bp=(MBtk&&MBtk.box&&MBtk.box.prizes||[]).find(x=>x.id===p.id)||p;playFx(p.img?$("#mri"):$("#mres .bx"),fxOf(bp),ri(p.rarity)>=3,$("#mres"));setTimeout(()=>confetti(),1300)}
+function showRes(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);card4d($("#mrt"),p.img);if($("#mrt")._go)$("#mrt")._go();$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");fanfare();const bp=(MBtk&&MBtk.box&&MBtk.box.prizes||[]).find(x=>x.id===p.id)||p;playFx(p.img?$("#mrt"):$("#mres .bx"),fxOf(bp),ri(p.rarity)>=3,$("#mres"));setTimeout(()=>confetti(),1300)}
 let CFid=0;
 function confetti(ox,oy){if(reduced())return;const id=++CFid,c=$("#cf2");c.width=innerWidth;c.height=innerHeight;const x=c.getContext("2d"),HW=document.documentElement.classList.contains("th-halloween"),col=HW?["#ff7a18","#8e44ec","#7CFF6B","#ffb347","#2b123d","#ffffff"]:["#ffcb05","#f26b1d","#1f7a5c","#ffffff","#e1306c","#2a7de1"],EM=["🎃","🦇","👻"],B=ox!=null,g=B?.3:0,P2=Array.from({length:B?130:170},()=>B?{x:ox,y:oy,vx:(Math.random()-.5)*18,vy:-5-Math.random()*12,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.35,c:col[Math.random()*6|0]}:{x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:col[Math.random()*6|0]});let n=0;(function f(){if(id!==CFid)return;x.clearRect(0,0,c.width,c.height);P2.forEach(p=>{p.vy+=g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);if(HW&&p.e===undefined)p.e=Math.random()<.28?EM[Math.random()*3|0]:"";if(HW&&p.e){x.font=(p.s*2.6|0)+"px serif";x.textAlign="center";x.fillText(p.e,0,0)}else{x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6)}x.restore()});if(++n<(B?170:240))requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 async function openTicket(token){const d=await req("/api/mbox",{action:"ticket",token});MBtk={...d.ticket,box:d.box};MBpend=null;if(d.box)MBsel=d.box.id;renderMB()}
