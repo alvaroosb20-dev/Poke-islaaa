@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta name="google-site-verification" content="3FAo_8IXWcs13XVG94h0Xm_WXdfpmIu2JkQAQ3m0CvU">
+<script>try{var lnA=+localStorage.getItem("pi_ln");if(lnA>Date.now()&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("ln")}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_th")==="halloween")document.documentElement.classList.add("th-halloween")}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_mt")==="1"&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("mt")}catch(e){}</script>
 
@@ -447,13 +448,70 @@ nav .ic{white-space:nowrap}@media(max-width:380px){nav .ic{padding-left:10px!imp
 @media (prefers-reduced-motion:reduce){#promo .prorays,#promo .prospk i,#promo .proribbon,#promo .promin,#promo .wmb,#promo #progo::after,#promo .proribbon::after{animation:none}}
 
 #promo .prob>.prox{position:absolute!important;top:4px;right:6px;z-index:3;width:34px;height:34px;background:#2b0b4acc;color:#fff}
+
+/* ===== Pantalla de inauguración ===== */
+#lnch{display:none}
+html.ln #lnch{display:flex;position:fixed;inset:0;z-index:9998;overflow:auto;color:#fff;align-items:flex-start;justify-content:center;text-align:center;padding:26px 16px 30px;
+ background:radial-gradient(circle at 50% 18%,#7a1fa2 0,#3b0d6b 30%,#12051f 70%)}
+html.ln body{overflow:hidden}
+#lnch>.in{margin:auto;width:100%;max-width:520px;position:relative;z-index:1}
+#lnch .lnrays{position:fixed;left:50%;top:22%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(#ffe27a1c 0 8deg,transparent 8deg 16deg);border-radius:50%;animation:prorot 30s linear infinite;-webkit-mask:radial-gradient(circle,#000 15%,transparent 60%);mask:radial-gradient(circle,#000 15%,transparent 60%);pointer-events:none}
+#lnch .lnlogo{width:120px;height:120px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px #ffcb05,0 0 50px #ffcb0599;animation:propulse 2s ease-in-out infinite}
+#lnch .lntag{display:inline-block;margin:18px 0 6px;background:linear-gradient(90deg,#ff3d00,#ffcb05,#ff3d00);background-size:200% 100%;animation:adbg 3s linear infinite;color:#2b0b4a;font-weight:900;letter-spacing:2px;font-size:13px;border-radius:999px;padding:6px 14px}
+#lnch h1{font-size:clamp(34px,9vw,58px);line-height:1.02;margin:6px 0 8px;font-weight:900;background:linear-gradient(180deg,#fff7c2,#ffd23a 45%,#ff9500);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #5a1690) drop-shadow(0 8px 20px #000a)}
+#lnch .lnm{opacity:.9;font-size:17px;line-height:1.45;margin:0 auto 6px;max-width:440px}
+#lnch .lnd{font-size:14px;color:#ffe14a;font-weight:700;margin-bottom:16px;text-transform:capitalize}
+#lncd{display:flex;gap:10px;justify-content:center;margin:6px 0 18px}
+#lncd .lnb{background:linear-gradient(180deg,#ffffff1f,#ffffff08);border:1.5px solid #ffffff33;border-radius:16px;min-width:72px;padding:12px 8px;box-shadow:0 10px 30px #0006,inset 0 1px 0 #fff3;backdrop-filter:blur(6px)}
+#lncd .lnb b{display:block;font-size:clamp(30px,9vw,46px);font-weight:900;line-height:1;color:#fff;text-shadow:0 0 18px #ffcb0599;font-variant-numeric:tabular-nums}
+#lncd .lnb small{font-size:11px;letter-spacing:1.5px;opacity:.75}
+#lncd .lnb.lsec b{color:#ffe14a;animation:lnsec 1s ease-in-out infinite}
+@keyframes lnsec{0%{transform:scale(1.12)}30%{transform:scale(1)}}
+#lncd .lnopen{font-size:28px;font-weight:900;color:#ffe14a;animation:propulse 1s ease-in-out infinite}
+#lnch .lnlive{display:inline-flex;align-items:center;gap:12px;background:#0006;border:1.5px solid #ffffff22;border-radius:999px;padding:8px 16px 8px 10px;margin-bottom:16px}
+#lnav{display:flex}#lnav span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;margin-left:-10px;border:2px solid #2b0b4a;animation:lnpop .5s both}
+#lnav span:first-child{margin-left:0}#lnav .more{background:#ffffff26;font-size:12px;font-weight:800;color:#fff}
+@keyframes lnpop{from{transform:scale(0)}to{transform:scale(1)}}
+#lnch .lnlive .dot{width:10px;height:10px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 0 #3ddc84aa;animation:lndot 1.6s infinite}
+@keyframes lndot{70%{box-shadow:0 0 0 10px #3ddc8400}100%{box-shadow:0 0 0 0 #3ddc8400}}
+#lnch .lnlive b{font-size:20px;color:#ffe14a}#lnch .lnlive span.t{font-size:14px;text-align:left}
+#lnmb{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 20px;font:inherit;font-weight:800;font-size:15px;cursor:pointer;background:#fff;color:#2b0b4a;box-shadow:0 0 24px #fff5}
+#lnmb.on{background:#ffcb05}
+.eq{display:inline-flex;gap:2px;align-items:flex-end;height:14px}.eq i{width:3px;background:#2b0b4a;animation:eq .8s ease-in-out infinite}.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}.eq i:nth-child(4){animation-delay:.1s}
+@keyframes eq{0%,100%{height:3px}50%{height:14px}}
+#lnch .lnsoc{margin-top:18px;font-size:14px;opacity:.85}#lnch .lnsoc a{color:#ffe14a;font-weight:700}
+#lnch .lnadm{display:inline-block;margin-top:22px;font-size:12px;opacity:.45;color:#fff}
+#lnadm{position:fixed;top:12px;right:12px;z-index:3}
+#lnbar{background:#ff4fd8;color:#2b0b4a;border-radius:999px;padding:3px 10px;font-size:12px}
+@media (prefers-reduced-motion:reduce){#lnch .lnrays,#lncd .lnb.lsec b,#lnch .lnlogo{animation:none}}
 </style>
 </head>
 <body>
+<div id="lnch" role="dialog" aria-modal="true" aria-label="Inauguración de la tienda"><div class="lnrays" aria-hidden="true"></div>
+ <button class="sbtn" id="lnadm" hidden><span id="lnclose">✕ Cerrar vista previa</span></button>
+ <div class="in"><img class="lnlogo" src="/icon-192.png?v=2" alt="POKE ISLAS"><br><span class="lntag">🎉 PRÓXIMA APERTURA 🎉</span>
+  <h1 id="lnt">¡GRAN INAUGURACIÓN!</h1><p class="lnm" id="lnm"></p><div class="lnd" id="lnd"></div>
+  <div id="lncd" aria-live="off"></div>
+  <div class="lnlive"><span id="lnav"></span><span class="dot"></span><span class="t"><b id="lnn">1</b> <span id="lnw">persona esperando ahora mismo</span></span></div><br>
+  <div id="lnmus" hidden><button id="lnmb" type="button">🎵 Activar música</button></div>
+  <audio id="lnaud" loop preload="none" playsinline></audio>
+  <p class="lnsoc">Síguenos mientras tanto: <a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a></p>
+  <a href="#" id="lnadmin" class="lnadm">Acceso administrador</a></div></div>
+<div class="ov" id="lnf"><div class="bx"><div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;margin:0">🎉 Inauguración</h2><button class="sbtn o" id="lnfx">Cerrar</button></div>
+ <div class="rvform"><p style="margin:0">Mientras esté activa y no llegue la hora, los clientes ven la cuenta atrás y no pueden comprar. A la hora indicada la tienda se abre sola.</p>
+ <label class="ck"><input type="checkbox" id="lnon"> Activar la pantalla de inauguración</label>
+ <label>Fecha y hora de apertura (hora de Canarias)<input id="lnat" type="datetime-local"></label>
+ <label>Título<input id="lnti" maxlength="120" placeholder="¡GRAN INAUGURACIÓN!"></label>
+ <label>Mensaje<textarea id="lnms" rows="3" maxlength="400" placeholder="Muy pronto abrimos las puertas de POKE ISLAS. ¡Prepárate!"></textarea></label>
+ <div><b style="font-size:13px">Música de fondo</b><br><span id="lnsnd" style="font-size:14px">Sin música</span>
+ <div class="rw" style="margin-top:6px"><label class="fl">🎵 Subir canción (MP3, máx. 4 MB)<input type="file" id="lnfile" accept="audio/*" hidden></label><button type="button" class="sbtn" id="lntest">▶ Escuchar</button><button type="button" class="sbtn o" id="lnrm" hidden>Quitar música</button></div>
+ <small style="opacity:.7">Por seguridad, los navegadores no dejan que la música suene sola: el cliente pulsa «🎵 Activar música». Usa música que tengas derecho a usar.</small></div>
+ <p class="msg" id="lnfm" hidden></p>
+ <div class="rw"><button class="btn pk" id="lnsave" style="border:0">Guardar</button><button type="button" class="btn" id="lnprev" style="border:2px solid var(--line);color:var(--tx)">👀 Ver cómo queda</button></div></div></div></div>
 <div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><div id="mgame"></div><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
 <div id="hwtop" aria-hidden="true"><span class="web l"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="web r"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="spd">🕷️</span></div><div id="hw" aria-hidden="true"><span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span></div><div id="hwbar"></div>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
-<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><button id="amant">🚧 Mantenimiento</button><button id="apromo">📣 Anuncio</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
+<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><span id="lnbar" hidden>INAUGURACIÓN PROGRAMADA</span><button id="alaunch">🎉 Inauguración</button><button id="amant">🚧 Mantenimiento</button><button id="apromo">📣 Anuncio</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
 <nav>
   <b>POKE<i>ISLAS</i></b>
   <div class="links"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 PokeRuleta</a><a href="#grading">Graduadas</a><a href="#resenas">Reseñas</a><a href="#vender">Vender</a><a href="#envios">Envíos</a></div>
@@ -788,7 +846,7 @@ async function handleReturn(){const q=new URLSearchParams(location.search),pg=q.
  else if(pg==="ok"){cart={};saveCart();cdraw();toast("¡Pago recibido! Gracias por tu compra.","ok")}}
 
 /* ================= ADMINISTRADOR ================= */
-function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint();loadMBP();loadRVAdm();if(typeof loadGWAdm==="function"){drawGW();loadGWAdm()}}
+function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint();if(typeof applyLaunch==="function")applyLaunch();loadMBP();loadRVAdm();if(typeof loadGWAdm==="function"){drawGW();loadGWAdm()}}
 async function login(){const pin=prompt("PIN de administrador");if(!pin)return;
  try{await req("/api/admin",{pin,action:"check"});APIN=pin;ss.set("pi_pin",pin);adm(true);toast("Modo administrador activado","ok")}catch(err){toast(err.message,"err")}}
 $("#al").onclick=ev=>{ev.preventDefault();login()};
@@ -1166,7 +1224,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#promin,#gwadm,#gwcd,#gwme,#gwwin,#gwpart,#gwt,#gwd,#gwmon,#acc,#cpm,#cpn,#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#lnch,#lnf,#promin,#gwadm,#gwcd,#gwme,#gwwin,#gwpart,#gwt,#gwd,#gwmon,#acc,#cpm,#cpn,#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -1182,7 +1240,7 @@ function applySite(){
  applyShip()}
 async function loadSite(){["pk","la","ab","lr"].forEach(k=>{ORIGC[k]=getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim()});
  $$("[data-imgkey]").forEach(el=>{el._orig=el.src});
- try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();PROMO=d.promo||{on:true};applyPromo();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
+ try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();PROMO=d.promo||{on:true};applyPromo();if(d.launch)LAUNCH=d.launch;if(d.now)LOFF=d.now-Date.now();applyLaunch();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
 function sedBuild(){const seen={},by={};
  tnodes().forEach(n=>{const k=hkey(n._o);if(seen[k])return;seen[k]=1;const g=grp(n.parentElement);(by[g]=by[g]||[]).push({k,o:n._o,c:n.nodeValue.trim()})});
  phs().forEach(el=>{const k="p"+hkey(el._po);if(seen[k])return;seen[k]=1;(by["Formulario de venta"]=by["Formulario de venta"]||[]).push({k,o:el._po,c:el.getAttribute("placeholder")})});
@@ -1218,10 +1276,56 @@ draw();cdraw();
 $("#q").addEventListener("input",ev=>{FQ=ev.target.value;PG=1;draw()});
 $("#q").addEventListener("keydown",ev=>{if(ev.key==="Enter"){ev.preventDefault();ev.target.blur()}});
 $("#fsort").onchange=ev=>{FS=ev.target.value;PG=1;draw()};
+/* ---- modo inauguración: cuenta atrás, música y gente esperando ---- */
+var LAUNCH={on:false,at:0,title:"",msg:"",sndv:null},LOFF=0,LT=null,LP_T=null,LPREV=false,LVID="";
+const lnow=()=>Date.now()+LOFF;
+const lnActive=()=>LAUNCH.on&&LAUNCH.at>lnow();
+function applyLaunch(){const act=lnActive()&&!MAINT.on;const show=(act&&!ADMIN)||LPREV;document.documentElement.classList.toggle("ln",show);
+ try{localStorage.setItem("pi_ln",act?String(LAUNCH.at):"0")}catch(_){}
+ const bd=$("#lnbar");if(bd)bd.hidden=!act;const bt=$("#alaunch");if(bt)bt.textContent=act?"🎉 Inauguración: programada":"🎉 Inauguración";
+ $("#lnt").textContent=LAUNCH.title||"¡GRAN INAUGURACIÓN!";$("#lnm").textContent=LAUNCH.msg||"Muy pronto abrimos las puertas de POKE ISLAS. ¡Prepárate!";
+ $("#lnd").textContent=LAUNCH.at?new Date(LAUNCH.at).toLocaleString("es-ES",{weekday:"long",day:"numeric",month:"long",hour:"2-digit",minute:"2-digit",timeZone:"Atlantic/Canary"})+" (hora canaria)":"";
+ const a=$("#lnaud");if(LAUNCH.sndv){const u="/api/img?k=snd&v="+LAUNCH.sndv;if(a.getAttribute("src")!==u)a.setAttribute("src",u);$("#lnmus").hidden=false}else{$("#lnmus").hidden=true;a.pause()}
+ $("#lnadm").hidden=!LPREV;
+ clearInterval(LT);clearInterval(LP_T);if(!show){a.pause();lnMus(false);return}
+ const tick=()=>{let ms=LAUNCH.at-lnow();if(ms<=0&&!LPREV){clearInterval(LT);lnOpen();return}ms=Math.max(0,ms);const d=Math.floor(ms/864e5);ms%=864e5;const h=Math.floor(ms/36e5);ms%=36e5;const m=Math.floor(ms/6e4),s=Math.floor(ms%6e4/1e3);
+  $("#lncd").innerHTML=[[d,"DÍAS"],[h,"HORAS"],[m,"MIN"],[s,"SEG"]].map(([v,l],i)=>`<div class="lnb${i===3?" lsec":""}"><b>${String(v).padStart(2,"0")}</b><small>${l}</small></div>`).join("")};tick();LT=setInterval(tick,1000);
+ lnPing();LP_T=setInterval(()=>{if(!document.hidden)lnPing()},30000)}
+async function lnPing(){if(!LVID){LVID=ls.get("pi_vid",null)||Math.random().toString(36).slice(2,12)+Date.now().toString(36);ls.set("pi_vid",LVID)}
+ try{const d=await req("/api/site",{action:"ping",id:LVID});lnLive(d.live)}catch(_){}}
+function lnLive(n){n=Math.max(1,n);$("#lnn").textContent=n;$("#lnw").textContent=n===1?"persona esperando ahora mismo":"personas esperando ahora mismo";
+ const em=["🧑","👩","👨","🧒","👧","🧑‍🦱","👩‍🦰","🧔"],col=["#ffcb05","#ff4fd8","#4fd8ff","#7CFF6B","#ff8a00","#a06bff"];const k=Math.min(n,6);
+ $("#lnav").innerHTML=Array.from({length:k},(_,i)=>`<span style="background:${col[i%col.length]};animation-delay:${i*.15}s">${em[(i*3+n)%em.length]}</span>`).join("")+(n>6?`<span class="more">+${n-6}</span>`:"")}
+function lnMus(on){const a=$("#lnaud"),b=$("#lnmb");if(on){a.volume=.8;const p=a.play();if(p&&p.catch)p.catch(()=>{b.classList.remove("on");b.innerHTML="🎵 Activar música"});b.classList.add("on");b.innerHTML='<span class="eq"><i></i><i></i><i></i><i></i></span> Música activada · tocar para silenciar'}
+ else{a.pause();b.classList.remove("on");b.innerHTML="🎵 Activar música"}}
+$("#lnmb").onclick=()=>lnMus($("#lnaud").paused);
+function lnOpen(){$("#lncd").innerHTML='<div class="lnopen">🎉 ¡YA ESTAMOS ABIERTOS! 🎉</div>';try{confetti();bells()}catch(_){}
+ setTimeout(()=>{const a=$("#lnaud");let v=a.volume;const f=setInterval(()=>{v-=.08;if(v<=0){clearInterval(f);a.pause()}else a.volume=v},120);document.documentElement.classList.remove("ln");LAUNCH.on=false;applyLaunch();loadMB().then(()=>renderMB())},3200)}
+$("#lnadmin").onclick=ev=>{ev.preventDefault();login()};
+$("#lnclose").onclick=()=>{LPREV=false;applyLaunch()};
+// Panel del administrador
+const dtl=ms=>{const d=new Date(ms-new Date(ms).getTimezoneOffset()*6e4);return d.toISOString().slice(0,16)};
+$("#alaunch").onclick=()=>{$("#lnon").checked=!!LAUNCH.on;$("#lnat").value=LAUNCH.at?dtl(LAUNCH.at):dtl(Date.now()+7*864e5);$("#lnti").value=LAUNCH.title||"";$("#lnms").value=LAUNCH.msg||"";
+ $("#lnsnd").textContent=LAUNCH.sndv?"🎵 Hay música cargada":"Sin música";$("#lnrm").hidden=!LAUNCH.sndv;msg("#lnfm","","");$("#lnf").classList.add("on")};
+$("#lnfx").onclick=()=>$("#lnf").classList.remove("on");
+async function lnSave(extra){const at=$("#lnat").value?new Date($("#lnat").value).getTime():0;
+ const d=await req("/api/site",{action:"admin_launch",pin:APIN,launch:{on:$("#lnon").checked,at,title:$("#lnti").value,msg:$("#lnms").value,...(extra||{})}});LAUNCH=d.launch;applyLaunch();return d}
+$("#lnsave").onclick=async ev=>{const done=busy(ev.currentTarget,"Guardando…");try{await lnSave();done();$("#lnf").classList.remove("on");toast(lnActive()?"🎉 Inauguración programada ✓ Los clientes ven la cuenta atrás":"Inauguración desactivada ✓ La tienda está abierta","ok")}catch(err){done();msg("#lnfm","err",err.message)}};
+$("#lnprev").onclick=async()=>{LPREV=true;$("#lnf").classList.remove("on");applyLaunch()};
+$("#lnrm").onclick=async ev=>{if(!confirm("¿Quitar la música?"))return;const done=busy(ev.currentTarget,"Quitando…");try{await lnSave({rmSnd:1});done();$("#lnsnd").textContent="Sin música";ev.target.hidden=true}catch(err){done();msg("#lnfm","err",err.message)}};
+$("#lnfile").onchange=async ev=>{const f=ev.target.files[0];ev.target.value="";if(!f)return;
+ const type=(f.type||"audio/mpeg").replace("audio/mp3","audio/mpeg");if(!/^audio\//.test(type))return msg("#lnfm","err","Elige un archivo de audio (MP3 o M4A).");
+ if(f.size>4*1024*1024)return msg("#lnfm","err",`La canción pesa ${(f.size/1048576).toFixed(1)} MB y el máximo es 4 MB. Usa un fragmento más corto o un MP3 de menor calidad (128 kbps).`);
+ const buf=new Uint8Array(await f.arrayBuffer()),CH=1200000,n=Math.ceil(buf.length/CH);
+ try{for(let i=0;i<n;i++){$("#lnsnd").textContent=`Subiendo música… ${Math.round(i/n*100)}%`;let s="";const part=buf.subarray(i*CH,(i+1)*CH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));
+   const d=await req("/api/site",{action:"admin_snd",pin:APIN,i,n,type,data:btoa(s)});if(d.sndv)LAUNCH.sndv=d.sndv}
+  $("#lnsnd").textContent="🎵 Música cargada: "+f.name;$("#lnrm").hidden=false;applyLaunch();toast("Música subida ✓","ok")}
+ catch(err){$("#lnsnd").textContent="No se pudo subir";msg("#lnfm","err",err.message)}};
+$("#lntest").onclick=()=>{const a=$("#lnaud");if(!LAUNCH.sndv)return toast("Primero sube una canción","info");if(a.paused){a.play();$("#lntest").textContent="⏸ Parar"}else{a.pause();$("#lntest").textContent="▶ Escuchar"}};
 /* ---- anuncio emergente de la PokeRuleta al entrar ---- */
 var PROMO={on:true},PROMOT=null;
 function applyPromo(){const b=$("#apromo");if(b)b.textContent=PROMO.on?"📣 Anuncio: activado":"📣 Anuncio: desactivado";if(!PROMOT)PROMOT=setTimeout(maybePromo,1400)}
-function maybePromo(n){n=n||0;const b=MB&&MB[0];if(!b&&n<8&&!MBERR){setTimeout(()=>maybePromo(n+1),800);return}if(!PROMO.on||!b||MAINT.on||ADMIN||ss.get("pi_pin")||ss.get("pi_promo")||location.search.includes("caja=")||$(".ov.on"))return;
+function maybePromo(n){n=n||0;const b=MB&&MB[0];if(!b&&n<8&&!MBERR){setTimeout(()=>maybePromo(n+1),800);return}if(!PROMO.on||!b||MAINT.on||lnActive()||ADMIN||ss.get("pi_pin")||ss.get("pi_promo")||location.search.includes("caja=")||$(".ov.on"))return;
  const mv=Math.min(...b.prizes.map(p=>p.value||0)),fm=v=>v%100?e(v):(v/100)+" €";$("#promin").textContent=fm(mv);$(".promin").hidden=!(mv>0);$(".proclaim").hidden=!(mv>0);
  $("#proprice").innerHTML=`Cada giro por solo <b>${e(b.price)}</b>`;$("#promo").hidden=false;requestAnimationFrame(()=>{$("#promo").classList.add("on");drawWheel($("#prowh"),b.prizes)});
  document.documentElement.style.overflow="hidden";ss.set("pi_promo","1");setTimeout(()=>$("#progo").focus(),400)}

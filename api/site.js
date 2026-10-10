@@ -25,7 +25,19 @@ module.exports = async (req, res) => {
       const d = (await S.getData()).data;
       const imgs = {};
       for (const k of IMG_KEYS) if (d.iv && d.iv[k]) imgs[k] = imgUrl("s_" + k, d.iv[k]);
-      return res.status(200).json({ data: d, imgs, maint: await S.getMaint(), theme: await S.getTheme(), promo: await S.getPromo() });
+      return res.status(200).json({ data: d, imgs, maint: await S.getMaint(), theme: await S.getTheme(), promo: await S.getPromo(), launch: await S.getLaunch(), now: Date.now() });
+    }
+    // Gente esperando en la pantalla de inauguración (presencia en directo)
+    if (b.action === "ping") {
+      const id = String(b.id || "");
+      if (!/^[a-z0-9]{8,32}$/.test(id)) return fail(res, 400, "id");
+      const now = Date.now();
+      await cmd(["HSET", "live", id, String(now)]);
+      const raw = (await cmd(["HGETALL", "live"])) || [];
+      let n = 0; const old = [];
+      for (let i = 0; i < raw.length; i += 2) { if (now - Number(raw[i + 1]) < 75000) n++; else old.push(raw[i]); }
+      if (old.length) await cmd(["HDEL", "live", ...old.slice(0, 500)]).catch(() => {});
+      return res.status(200).json({ live: n });
     }
     if (!String(b.action).startsWith("admin_")) return fail(res, 400, "Acción no válida");
     const bad = await checkPin(req, b.pin);
@@ -74,6 +86,32 @@ module.exports = async (req, res) => {
       const chk = await S.getTheme();
       if (chk.name !== b.name) return fail(res, 500, "La base de datos no confirmó el cambio");
       return res.status(200).json({ ok: true, theme: chk });
+    }
+    if (b.action === "admin_launch") {
+      const l = b.launch || {}, cur = await S.getLaunch();
+      const at = Number(l.at) || 0;
+      if (l.on && !(at > Date.now())) return fail(res, 400, "Elige una fecha y hora de inauguración en el futuro");
+      const out = { on: !!l.on, at, title: String(l.title || "").trim().slice(0, 120), msg: String(l.msg || "").trim().slice(0, 400), sndv: l.rmSnd ? null : cur.sndv };
+      if (l.rmSnd) await cmd(["DEL", "snd:meta"]);
+      await cmd(["SET", "launch", JSON.stringify(out)]);
+      return res.status(200).json({ ok: true, launch: await S.getLaunch() });
+    }
+    // Música de la inauguración: se sube en trozos (máx. 4 MB en total)
+    if (b.action === "admin_snd") {
+      const i = Number(b.i), n = Number(b.n), type = String(b.type || "");
+      if (!(Number.isInteger(n) && n >= 1 && n <= 4 && Number.isInteger(i) && i >= 0 && i < n)) return fail(res, 400, "Trozo no válido");
+      if (!/^audio\/(mpeg|mp3|mp4|x-m4a|aac|wav|x-wav|ogg)$/.test(type)) return fail(res, 400, "Formato de audio no válido (usa MP3 o M4A)");
+      const data = String(b.data || "");
+      if (!data || data.length > 1700000 || /[^A-Za-z0-9+/=]/.test(data)) return fail(res, 400, "Trozo de audio no válido");
+      await cmd(["SET", "snd:c" + i, data]);
+      if (i === n - 1) {
+        const v = Date.now();
+        await cmd(["SET", "snd:meta", JSON.stringify({ n, type, v })]);
+        const cur = await S.getLaunch();
+        await cmd(["SET", "launch", JSON.stringify({ ...cur, sndv: v })]);
+        return res.status(200).json({ ok: true, sndv: v });
+      }
+      return res.status(200).json({ ok: true });
     }
     if (b.action === "admin_maint") {
       const msg = typeof b.msg === "string" ? b.msg.trim() : "";

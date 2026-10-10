@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const { cmd, parse } = require("./_db");
-const { shipTable, getMaint, MAINT_MSG } = require("./_site");
+const { shipTable, blocked } = require("./_site");
 const { stripe } = require("./_stripe");
 const { setPurchase } = require("./_orders");
 const { evalCoupon } = require("./_coupons");
@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   try {
     const { items, zone, nonce, coupon, action, acct } = req.body || {};
-    if (action !== "coupon" && (await getMaint()).on) return res.status(503).json({ error: MAINT_MSG });
+    if (action !== "coupon") { const bl = await blocked(); if (bl) return res.status(503).json({ error: bl }); }
     const ENVIOS = await shipTable();
     const env = ENVIOS[zone] || (action === "coupon" ? ENVIOS.canarias : null);
     if (!env) return res.status(400).json({ error: "Elige una zona de envío válida" });

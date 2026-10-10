@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const { cmd, parse } = require("./_db");
 const M = require("./_mbox");
-const { shipTable, getMaint, MAINT_MSG } = require("./_site");
+const { shipTable, blocked } = require("./_site");
 const { checkPin, ipOf } = require("./_auth");
 const { emailOf } = require("./_acct");
 const { stripe, SESSION, customer } = require("./_stripe");
@@ -88,7 +88,7 @@ module.exports = async (req, res) => {
     }
 
     if (b.action === "buy") {
-      if ((await getMaint()).on) return fail(res, 503, MAINT_MSG);
+      { const bl = await blocked(); if (bl) return fail(res, 503, bl); }
       const box = await M.withStock(await M.getBox(Number(b.boxId)));
       if (!M.sellable(box)) return fail(res, 409, "Esta PokeRuleta no está disponible ahora mismo");
       const ENVIOS = await shipTable(), env = ENVIOS[b.zone];

@@ -27,5 +27,18 @@ async function getTheme() {
 async function getPromo() {
   try { const p = parse(await cmd(["GET", "promo"])) || {}; return { on: p.on !== false }; } catch (_) { return { on: true }; }
 }
+// Inauguración: { on, at, title, msg, sndv }. Mientras esté activa y no haya llegado la hora, la tienda está cerrada.
+async function getLaunch() {
+  try { const l = parse(await cmd(["GET", "launch"])) || {}; return { on: !!l.on, at: Number(l.at) || 0, title: l.title || "", msg: l.msg || "", sndv: l.sndv || null }; }
+  catch (_) { return { on: false, at: 0, title: "", msg: "", sndv: null }; }
+}
+const launchActive = (l) => l.on && l.at > Date.now();
+// Motivo por el que no se puede comprar ahora mismo (null = se puede)
+async function blocked() {
+  if ((await getMaint()).on) return MAINT_MSG;
+  const l = await getLaunch();
+  if (launchActive(l)) return "La tienda aún no ha abierto. ¡Vuelve el día de la inauguración!";
+  return null;
+}
 const MAINT_MSG = "La tienda está en mantenimiento ahora mismo. Vuelve en un rato, ¡gracias!";
-module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme, getPromo };
+module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme, getPromo, getLaunch, launchActive, blocked };
