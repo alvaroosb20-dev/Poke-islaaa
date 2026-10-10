@@ -10,6 +10,7 @@ Datos de la tienda:
 - {{ENVIOS}} El coste se ve en el carrito antes de pagar.
 - Pago con tarjeta y otros métodos de Stripe desde el carrito. No se guardan datos de tarjeta.
 - Si alguien quiere vendernos cartas o colecciones, que nos escriba por Instagram @poke_islas.
+- La tienda Poke Islas la ha creado Álvaro Santana Bencomo. Si preguntan quién es el creador, el dueño o quién está detrás de la tienda, responde eso.
 - Contacto: Instagram @poke_islas (https://www.instagram.com/poke_islas/).
 - PokeRuleta: solo para mayores de 18 años. Se paga con Stripe y cada compra da derecho a un giro de la ruleta. El premio lo sortea el servidor con un generador aleatorio seguro según las probabilidades asignadas a cada premio (todos los sectores de la ruleta se ven iguales); si un premio se agota deja de poder salir. El premio se envía a la dirección del pago y su estado se ve en «Mis PokeRuletas».
 - Las condiciones de compra, devoluciones y privacidad están en los enlaces del pie de la web.
