@@ -37,13 +37,37 @@ module.exports = async (req, res) => {
         for (const x of await M.allBoxesRaw()) boxes.push(M.adm(await M.withStock(x)));
         return res.status(200).json({ boxes });
       }
+      // Animación de un premio: vídeo (MP4/WebM/MOV) o GIF, subido en trozos de ~700 KB (máx. 16 MB)
+      if (b.action === "admin_vid" || b.action === "admin_vid_del") {
+        const boxId = Number(b.boxId), pid = String(b.pid || "");
+        const box = Number.isSafeInteger(boxId) ? await M.getBox(boxId) : null;
+        const pz = box && (box.prizes || []).find((p) => p.id === pid);
+        if (!pz) return fail(res, 404, "Guarda primero la caja con este premio y vuelve a intentarlo");
+        const k = M.vidKey(boxId, pid);
+        const setP = async (vv, vt) => { const fresh = await M.getBox(boxId); const q = fresh && fresh.prizes.find((p) => p.id === pid); if (!q) return; q.vv = vv; q.vt = vt; await cmd(["HSET", "mbox", String(boxId), JSON.stringify(fresh)]); };
+        if (b.action === "admin_vid_del") { await setP(null, null); await M.delVid(k); return res.status(200).json({ ok: true }); }
+        const i = Number(b.i), n = Number(b.n), type = String(b.type || "");
+        if (!(Number.isInteger(n) && n >= 1 && n <= 24 && Number.isInteger(i) && i >= 0 && i < n)) return fail(res, 400, "Trozo no válido");
+        if (!/^(video\/(mp4|webm|quicktime)|image\/gif)$/.test(type)) return fail(res, 400, "Formato no válido: usa un vídeo (MP4, MOV, WebM) o un GIF");
+        const data = String(b.data || "");
+        if (!data || data.length > 960000 || /[^A-Za-z0-9+/=]/.test(data)) return fail(res, 400, "Trozo de vídeo no válido");
+        await cmd(["SET", "vid:" + k + ":" + i, data]);
+        if (i === n - 1) {
+          let size = 0; for (let j = 0; j < n; j++) { const c = await cmd(["GET", "vid:" + k + ":" + j]); if (!c) return fail(res, 400, "Falta un trozo del vídeo. Vuelve a subirlo."); size += Buffer.byteLength(String(c), "base64"); }
+          const v = Date.now();
+          await cmd(["SET", "vid:" + k + ":m", JSON.stringify({ n, type, v, size })]);
+          await setP(v, type);
+          return res.status(200).json({ ok: true, vid: "/api/img?k=" + k + "&v=" + v, vt: type });
+        }
+        return res.status(200).json({ ok: true });
+      }
       if (b.action === "admin_test_spin") {
         const d = await M.draw(Number(b.boxId), true).catch((e) => ({ err: e.message }));
         if (d.err) return fail(res, 409, d.err);
         const pp = M.pub(d.box).prizes.find((x) => x.id === d.prize.id) || {};
         await cmd(["LPUSH", "mb:testlog", JSON.stringify({ at: Date.now(), boxId: d.box.id, prizeId: d.prize.id, prize: d.prize.name, rnd: d.rnd, total: d.total })]).catch(() => {});
         await cmd(["LTRIM", "mb:testlog", "0", "499"]).catch(() => {});
-        return res.status(200).json({ test: true, prize: { id: d.prize.id, name: d.prize.name, desc: d.prize.desc, value: d.prize.value, rarity: d.prize.rarity || "Común", img: pp.img || null } });
+        return res.status(200).json({ test: true, prize: { id: d.prize.id, name: d.prize.name, desc: d.prize.desc, value: d.prize.value, rarity: d.prize.rarity || "Común", img: pp.img || null, vid: pp.vid || null, vt: pp.vt || null, fx: pp.fx || "auto" } });
       }
       if (b.action === "admin_box") {
         const box = await M.withStock(await M.getBox(Number(b.id)));

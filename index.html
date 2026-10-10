@@ -517,6 +517,22 @@ html.gt:not(.ln) body{overflow:hidden}
 #gbarf{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#ff9500,#ffcb05,#fff27a,#ffcb05,#ff9500);background-size:200% 100%;animation:adbg 1.6s linear infinite;box-shadow:0 0 18px #ffcb05aa;transition:width .12s linear}
 #gate .gbl{display:flex;justify-content:space-between;font-size:14px;font-weight:700}#gate .gbl b{color:#ffe14a;font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:reduce){#gate .grays,#gate .glogo,#gbarf{animation:none}}
+/* ===== Animación en vídeo de cada premio ===== */
+#pvid{display:none;position:fixed;inset:0;z-index:9000;background:#000;align-items:center;justify-content:center;--pvc:#ffcb05}
+#pvid.on{display:flex;animation:pvin .35s ease-out}
+#pvid.out{opacity:0;transition:opacity .4s}
+@keyframes pvin{from{opacity:0}}
+#pvid .pvbg{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--pvc) 45%,transparent) 0,transparent 60%);opacity:.0;transition:opacity .6s}
+#pvid.pl .pvbg{opacity:1}
+#pvid video,#pvid img{position:relative;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;transform:scale(.85);filter:blur(10px) brightness(1.8);opacity:0;transition:transform .7s cubic-bezier(.2,1.4,.4,1),filter .6s,opacity .3s}
+#pvid.pl video,#pvid.pl img{transform:scale(1);filter:none;opacity:1}
+#pvskip,#pvsnd{position:absolute;z-index:2;border:0;border-radius:999px;font:inherit;font-weight:800;cursor:pointer;padding:10px 16px;background:#ffffff26;color:#fff;backdrop-filter:blur(6px)}
+#pvskip{right:14px;bottom:calc(16px + env(safe-area-inset-bottom))}
+#pvsnd{left:50%;top:calc(16px + env(safe-area-inset-top));transform:translateX(-50%);background:#ffcb05;color:#2b0b4a}
+.prow .rvid{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}.prow .rvid .vok{font-weight:800;color:#1f9e4a}.prow .rvid small{opacity:.75}.prow .rvid .vst{opacity:1;font-weight:700}
+.ov.shk .bx{animation:shk .55s}
+@keyframes shk{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(5px,-3px)}30%,50%,70%{transform:translate(-8px,4px)}40%,60%{transform:translate(8px,-4px)}}
+@media (prefers-reduced-motion:reduce){#pvid video,#pvid img{transition:none;transform:none;filter:none}.ov.shk .bx{animation:none}}
 </style>
 </head>
 <body>
@@ -724,6 +740,7 @@ html.gt:not(.ln) body{overflow:hidden}
  <small style="opacity:.7">Tu reseña se publicará al momento. Al enviarla aceptas que mostremos tu nombre, comentario y foto en la web.</small></div>
  <div id="rvthx" hidden>🙌 ¡Gracias por tu reseña!<br><small>Ya está publicada en la web.</small></div></div></div>
 <div class="ov" id="mbl"><div class="bx wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="mblt" style="font-size:24px;margin:0">Panel de administración</h2><button class="sbtn o" id="mblx">Cerrar</button></div><div class="sedt ptabs" id="ptabs"><button data-pt="compras">Compras</button><button data-pt="giros">PokeRuleta</button><button data-pt="descuentos">Descuentos</button><button data-pt="cajas">Cajas</button><button data-pt="clientes">Clientes</button><button data-pt="ventas">Quiero vender</button><button data-pt="estado">Estado</button></div><div id="mblb" style="display:grid;gap:10px"></div></div></div>
+<div id="pvid" role="dialog" aria-label="Animación del premio"><div class="pvbg" aria-hidden="true"></div><video id="pvv" playsinline preload="auto"></video><img id="pvg" alt="" hidden><button id="pvsnd" type="button" hidden>🔊 Activar sonido</button><button id="pvskip" type="button">Saltar ⏭</button></div>
 <div class="ov" id="pz"><div class="bx" id="pzb"><button class="sbtn o" id="pzx" style="justify-self:end">Cerrar ✕</button><div class="c4d" id="pzt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="pzi" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="pzh" style="font-size:24px;text-align:center"></h3><p id="pzr" style="text-align:center"></p><p class="val" id="pzv" style="text-align:center"></p><p id="pzd" style="opacity:.85;text-align:center"></p><p id="pzp" style="opacity:.7;text-align:center;font-size:13px"></p><button class="btn pk" id="pzbuy" style="border:0;text-align:center">COMPRAR Y GIRAR</button></div></div>
 <div class="ov" id="mres"><div class="bx"><h2>🎉 ¡HAS GANADO!</h2><p>Has conseguido:</p><div class="c4d" id="mrt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="mri" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="mrn" style="font-size:26px"></h3><p id="mrr"></p><p class="val" id="mrv"></p><p id="mrd" style="opacity:.8"></p><small id="mrid" style="opacity:.6"></small>
  <div style="display:grid;gap:8px;margin-top:8px"><a class="btn pk" href="#mine" id="mrsee">VER PREMIO</a><button class="sbtn o" id="mrback" style="color:#f4efe3;border-color:#ffffff55">VOLVER A POKERULETA</button></div></div></div>
@@ -1082,17 +1099,31 @@ function playFx(el,kind,lv,ov){FXid++;const id=FXid,cv=$("#fxc");if(ov&&cv.paren
   dragon:c=>{if(R()<.5)add({x:c.x+(R()-.5)*c.w,y:c.y+c.h*.45,vx:(R()-.5)*.8,vy:-1-R()*1.6,s:1.5+R()*2,c:`hsl(${R()*360},95%,65%)`,k:"ember",life:1.4})},
   hada:c=>{if(R()<.35)add({x:c.x+(R()-.5)*c.w*1.4,y:c.y+(R()-.5)*c.h*1.4,s:2+R()*4,c:R()<.5?C1:C2,k:"glint",life:1.1})},
   estrella:c=>{if(R()<.35)add({x:c.x+(R()-.5)*c.w*1.4,y:c.y+(R()-.5)*c.h*1.4,s:2+R()*4,c:C1,k:"glint",life:1.1})}};
+ // Escena a pantalla completa según el tipo (justo al descubrir la carta)
+ let BOLTS=null;const bolt=(x0,y0,x1,y1)=>{const pts=[[x0,y0]],n=12;for(let i=1;i<n;i++){const k=i/n;pts.push([x0+(x1-x0)*k+(R()-.5)*90*(1-k*.5),y0+(y1-y0)*k+(R()-.5)*30])}pts.push([x1,y1]);return pts};
+ function SC(s,c){if(s<0||s>2.4)return;const fade=Math.max(0,1-s/2.4),M=Math.max(W,H);x.save();x.globalCompositeOperation="lighter";
+  if(kind==="fuego"){x.shadowColor=C1;x.shadowBlur=28;x.globalAlpha=.8;for(let i=0;i<22;i++){const fx=W*(i+.5)/22,h=H*(.22+.16*Math.sin(s*9+i*1.7)+.1*Math.sin(s*23+i))*fade*Math.min(1,s*4),g=x.createLinearGradient(0,H,0,H-h);g.addColorStop(0,C3+"ee");g.addColorStop(.45,C1+"aa");g.addColorStop(1,C2+"00");x.fillStyle=g;x.beginPath();x.moveTo(fx-W/12,H);x.bezierCurveTo(fx-W/14,H-h*.55,fx-W/40,H-h*.85,fx+Math.sin(s*7+i)*14,H-h);x.bezierCurveTo(fx+W/40,H-h*.85,fx+W/14,H-h*.55,fx+W/12,H);x.fill()}x.shadowBlur=0}
+  else if(kind==="rayo"){if(!BOLTS||(s>.28&&BOLTS.k<2)||(s>.6&&BOLTS.k<3)){const k=BOLTS?BOLTS.k+1:1;BOLTS={k,t:s,l:[bolt(R()*W,-10,c.x+(R()-.5)*40,c.y),bolt(R()<.5?-10:W+10,R()*H*.4,c.x,c.y)]};flash=Math.max(flash,.55)}
+   const a=Math.max(0,1-(s-BOLTS.t)*5);if(a>0){x.shadowColor=C1;x.shadowBlur=30;for(const L of BOLTS.l)for(const [lw,col] of [[9,C1+"66"],[3.5,C2]]){x.globalAlpha=a;x.strokeStyle=col;x.lineWidth=lw;x.lineJoin="round";x.beginPath();L.forEach((q,j)=>j?x.lineTo(q[0],q[1]):x.moveTo(q[0],q[1]));x.stroke()}x.shadowBlur=0}}
+  else if(kind==="agua"){const lv2=Math.sin(Math.min(1,s/1.6)*Math.PI),top=H-(H*.55)*lv2;for(let k=0;k<2;k++){const g=x.createLinearGradient(0,top,0,H);g.addColorStop(0,(k?C2:C1)+"99");g.addColorStop(1,C3+"22");x.fillStyle=g;x.globalAlpha=.55-k*.2;x.beginPath();x.moveTo(0,H);for(let px=0;px<=W;px+=16)x.lineTo(px,top+k*24+Math.sin(px/70+s*6+k*2)*16);x.lineTo(W,H);x.fill()}}
+  else if(kind==="hielo"||kind==="fantasma"){const g=x.createRadialGradient(c.x,c.y,Math.min(W,H)*.25,c.x,c.y,M*.75);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,(kind==="hielo"?C2:C3)+"cc");x.globalCompositeOperation=kind==="hielo"?"lighter":"source-over";x.globalAlpha=fade*.9;x.fillStyle=g;x.fillRect(0,0,W,H);
+   if(kind==="hielo"&&s<.1)for(let i=0;i<40;i++){const e=R()<.5,px=e?(R()<.5?R()*60:W-R()*60):R()*W,py=e?R()*H:(R()<.5?R()*60:H-R()*60);add({x:px,y:py,s:4+R()*7,c:C2,k:"glint",life:1.6+R()})}}
+  else if(kind==="planta"){if(s<.5)for(let i=0;i<5;i++)add({x:-20,y:R()*H,vx:7+R()*8,vy:(R()-.5)*3,dr:.995,s:6+R()*6,c:R()<.6?C1:C2,k:"leaf",rot:R()*6,vr:(R()-.5)*.2,life:1.8})}
+  else if(kind==="psiquico"){for(let i=0;i<6;i++){const r=((s*.9+i/6)%1)*M*.8;x.globalAlpha=fade*(1-r/(M*.8))*.7;x.strokeStyle=i%2?C1:C2;x.lineWidth=6;x.beginPath();x.ellipse(c.x,c.y,r,r*.6,0,0,7);x.stroke()}}
+  else if(kind==="dragon"){x.translate(c.x,c.y);x.rotate(s*2.2);for(let i=0;i<18;i++){x.rotate(Math.PI/9);const g=x.createLinearGradient(0,0,M*.8,0);g.addColorStop(0,`hsla(${i*20+s*200},95%,60%,.0)`);g.addColorStop(.3,`hsla(${i*20+s*200},95%,60%,${.35*fade})`);g.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=g;x.beginPath();x.moveTo(0,0);x.quadraticCurveTo(M*.3,40,M*.8,-30);x.lineTo(M*.8,30);x.closePath();x.fill()}}
+  else{if(s<1.4)for(let i=0;i<4;i++)add({x:R()*W,y:-10,vy:3+R()*4,vx:(R()-.5),s:3+R()*5,c:R()<.5?C1:C2,k:"glint",life:2})}
+  x.restore()}
  function glint(px,py,s){x.beginPath();x.moveTo(px,py-s*2.4);x.quadraticCurveTo(px,py,px+s*2.4,py);x.quadraticCurveTo(px,py,px,py+s*2.4);x.quadraticCurveTo(px,py,px-s*2.4,py);x.quadraticCurveTo(px,py,px,py-s*2.4);x.fill()}
  (function f(now){if(id!==FXid)return;const dt=Math.min(.05,(now-last)/1000),t=(now-T0)/1000;last=now;const c=C();
   // fase 1: carga — la energía converge hacia la carta
   if(t<HIT-.05){const n=2+lv;for(let i=0;i<n;i++){const a=R()*6.28,r=Math.max(W,H)*(.35+R()*.3);add({x:c.x+Math.cos(a)*r,y:c.y+Math.sin(a)*r,tx:c.x,ty:c.y,k:"streak",s:1.2+R()*1.6,c:R()<.5?C1:C2,life:.45+R()*.25,conv:1})}}
   // fase 2: impacto al descubrir la carta
-  if(t>=HIT&&!hit){hit=true;flash=1;const n=60+lv*40;for(let i=0;i<n;i++){const a=R()*6.28,v=4+R()*10*(1+lv*.25);add({x:c.x,y:c.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,dr:.93,k:"streak",s:1+R()*2,c:R()<.6?C1:C2,life:.7+R()*.5})}
+  if(t>=HIT&&!hit){hit=true;flash=1;if(ov&&(kind==="rayo"||kind==="dragon"||lv>=3)){ov.classList.remove("shk");void ov.offsetWidth;ov.classList.add("shk");setTimeout(()=>ov.classList.remove("shk"),700)}const n=60+lv*40;for(let i=0;i<n;i++){const a=R()*6.28,v=4+R()*10*(1+lv*.25);add({x:c.x,y:c.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,dr:.93,k:"streak",s:1+R()*2,c:R()<.6?C1:C2,life:.7+R()*.5})}
    for(let i=0;i<1+Math.min(2,lv);i++)add({x:c.x,y:c.y,k:"ring",r:c.w*.4,vr:9+i*4,c:i?C2:C1,life:.75+i*.1})}
   if(hit&&t<3.6)(amb[kind]||amb.estrella)(c);
   x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);
   // halo detrás de la carta
-  const ga=t<HIT?Math.min(1,t/HIT)*.55:Math.max(0,.55-(t-HIT)*.12);if(ga>0){const r=c.w*(t<HIT?.5+t*.4:1.1),g=x.createRadialGradient(c.x,c.y,0,c.x,c.y,r);g.addColorStop(0,C3+"cc");g.addColorStop(.4,C1+"55");g.addColorStop(1,C1+"00");x.globalAlpha=ga;x.fillStyle=g;x.fillRect(c.x-r,c.y-r,r*2,r*2);x.globalAlpha=1}
+  const ga=t<HIT?Math.min(1,t/HIT)*.55:Math.max(0,.55-(t-HIT)*.12);if(hit)SC(t-HIT,c);if(ga>0){const r=c.w*(t<HIT?.5+t*.4:1.1),g=x.createRadialGradient(c.x,c.y,0,c.x,c.y,r);g.addColorStop(0,C3+"cc");g.addColorStop(.4,C1+"55");g.addColorStop(1,C1+"00");x.globalAlpha=ga;x.fillStyle=g;x.fillRect(c.x-r,c.y-r,r*2,r*2);x.globalAlpha=1}
   // rayos de luz (épico y legendario)
   if(rays&&hit&&t<4){const al=Math.min(1,(t-HIT)*2)*Math.max(0,1-(t-3.2)/.8)*(lv>=3?.22:.12);x.save();x.translate(c.x,c.y);x.rotate(t*.25);x.globalCompositeOperation="lighter";for(let i=0;i<12;i++){x.rotate(Math.PI/6);const g=x.createLinearGradient(0,0,Math.max(W,H)*.7,0);g.addColorStop(0,C2);g.addColorStop(1,C2+"00");x.globalAlpha=al;x.fillStyle=g;x.beginPath();x.moveTo(0,0);x.lineTo(Math.max(W,H)*.7,-34);x.lineTo(Math.max(W,H)*.7,34);x.closePath();x.fill()}x.restore()}
   x.globalCompositeOperation="lighter";
@@ -1119,14 +1150,16 @@ function card4d(w,src){w.hidden=!src;if(!src)return;w.querySelector(".tbg i").st
  w.addEventListener("pointerdown",ev=>{mv(ev);try{w.setPointerCapture(ev.pointerId)}catch(_){}});w.addEventListener("pointermove",ev=>{if(ev.pointerType==="mouse"||touch)mv(ev)});
  const up=()=>{touch=0};w.addEventListener("pointerup",up);w.addEventListener("pointercancel",up);w.addEventListener("pointerleave",up);
  w._go=()=>{if(!raf&&!reduced())raf=requestAnimationFrame(loop)}}
-function showPrize(p,ev){$("#pzb").className="bx g"+ri(p.rarity);card4d($("#pzt"),p.img);if($("#pzt")._go)$("#pzt")._go();
+function showPrize(p,ev){if(p&&p.vid&&!ADMIN_ED_PREV)return playVid(p).then(()=>showPrize0(p,ev));showPrize0(p,ev)}
+function showPrize0(p,ev){$("#pzb").className="bx g"+ri(p.rarity);card4d($("#pzt"),p.img);if($("#pzt")._go)$("#pzt")._go();
  $("#pzh").textContent=p.name;$("#pzr").innerHTML=rar(p.rarity);$("#pzv").textContent=p.value?"Valor: "+e(p.value):"";
  $("#pzd").textContent=p.desc||"";$("#pzp").textContent=[ADMIN&&pReal(curBox(),p)!=null?"Probabilidad: "+String(pReal(curBox(),p)).replace(".",",")+"%":"",p.left!=null?"Quedan "+p.left:""].filter(Boolean).join(" · ");
  $("#pzbuy").textContent=MBtk&&MBtk.status==="pending"?"GIRAR RULETA":"COMPRAR Y GIRAR";
  $("#pz").classList.add("on");playFx(p.img?$("#pzt"):$("#pzb"),fxOf(p),ri(p.rarity),$("#pz"))}
 function wheelTap(ev){if(spinning)return;const p=tapPrize($("#wh"),ev);if(!p||String(p.id).startsWith("d"))return;
  const w=$(".wheelw");w.classList.remove("tap");void w.offsetWidth;w.classList.add("tap");showPrize(p,ev)}
-function showRes(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);card4d($("#mrt"),p.img);if($("#mrt")._go)$("#mrt")._go();$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");fanfare();const bp=(MBtk&&MBtk.box&&MBtk.box.prizes||[]).find(x=>x.id===p.id)||p;playFx(p.img?$("#mrt"):$("#mres .bx"),fxOf(bp),ri(p.rarity),$("#mres"));setTimeout(()=>confetti(),1500)}
+function showRes(p,spinId){const bp=[...(MBtk&&MBtk.box&&MBtk.box.prizes||[]),...((curBox()||{}).prizes||[])].find(x=>x.id===p.id)||p;if(bp.vid||p.vid)return playVid(bp.vid?bp:p).then(()=>showRes0(p,spinId));showRes0(p,spinId)}
+function showRes0(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);card4d($("#mrt"),p.img);if($("#mrt")._go)$("#mrt")._go();$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");fanfare();const bp=(MBtk&&MBtk.box&&MBtk.box.prizes||[]).find(x=>x.id===p.id)||p;playFx(p.img?$("#mrt"):$("#mres .bx"),fxOf(bp),ri(p.rarity),$("#mres"));setTimeout(()=>confetti(),1500)}
 let CFid=0;
 function confetti(ox,oy){if(reduced())return;const id=++CFid,c=$("#cf2");c.width=innerWidth;c.height=innerHeight;const x=c.getContext("2d"),HW=document.documentElement.classList.contains("th-halloween"),col=HW?["#ff7a18","#8e44ec","#7CFF6B","#ffb347","#2b123d","#ffffff"]:["#ffcb05","#f26b1d","#1f7a5c","#ffffff","#e1306c","#2a7de1"],EM=["🎃","🦇","👻"],B=ox!=null,g=B?.3:0,P2=Array.from({length:B?130:170},()=>B?{x:ox,y:oy,vx:(Math.random()-.5)*18,vy:-5-Math.random()*12,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.35,c:col[Math.random()*6|0]}:{x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:col[Math.random()*6|0]});let n=0;(function f(){if(id!==CFid)return;x.clearRect(0,0,c.width,c.height);P2.forEach(p=>{p.vy+=g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);if(HW&&p.e===undefined)p.e=Math.random()<.28?EM[Math.random()*3|0]:"";if(HW&&p.e){x.font=(p.s*2.6|0)+"px serif";x.textAlign="center";x.fillText(p.e,0,0)}else{x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6)}x.restore()});if(++n<(B?170:240))requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 async function openTicket(token){const d=await req("/api/mbox",{action:"ticket",token});MBtk={...d.ticket,box:d.box};MBpend=null;if(d.box)MBsel=d.box.id;renderMB()}
@@ -1149,11 +1182,12 @@ async function initMB(){await loadMB();const q=new URLSearchParams(location.sear
 /* ---- administración de cajas ---- */
 const rid=()=>Math.random().toString(36).slice(2,8);
 function sample(){const c=["#e63946","#2a7de1","#7a4fd1","#f26b1d","#ffcb05","#1f7a5c"],n=[["Booster Box",5,"Legendario"],["Carta graduada",10,"Épico"],["Carta holo",25,"Raro"],["Lote de cartas",30,"Común"],["Carta vintage japonesa",10,"Épico"],["Carta sorpresa",20,"Común"]];return{name:"PokeRuleta Cartas Pokémon",desc:"Caja sorpresa solo de cartas Pokémon.",price:2999,active:1,img:null,_new:1,prizes:n.map((x,i)=>({id:rid(),name:x[0],desc:"",value:0,p:x[1],rarity:x[2],color:c[i],on:1,img:null,stock:"",stock0:""}))}}
-function openBoxEd(b){EB=b?JSON.parse(JSON.stringify(b)):sample();if(b)EB.prizes.forEach(p=>{p.stock=p.left==null?"":p.left;p.stock0=p.stock});$("#mba").classList.add("on");msg("#mbmsg2","","");renderEd();$("#mba").scrollTop=0}
+function openBoxEd(b){EB=b?JSON.parse(JSON.stringify(b)):sample();if(b)EB.prizes.forEach(p=>{p.stock=p.left==null?"":p.left;p.stock0=p.stock;p._sv=1});$("#mba").classList.add("on");msg("#mbmsg2","","");renderEd();$("#mba").scrollTop=0}
 function renderEd(){$("#mbat").textContent=EB._new?"Nueva PokeRuleta":"Editar PokeRuleta";const bi=EB.newImg||(!EB.rmImg&&EB.img)||"";$("#mbaimg").style.display=bi?"":"none";$("#mbaimg").src=bi;$("#mbarm").style.display=bi?"":"none";
  $("#mban").value=EB.name;$("#mbad").value=EB.desc||"";$("#mbap").value=(EB.price/100).toFixed(2);$("#mbaa").checked=!!EB.active;$("#mbdel").style.display=EB._new?"none":"";
  $("#mbpl").innerHTML=EB.prizes.map((p,i)=>{const im=p.newImg||(!p.rmImg&&p.img)||"";return `<div class="prow ${p.on?"":"off"}" data-i="${i}"><div class="r1">${im?`<img class="th" src="${esc(im)}" alt="">`:'<span class="th"></span>'}<input data-f="n" placeholder="Nombre del premio" value="${esc(p.name)}" maxlength="120" aria-label="Nombre del premio ${i+1}"><button type="button" data-act="up" title="Subir">↑</button><button type="button" data-act="dn" title="Bajar">↓</button><button type="button" data-act="rm" title="Eliminar premio">✕</button></div>
   <div class="r2"><label class="fl">📷 ${im?"Cambiar foto":"Añadir foto"}<input type="file" data-f="img" accept="image/jpeg,image/png,image/webp" hidden></label>${im?'<button type="button" class="lnk2" data-act="rmimg">Quitar foto</button>':""}</div>
+  <div class="r2 rvid">${EB._new||!p._sv?'<small>🎬 Guarda la caja para poder añadir la animación (vídeo) de este premio</small>':p._vst?`<small class="vst">${esc(p._vst)}</small>`:p.vid?`<span class="vok">🎬 Animación puesta</span><button type="button" class="lnk2" data-act="vplay">▶ Ver</button><label class="fl">Cambiar<input type="file" data-f="vid" accept="video/*,image/gif" hidden></label><button type="button" class="lnk2" data-act="vrm">Quitar</button>`:`<label class="fl">🎬 Añadir animación (vídeo o GIF)<input type="file" data-f="vid" accept="video/*,image/gif" hidden></label>`}</div>
   <textarea data-f="d" rows="1" placeholder="Descripción (opcional)" maxlength="300">${esc(p.desc)}</textarea>
   <div class="r3"><label>Valor (€)<input data-f="v" type="number" step="0.01" min="0" value="${(p.value/100).toFixed(2)}"></label><label>Probabilidad (%)<input data-f="p" type="number" step="0.01" min="0" max="100" value="${p.p}"></label><label>Stock${p.stock0!==""&&p.stock0!=null?` <small>(quedan ${p.stock0})</small>`:""}<input data-f="s" type="number" min="0" step="1" placeholder="Ilimitado" value="${p.stock}"></label></div>
   <div class="r3"><label>Rareza<select data-f="r">${RAR.map(r=>`<option ${r===p.rarity?"selected":""}>${r}</option>`).join("")}</select></label><label>Animación<select data-f="fx">${FXL.map(([k,t])=>`<option value="${k}" ${k===(p.fx||"auto")?"selected":""}>${t}</option>`).join("")}</select></label><label>Color<input data-f="c" type="color" value="${esc(p.color||"#444444")}"></label><label class="ck"><input type="checkbox" data-f="on" ${p.on?"checked":""}> Activo</label></div>${p.stock===0||p.stock==="0"?'<span class="badge red">Agotado</span>':""}</div>`}).join("");updEd()}
@@ -1174,8 +1208,11 @@ $("#mbpl").addEventListener("input",ev=>{const r=ev.target.closest(".prow"),f=ev
  if(f==="n")p.name=v;else if(f==="d")p.desc=v;else if(f==="v")p.value=Math.max(0,Math.round(parseFloat(v||0)*100));else if(f==="p")p.p=Math.max(0,Math.min(100,Math.round(parseFloat(v||0)*100)/100));else if(f==="c")p.color=v;else if(f==="s")p.stock=v===""?"":Math.max(0,parseInt(v,10)||0);updEd()});
 $("#mbpl").addEventListener("change",async ev=>{const r=ev.target.closest(".prow"),f=ev.target.dataset.f;if(!r)return;const p=EB.prizes[+r.dataset.i];
  if(f==="r")p.rarity=ev.target.value;if(f==="fx")p.fx=ev.target.value;if(f==="on"){p.on=ev.target.checked?1:0;r.classList.toggle("off",!p.on);updEd()}if(f==="s")renderEd();
+ if(f==="vid"&&ev.target.files[0])return upVid(p,ev.target.files[0]);
  if(f==="img"&&ev.target.files[0]){const d=await shr(ev.target.files[0],560);if(!d)return msg("#mbmsg2","err","No se pudo leer la imagen.");p.newImg=d;p.rmImg=0;renderEd()}});
 $("#mbpl").addEventListener("click",ev=>{const a=ev.target.dataset.act;if(!a)return;const i=+ev.target.closest(".prow").dataset.i,L=EB.prizes;
+ if(a==="vplay"){ADMIN_ED_PREV=0;playVid(L[i]);return}
+ if(a==="vrm"){if(!confirm("¿Quitar la animación de «"+L[i].name+"»?"))return;const p=L[i];req("/api/mbox",{action:"admin_vid_del",pin:APIN,boxId:EB.id,pid:p.id}).then(()=>{p.vid=null;renderEd();toast("Animación quitada ✓","ok");loadMB().then(renderMB)}).catch(err=>msg("#mbmsg2","err",err.message));return}
  if(a==="rm"&&!confirm("¿Eliminar el premio «"+L[i].name+"»?"))return;if(a==="rm")L.splice(i,1);if(a==="rmimg"){L[i].newImg=null;L[i].rmImg=1}
  if(a==="up"&&i>0)[L[i-1],L[i]]=[L[i],L[i-1]];if(a==="dn"&&i<L.length-1)[L[i+1],L[i]]=[L[i],L[i+1]];renderEd()});
 $("#mbcancel").onclick=()=>$("#mba").classList.remove("on");
@@ -1250,8 +1287,8 @@ document.addEventListener("click",async ev=>{const t=ev.target,el=t.closest?t:nu
   try{const d=await req("/api/mbox",{action:"buy",boxId:b.id,zone:MBz,nonce:MBnonce,acct:accTok()||undefined});location.href=d.url}catch(err){done();MBnonce=null;msgMB("err",err.message);if(err.status===409){await loadMB();renderMB()}}}
  if(t.id==="snd"){SND=!SND;ls.set("pi_snd",SND);t.textContent=SND?"🔊 Sonido activado":"🔇 Sonido desactivado"}
  if(t.id==="wh"||t.classList.contains("hub"))wheelTap(ev);
- if(t.id==="wgo")spinNow();
- if(t.id==="wtest")testSpin();
+ if(t.id==="wgo"){vPrime(MBtk&&MBtk.box);spinNow()}
+ if(t.id==="wtest"){vPrime(curBox());testSpin()}
  if(t.dataset.spin)goSpin(t.dataset.spin);
  if(t.id==="pnew")openBoxEd(null);
  if(t.id==="pcsv"&&PDATA.orders)csv("compras.csv",[["Fecha","Tipo","Estado","Importe (€)","Nombre","Email","Teléfono","Dirección","Sesión Stripe","Pago Stripe"],...PDATA.orders.purchases.map(p=>[fdate(p.created),p.kind==="mbox"?"PokeRuleta":"Tienda",STL[p.status]||p.status,((p.paid!=null?p.paid:(p.price||0)+(p.ship||0))/100).toFixed(2).replace(".",","),p.name,p.email,p.phone,p.address,p.id,p.pi])]);
@@ -1621,6 +1658,48 @@ $("#gskip").onclick=()=>{ls.set("pi_gate_skip",Date.now());$("#gate").classList.
 $("#agate").onclick=async ev=>{const nx=!GATE.on?{on:true,force:false}:!GATE.force?{on:true,force:true}:{on:false,force:false};
  if(nx.force&&!confirm("Modo OBLIGATORIO: nadie podrá ver la tienda sin iniciar sesión con el código del email.\n\nAsegúrate de que los emails llegan bien (Panel → Probar email). ¿Activar?"))nx.on=false,nx.force=false;
  const done=busy(ev.currentTarget,"Guardando…");try{const d=await req("/api/site",{action:"admin_gate",pin:APIN,...nx});GATE=d.gate;done();applyGate();toast(!GATE.on?"Pantalla de inicio de sesión desactivada ✓":GATE.force?"Inicio de sesión OBLIGATORIO para entrar ✓":"Pantalla de inicio de sesión activada ✓ (se puede saltar)","ok")}catch(err){done();toast(err.message,"err")}};
+/* ---- animación en vídeo de cada premio ---- */
+var ADMIN_ED_PREV=0,PVres=null,PVT=null;
+// En iPhone el vídeo solo suena si se "desbloquea" con el toque del usuario: se hace al pulsar GIRAR
+function vPrime(b){const v=$("#pvv"),f=b&&(b.prizes||[]).find(p=>p.vid&&!/gif/.test(p.vt||""));if(!f||!v)return;try{v.src=f.vid;v.muted=false;const pr=v.play();if(pr&&pr.then)pr.then(()=>{v.pause();v.currentTime=0}).catch(()=>{})}catch(_){}}
+function playVid(p){return new Promise(done=>{const o=$("#pvid"),v=$("#pvv"),g=$("#pvg"),sb=$("#pvsnd");if(!o||!p||!p.vid)return done();
+ const C=(FXP[fxOf(p)]||FXP.estrella)[0];o.style.setProperty("--pvc",C);clearTimeout(PVT);sb.hidden=true;
+ let fin=false;const end=()=>{if(fin)return;fin=true;clearTimeout(PVT);o.classList.add("out");try{v.pause()}catch(_){}setTimeout(()=>{o.classList.remove("on","out","pl");v.removeAttribute("src");v.load();g.removeAttribute("src");done()},420)};PVres=end;
+ o.classList.remove("out","pl");o.classList.add("on");
+ if(/gif/.test(p.vt||"")){v.hidden=true;g.hidden=false;g.onload=()=>o.classList.add("pl");g.src=p.vid;PVT=setTimeout(end,6000);return}
+ g.hidden=true;v.hidden=false;v.onended=end;v.onerror=end;v.onplaying=()=>o.classList.add("pl");
+ if(v.getAttribute("src")!==p.vid)v.src=p.vid;v.currentTime=0;v.muted=false;
+ const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{v.muted=true;sb.hidden=false;v.play().catch(end)});
+ PVT=setTimeout(end,20000)})}
+$("#pvskip").onclick=()=>PVres&&PVres();
+$("#pvsnd").onclick=ev=>{ev.stopPropagation();const v=$("#pvv");v.muted=false;$("#pvsnd").hidden=true;v.play().catch(()=>{})};
+// Convierte el vídeo a uno ligero y compatible con todos los móviles (máx. 15 s, 720p)
+async function vidConv(file,prog){if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)throw new Error("Este navegador no puede convertir vídeos");
+ const mt=["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4","video/webm;codecs=vp8,opus","video/webm;codecs=vp9,opus","video/webm"].find(t=>{try{return MediaRecorder.isTypeSupported(t)}catch(_){return false}});if(!mt)throw new Error("Este navegador no puede convertir vídeos");
+ const url=URL.createObjectURL(file),v=document.createElement("video");v.playsInline=true;v.setAttribute("playsinline","");v.preload="auto";v.src=url;
+ try{await new Promise((ok,ko)=>{v.onloadeddata=ok;v.onerror=()=>ko(new Error("No se puede leer ese vídeo en este navegador"));setTimeout(()=>ko(new Error("El vídeo tarda demasiado en abrirse")),20000)});
+  const dur=Math.min(15,isFinite(v.duration)&&v.duration>0?v.duration:15),sc=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight)),W=Math.round(v.videoWidth*sc/2)*2||720,H=Math.round(v.videoHeight*sc/2)*2||1280;
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const cx=cv.getContext("2d"),st=cv.captureStream(30);
+  let A=null;try{const AC=window.AudioContext||window.webkitAudioContext;A=new AC();const src=A.createMediaElementSource(v),d=A.createMediaStreamDestination();src.connect(d);d.stream.getAudioTracks().forEach(t=>st.addTrack(t))}catch(_){}
+  const rec=new MediaRecorder(st,{mimeType:mt,videoBitsPerSecond:2200000,audioBitsPerSecond:128000}),parts=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)parts.push(e.data)};
+  const stopped=new Promise(ok=>rec.onstop=ok);
+  v.muted=false;try{await v.play()}catch(_){v.muted=true;await v.play()}
+  rec.start(500);let on=true;
+  await new Promise(ok=>{const tick=()=>{if(!on)return;cx.drawImage(v,0,0,W,H);prog(Math.min(99,Math.round(v.currentTime/dur*100)));if(v.ended||v.currentTime>=dur){on=false;return ok()}requestAnimationFrame(tick)};tick();v.onended=()=>{on=false;ok()};setTimeout(()=>{on=false;ok()},(dur+5)*1000)});
+  rec.stop();v.pause();await stopped;if(A)A.close().catch(()=>{});
+  const blob=new Blob(parts,{type:mt.split(";")[0]});if(blob.size<2000)throw new Error("La conversión ha fallado");return blob}
+ finally{URL.revokeObjectURL(url)}}
+async function upVid(p,f){const set=t=>{p._vst=t;renderEd()};
+ try{const gif=/gif$/i.test(f.type)||/\.gif$/i.test(f.name);let blob=f,type;
+  if(gif){if(f.size>8*1024*1024)throw new Error("El GIF pesa más de 8 MB. Usa uno más corto o un vídeo.");type="image/gif"}
+  else{set("🎬 Preparando el vídeo… 0%");try{blob=await vidConv(f,pc=>set("🎬 Preparando el vídeo… "+pc+"%"))}catch(e){blob=f}
+   type=/webm/.test(blob.type)?"video/webm":/quicktime|\.mov$/i.test(blob.type||f.name)?"video/quicktime":"video/mp4";
+   if(blob.size>16*1024*1024)throw new Error("El vídeo pesa demasiado (máx. 16 MB). Usa uno más corto (5-10 segundos).")}
+  const buf=new Uint8Array(await blob.arrayBuffer()),CH=700000,n=Math.ceil(buf.length/CH);if(n>24)throw new Error("El vídeo pesa demasiado (máx. 16 MB).");
+  let d;for(let i=0;i<n;i++){set(`⬆️ Subiendo animación… ${Math.round(i/n*100)}%`);let s="";const part=buf.subarray(i*CH,(i+1)*CH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));
+   d=await req("/api/mbox",{action:"admin_vid",pin:APIN,boxId:EB.id,pid:p.id,i,n,type,data:btoa(s)})}
+  p.vid=d.vid;p.vt=d.vt;p._vst="";renderEd();toast("🎬 Animación guardada ✓ Saldrá cuando toque este premio","ok");loadMB().then(renderMB)}
+ catch(err){p._vst="";renderEd();msg("#mbmsg2","err",err.message||"No se pudo subir la animación")}}
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 

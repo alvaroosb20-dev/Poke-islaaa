@@ -69,19 +69,29 @@ function effective(b) {
 
 const boxImg = (b) => imgUrl("b" + b.id, b.iv);
 const prizeImg = (b, p) => imgUrl("z" + b.id + "_" + p.id, p.iv);
+// Animación (vídeo o GIF) de cada premio: se guarda en trozos con la clave vid:<caja>_<premio>
+const vidKey = (boxId, pid) => "vid_" + boxId + "_" + pid;
+const prizeVid = (b, p) => (p.vv ? "/api/img?k=" + vidKey(b.id, p.id) + "&v=" + p.vv : null);
+async function delVid(k) {
+  let meta = null;
+  try { meta = parse(await cmd(["GET", "vid:" + k + ":m"])); } catch (_) {}
+  const n = Math.max(meta ? meta.n : 0, 40);
+  const keys = ["vid:" + k + ":m"]; for (let i = 0; i < n; i++) keys.push("vid:" + k + ":" + i);
+  await cmd(["DEL", ...keys]).catch(() => {});
+}
 
 // Vista pública: solo lo que el cliente necesita ver
 function pub(b) {
   return {
     id: b.id, name: b.name, desc: b.desc, price: b.price, img: boxImg(b),
-    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), value: p.value, p: 1, fx: p.fx || "auto", color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
+    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), vid: prizeVid(b, p), vt: p.vv ? p.vt || "video/mp4" : null, value: p.value, p: 1, fx: p.fx || "auto", color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
     soldOut: activePrizes(b).filter((p) => p.left === 0).map((p) => ({ name: p.name, rarity: p.rarity || "Común", value: p.value })),
   };
 }
 
 // Vista de administración: incluye premios inactivos, stock y URLs de imagen
 function adm(b) {
-  return { ...b, why: why(b), img: boxImg(b), prizes: (b.prizes || []).map((p) => ({ ...p, img: prizeImg(b, p) })) };
+  return { ...b, why: why(b), img: boxImg(b), prizes: (b.prizes || []).map((p) => ({ ...p, img: prizeImg(b, p), vid: prizeVid(b, p) })) };
 }
 
 const isData = (v) => typeof v === "string" && v.startsWith("data:image/");
@@ -123,6 +133,7 @@ async function saveBox(input) {
       value: p.value, p: Math.round(pr * 100) / 100, rarity: RAR.includes(p.rarity) ? p.rarity : "Común", fx: FX.includes(p.fx) ? p.fx : "auto",
       color: /^#[0-9a-f]{6}$/i.test(String(p.color || "")) ? p.color.toLowerCase() : "#444444",
       on: p.on ? 1 : 0, stock, iv: prevP[pid] ? prevP[pid].iv || null : null,
+      vv: prevP[pid] ? prevP[pid].vv || null : null, vt: prevP[pid] ? prevP[pid].vt || null : null,
       _img: isData(p.img) ? p.img : null, _rm: !!p.rmImg, _stock0: p.stock0,
     };
   });
@@ -145,7 +156,7 @@ async function saveBox(input) {
     if (p._img) p.iv = await putImg(k, p._img);
     else if (p._rm) { await delImg(k); p.iv = null; }
   }
-  for (const old of prev.prizes || []) if (!seen.has(old.id)) await delImg("z" + id + "_" + old.id);
+  for (const old of prev.prizes || []) if (!seen.has(old.id)) { await delImg("z" + id + "_" + old.id); if (old.vv) await delVid(vidKey(id, old.id)); }
 
   // Stock: solo se toca si el administrador lo ha cambiado (así no se pisan ventas recientes)
   const stk = "mbstk:" + id;
@@ -166,7 +177,7 @@ async function deleteBox(id) {
   const b = await getBox(id);
   if (!b) return;
   await delImg("b" + id);
-  for (const p of b.prizes || []) await delImg("z" + id + "_" + p.id);
+  for (const p of b.prizes || []) { await delImg("z" + id + "_" + p.id); if (p.vv) await delVid(vidKey(id, p.id)); }
   await cmd(["DEL", "mbstk:" + id]);
   await cmd(["HDEL", "mbox", String(id)]);
 }
@@ -227,4 +238,4 @@ const getTicket = async (tok) => {
   return r && r[0] ? parse(r[0]) : null;
 };
 
-module.exports = { SHIP, RAR, why, getBox, allBoxesRaw, withStock, available, sellable, pub, adm, saveBox, deleteBox, draw, restock, ensureTicket, getTicket, effective };
+module.exports = { vidKey, delVid, SHIP, RAR, why, getBox, allBoxesRaw, withStock, available, sellable, pub, adm, saveBox, deleteBox, draw, restock, ensureTicket, getTicket, effective };
