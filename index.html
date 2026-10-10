@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta name="google-site-verification" content="3FAo_8IXWcs13XVG94h0Xm_WXdfpmIu2JkQAQ3m0CvU">
-<script>try{var lnA=+localStorage.getItem("pi_ln");if(lnA>Date.now()&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("ln")}catch(e){}</script>
+<script>try{var lnA=+localStorage.getItem("pi_ln");if(lnA>Date.now()&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("ln")}catch(e){}</script><script>try{(function(){var L=localStorage,a=L.getItem("pi_acct");if(a&&a!=="null")return;if(sessionStorage.getItem("pi_pin")||L.getItem("pi_gon")==="0"||/^\/admin/.test(location.pathname)||/[?&](caja|pago|session_id|ok|t)=/.test(location.search))return;var s=+L.getItem("pi_gate_skip")||0;if(L.getItem("pi_gfo")!=="1"&&s&&Date.now()-s<2592e5)return;document.documentElement.classList.add("gt")})()}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_th")==="halloween")document.documentElement.classList.add("th-halloween")}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_mt")==="1"&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("mt")}catch(e){}</script>
 
@@ -484,9 +484,55 @@ html.ln body{overflow:hidden}
 #lnadm{position:fixed;top:12px;right:12px;z-index:3}
 #lnbar{background:#ff4fd8;color:#2b0b4a;border-radius:999px;padding:3px 10px;font-size:12px}
 @media (prefers-reduced-motion:reduce){#lnch .lnrays,#lncd .lnb.lsec b,#lnch .lnlogo{animation:none}}
+/* ===== Pantalla de inicio de sesión al entrar ===== */
+#gate{display:none}
+html.gt:not(.ln) #gate{display:flex;position:fixed;inset:0;z-index:9990;overflow:auto;color:#fff;align-items:flex-start;justify-content:center;text-align:center;padding:30px 16px;
+ background:radial-gradient(circle at 50% 15%,#7a1fa2 0,#3b0d6b 32%,#12051f 72%);animation:gin .35s ease-out}
+html.gt:not(.ln) body{overflow:hidden}
+#gate.out{opacity:0;transform:scale(1.04);transition:opacity .5s,transform .5s}
+@keyframes gin{from{opacity:0}}
+#gate .grays{position:fixed;left:50%;top:20%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(#ffe27a17 0 8deg,transparent 8deg 16deg);border-radius:50%;animation:prorot 34s linear infinite;-webkit-mask:radial-gradient(circle,#000 15%,transparent 60%);mask:radial-gradient(circle,#000 15%,transparent 60%);pointer-events:none}
+#gate .gin{margin:auto;width:100%;max-width:420px;position:relative;z-index:1}
+#gate .glogo{width:104px;height:104px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px #ffcb05,0 0 46px #ffcb0599;margin-bottom:14px;animation:propulse 2.2s ease-in-out infinite}
+#gate h1{font-size:clamp(32px,8.5vw,46px);line-height:1.05;margin:4px 0 16px;font-weight:900;background:linear-gradient(180deg,#fff7c2,#ffd23a 45%,#ff9500);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 #5a1690) drop-shadow(0 8px 18px #000a)}
+#gate h1 span{font-size:.62em;display:inline-block;margin-top:4px}
+#gate h1.g2h{font-size:clamp(28px,7.5vw,38px)}
+#gate .gben{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:8px;text-align:left}
+#gate .gben li{display:flex;align-items:center;gap:12px;background:#ffffff14;border:1px solid #ffffff22;border-radius:14px;padding:10px 14px;font-weight:600;font-size:15px}
+#gate .gben b{font-size:22px}
+#gate form{display:grid;gap:10px}
+#gate input{font:inherit;font-size:17px;padding:15px 16px;border-radius:14px;border:2px solid #ffffff33;background:#fff;color:#2b0b4a;text-align:center;width:100%;box-sizing:border-box}
+#gate input:focus{outline:none;border-color:#ffcb05;box-shadow:0 0 0 4px #ffcb0555}
+#gate #gc{font-size:30px;letter-spacing:10px;font-weight:900}
+#gate .gbtn{font:inherit;font-size:18px;font-weight:900;border:0;border-radius:14px;padding:15px;cursor:pointer;background:linear-gradient(180deg,#fff27a,#ffcb05 50%,#ffa800);color:#2b0b4a;box-shadow:0 5px 0 #b36b00,0 0 26px #ffcb0588}
+#gate .gbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #b36b00}
+#gate .gbtn:disabled{opacity:.7}
+#gate .gsm{font-size:13px;opacity:.7;margin:12px 0 0}
+#gate .gsm2{opacity:.9;margin:0 0 16px;line-height:1.5}#gate .gsm2 b{color:#ffe14a;word-break:break-all}
+#gate .glink{background:none;border:0;color:#fff;opacity:.75;font:inherit;font-size:14px;text-decoration:underline;cursor:pointer;margin-top:14px;padding:6px}
+#gate .gskip{display:block;margin:22px auto 0;opacity:.55;font-size:13px}
+#gate .gskip[hidden],#gate [hidden]{display:none!important}
+#gate #gm:not(:empty){margin-top:12px}
+#gate .gbar{height:18px;border-radius:999px;background:#0007;border:2px solid #ffffff33;overflow:hidden;margin:10px 0 10px;box-shadow:inset 0 2px 6px #0008}
+#gbarf{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#ff9500,#ffcb05,#fff27a,#ffcb05,#ff9500);background-size:200% 100%;animation:adbg 1.6s linear infinite;box-shadow:0 0 18px #ffcb05aa;transition:width .12s linear}
+#gate .gbl{display:flex;justify-content:space-between;font-size:14px;font-weight:700}#gate .gbl b{color:#ffe14a;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){#gate .grays,#gate .glogo,#gbarf{animation:none}}
 </style>
 </head>
 <body>
+<div id="gate" role="dialog" aria-modal="true" aria-label="Iniciar sesión"><div class="grays" aria-hidden="true"></div>
+ <div class="gin"><img class="glogo" src="/icon-192.png?v=2" alt="POKE ISLAS">
+  <div id="g1"><h1>Inicia sesión<br><span>y no te pierdas nada</span></h1>
+   <ul class="gben"><li><b>🎁</b>Sorteo de una carta cada mes</li><li><b>🏷️</b>Descuentos y novedades antes que nadie</li><li><b>📦</b>Tus pedidos y giros de la PokeRuleta</li></ul>
+   <form id="g1f" novalidate><input id="ge" type="email" inputmode="email" autocomplete="email" placeholder="Tu email" aria-label="Tu email" required><button class="gbtn" id="g1b" type="submit">ENVIARME EL CÓDIGO</button></form>
+   <p class="gsm">Sin contraseñas: te mandamos un código de 6 cifras a tu email.</p></div>
+  <div id="g2" hidden><h1 class="g2h">Revisa tu email 📩</h1><p class="gsm2">Hemos enviado un código a <b id="gto"></b><br><small>Si no lo ves, mira en spam o promociones.</small></p>
+   <form id="g2f" novalidate><input id="gc" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" aria-label="Código de 6 cifras"><button class="gbtn" id="g2b" type="submit">ENTRAR A LA TIENDA</button></form>
+   <button class="glink" id="gback" type="button">← Cambiar email o pedir otro código</button></div>
+  <div id="g3" hidden><h1 class="g2h">¡Ya estás dentro! 🎉</h1><div class="gbar"><div id="gbarf"></div></div><div class="gbl"><span id="gtx">Preparando tu cuenta…</span><b id="gpc">0%</b></div></div>
+  <div id="gm" class="msg" role="status"></div>
+  <button class="glink gskip" id="gskip" type="button">Entrar sin cuenta</button>
+ </div></div>
 <div id="lnch" role="dialog" aria-modal="true" aria-label="Inauguración de la tienda"><div class="lnrays" aria-hidden="true"></div>
  <button class="sbtn" id="lnadm" hidden><span id="lnclose">✕ Cerrar vista previa</span></button>
  <div class="in"><img class="lnlogo" src="/icon-192.png?v=2" alt="POKE ISLAS"><br><span class="lntag">🎉 PRÓXIMA APERTURA 🎉</span>
@@ -511,7 +557,7 @@ html.ln body{overflow:hidden}
 <div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><div id="mgame"></div><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
 <div id="hwtop" aria-hidden="true"><span class="web l"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="web r"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="spd">🕷️</span></div><div id="hw" aria-hidden="true"><span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span></div><div id="hwbar"></div>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
-<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><span id="lnbar" hidden>INAUGURACIÓN PROGRAMADA</span><button id="alaunch">🎉 Inauguración</button><button id="amant">🚧 Mantenimiento</button><button id="apromo">📣 Anuncio</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
+<div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><span id="lnbar" hidden>INAUGURACIÓN PROGRAMADA</span><button id="alaunch">🎉 Inauguración</button><button id="agate">🔐 Login</button><button id="amant">🚧 Mantenimiento</button><button id="apromo">📣 Anuncio</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
 <nav>
   <b>POKE<i>ISLAS</i></b>
   <div class="links"><a href="#tienda">Catálogo</a><a href="#mystery">🎁 PokeRuleta</a><a href="#grading">Graduadas</a><a href="#resenas">Reseñas</a><a href="#vender">Vender</a><a href="#envios">Envíos</a></div>
@@ -846,7 +892,7 @@ async function handleReturn(){const q=new URLSearchParams(location.search),pg=q.
  else if(pg==="ok"){cart={};saveCart();cdraw();toast("¡Pago recibido! Gracias por tu compra.","ok")}}
 
 /* ================= ADMINISTRADOR ================= */
-function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint();if(typeof applyLaunch==="function")applyLaunch();loadMBP();loadRVAdm();if(typeof loadGWAdm==="function"){drawGW();loadGWAdm()}}
+function adm(on){ADMIN=on;$("#abar").classList.toggle("on",on);if(!on){APIN="";ss.set("pi_pin",null)}draw();renderMB();applyMaint();if(typeof applyLaunch==="function")applyLaunch();if(typeof applyGate==="function")applyGate();loadMBP();loadRVAdm();if(typeof loadGWAdm==="function"){drawGW();loadGWAdm()}}
 async function login(){const pin=prompt("PIN de administrador");if(!pin)return;
  try{await req("/api/admin",{pin,action:"check"});APIN=pin;ss.set("pi_pin",pin);adm(true);toast("Modo administrador activado","ok")}catch(err){toast(err.message,"err")}}
 $("#al").onclick=ev=>{ev.preventDefault();login()};
@@ -1224,7 +1270,7 @@ $("#mrsee").onclick=()=>$("#mres").classList.remove("on");
 /* ================= EDITOR DE LA WEB ================= */
 const ZN={canarias:"Canarias",peninsula:"Península",baleares:"Baleares",ceutamelilla:"Ceuta / Melilla"};
 let SHIP={canarias:500,peninsula:650,baleares:850,ceutamelilla:1200},SITE={texts:{},ship:{},ig:"",colors:{}},SEDIMG={};const ORIGC={};
-const SKIP="#lnch,#lnf,#promin,#gwadm,#gwcd,#gwme,#gwwin,#gwpart,#gwt,#gwd,#gwmon,#acc,#cpm,#cpn,#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
+const SKIP="#gate,#lnch,#lnf,#promin,#gwadm,#gwcd,#gwme,#gwwin,#gwpart,#gwt,#gwd,#gwmon,#acc,#cpm,#cpn,#proprice,#rvlist,#rvadm,#rvcount,#rvavg,#rvf,#rvpick,#pager,#pcount,.flt,#hw,#hwbar,#mant,#grid,#cats,#cart,#ad,#mba,#mbl,#mres,#pz,#lb,#cp,#mbinfo,#minel,#mbtabs,#abar,#sed,#sm,#toast,.tr4,#mbadm,#snd,#n,#cf2,#mbnone,script,style,textarea,select";
 const hkey=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)+s.length.toString(36)};
 function tnodes(){const out=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode()){const p=n.parentElement;if(!n.nodeValue.trim()||!p||p.closest(SKIP))continue;if(n._o===undefined)n._o=n.nodeValue.trim();out.push(n)}return out}
 function phs(){return $$("#sf [placeholder]").map(el=>{if(el._po===undefined)el._po=el.getAttribute("placeholder");return el})}
@@ -1240,7 +1286,7 @@ function applySite(){
  applyShip()}
 async function loadSite(){["pk","la","ab","lr"].forEach(k=>{ORIGC[k]=getComputedStyle(document.documentElement).getPropertyValue("--"+k).trim()});
  $$("[data-imgkey]").forEach(el=>{el._orig=el.src});
- try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();PROMO=d.promo||{on:true};applyPromo();if(d.launch)LAUNCH=d.launch;if(d.now)LOFF=d.now-Date.now();applyLaunch();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
+ try{const d=await req("/api/site",{action:"get"});SITE={texts:{},ship:{},ig:"",colors:{},...(d.data||{})};MAINT=d.maint||{on:false,msg:""};applyMaint();THEME=d.theme||{name:"normal",banner:""};applyTheme();PROMO=d.promo||{on:true};applyPromo();if(d.launch)LAUNCH=d.launch;if(d.now)LOFF=d.now-Date.now();applyLaunch();if(d.gate)GATE=d.gate;applyGate();applySite();for(const k in d.imgs||{}){const el=$(`[data-imgkey="${k}"]`);if(el)el.src=d.imgs[k]}}catch(_){applySite()}}
 function sedBuild(){const seen={},by={};
  tnodes().forEach(n=>{const k=hkey(n._o);if(seen[k])return;seen[k]=1;const g=grp(n.parentElement);(by[g]=by[g]||[]).push({k,o:n._o,c:n.nodeValue.trim()})});
  phs().forEach(el=>{const k="p"+hkey(el._po);if(seen[k])return;seen[k]=1;(by["Formulario de venta"]=by["Formulario de venta"]||[]).push({k,o:el._po,c:el.getAttribute("placeholder")})});
@@ -1346,7 +1392,7 @@ $("#lntest").onclick=()=>{const a=$("#lnaud");if(!LAUNCH.sndv)return toast("Prim
 /* ---- anuncio emergente de la PokeRuleta al entrar ---- */
 var PROMO={on:true},PROMOT=null;
 function applyPromo(){const b=$("#apromo");if(b)b.textContent=PROMO.on?"📣 Anuncio: activado":"📣 Anuncio: desactivado";if(!PROMOT)PROMOT=setTimeout(maybePromo,1400)}
-function maybePromo(n){n=n||0;const b=MB&&MB[0];if(!b&&n<8&&!MBERR){setTimeout(()=>maybePromo(n+1),800);return}if(!PROMO.on||!b||MAINT.on||lnActive()||ADMIN||ss.get("pi_pin")||ss.get("pi_promo")||location.search.includes("caja=")||$(".ov.on"))return;
+function maybePromo(n){n=n||0;const b=MB&&MB[0];if(!b&&n<8&&!MBERR){setTimeout(()=>maybePromo(n+1),800);return}if(!PROMO.on||!b||MAINT.on||lnActive()||ADMIN||ss.get("pi_pin")||ss.get("pi_promo")||location.search.includes("caja=")||$(".ov.on")||document.documentElement.classList.contains("gt"))return;
  const mv=Math.min(...b.prizes.map(p=>p.value||0)),fm=v=>v%100?e(v):(v/100)+" €";$("#promin").textContent=fm(mv);$(".promin").hidden=!(mv>0);$(".proclaim").hidden=!(mv>0);
  $("#proprice").innerHTML=`Cada giro por solo <b>${e(b.price)}</b>`;$("#promo").hidden=false;requestAnimationFrame(()=>{$("#promo").classList.add("on");drawWheel($("#prowh"),b.prizes)});
  document.documentElement.style.overflow="hidden";ss.set("pi_promo","1");setTimeout(()=>$("#progo").focus(),400)}
@@ -1544,6 +1590,37 @@ document.addEventListener("click",async ev=>{const t=ev.target;
  if(t.id==="gwsave"){const done=busy(t,"Guardando…");try{await req("/api/account",{action:"admin_gw_save",pin:APIN,cfg:{on:$("#gwon").checked,title:$("#gwti").value,desc:$("#gwde").value,img:GWNEW||null,rmImg:GWRM}});done();GWRM=0;toast("Sorteo guardado ✓","ok");loadGW()}catch(err){done();msg("#gwmsg","err",err.message)}}
  if(t.dataset&&t.dataset.gwdraw){const k=t.dataset.gwdraw,redo=t.dataset.redo==="1";if(!confirm(redo?`Este mes ya tiene ganador. ¿Seguro que quieres REPETIR el sorteo de ${monthName(k)}?`:`¿Sortear ahora el ganador de ${monthName(k)}? Se le enviará un email.`))return;
   const done=busy(t,"Sorteando…");try{const d=await req("/api/account",{action:"admin_gw_draw",pin:APIN,month:k,redo});done();alert(`🏆 Ganador de ${monthName(k)}:\n\n${d.winner.name||""}\n${d.winner.email}\n${d.winner.n} participaciones · número ${d.winner.rnd+1} de ${d.winner.total}\n\n${d.winner.mailed?"Se le ha enviado un email.":"No se pudo enviar el email: avísale tú."}`);loadGW()}catch(err){done();toast(err.message,"err")}}});
+/* ---- pantalla de inicio de sesión al entrar ---- */
+var GATE={on:true,force:false},GMAIL="",GBUSY=false;
+const GSKIPMS=3*86400000;
+function gateNeeded(){if(!GATE.on||ACC||ADMIN||ss.get("pi_pin")||MAINT.on||lnActive())return false;
+ if(/^\/admin/.test(location.pathname)||/[?&](caja|pago|session_id|ok|t)=/.test(location.search))return false;
+ if(!GATE.force){const s=ls.get("pi_gate_skip",0);if(s&&Date.now()-s<GSKIPMS)return false}return true}
+function applyGate(){if(!GATE||!$("#gate"))return;try{localStorage.setItem("pi_gon",GATE.on?"1":"0");localStorage.setItem("pi_gfo",GATE.force?"1":"0")}catch(_){}
+ const b=$("#agate");if(b)b.textContent="🔐 Login: "+(!GATE.on?"desactivado":GATE.force?"obligatorio":"opcional");
+ const sk=$("#gskip");if(sk)sk.hidden=!!GATE.force;
+ if(GBUSY)return;const show=gateNeeded();document.documentElement.classList.toggle("gt",show);
+ if(show&&!$("#gate").dataset.v){$("#gate").dataset.v=1;gView("#g1")}}
+function gView(v){["#g1","#g2","#g3"].forEach(s=>$(s).hidden=s!==v);msg("#gm","","");$("#gskip").hidden=!!GATE.force||v==="#g3"}
+function gateLoad(){GBUSY=true;gView("#g3");const bar=$("#gbarf"),pc=$("#gpc"),tx=$("#gtx");
+ const steps=[[0,"Preparando tu cuenta…"],[30,"Cargando las cartas…"],[62,"Preparando la PokeRuleta…"],[88,"¡Casi listo!"]];
+ const T=2200,t0=performance.now();
+ (function f(now){let p=Math.min(1,(now-t0)/T);p=1-Math.pow(1-p,2.2);if(p>.97&&!PRODS_OK())p=.97;const v=Math.round(p*100);
+  bar.style.width=v+"%";pc.textContent=v+"%";for(const[s,t]of steps)if(v>=s)tx.textContent=t;
+  if(v<100&&(now-t0)<9000)return requestAnimationFrame(f);
+  bar.style.width="100%";pc.textContent="100%";tx.textContent="¡Bienvenido a POKE ISLAS!";
+  setTimeout(()=>{$("#gate").classList.add("out");setTimeout(()=>{document.documentElement.classList.remove("gt");$("#gate").classList.remove("out");GBUSY=false;toast("¡Hola! Ya estás dentro ✓ Participas en el sorteo con cada compra","ok");setTimeout(maybePromo,900)},550)},450)})(t0)}
+const PRODS_OK=()=>PLOAD!=="loading";
+$("#g1f").onsubmit=async ev=>{ev.preventDefault();const email=$("#ge").value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return msg("#gm","err","Escribe un email válido.");
+ const done=busy($("#g1b"),"Enviando código…");try{await req("/api/account",{action:"send_code",email});done();GMAIL=email;$("#gto").textContent=email;gView("#g2");$("#gc").value="";setTimeout(()=>$("#gc").focus(),100)}catch(err){done();msg("#gm","err",err.message)}};
+$("#g2f").onsubmit=async ev=>{ev.preventDefault();const code=$("#gc").value.replace(/\D/g,"");if(code.length!==6)return msg("#gm","err","El código tiene 6 cifras.");
+ const done=busy($("#g2b"),"Comprobando…");try{const d=await req("/api/account",{action:"verify",email:GMAIL,code});done();ACC={token:d.token,email:d.email};ls.set("pi_acct",ACC);accBtn();gateLoad()}catch(err){done();msg("#gm","err",err.message)}};
+$("#gc").oninput=ev=>{const v=ev.target.value.replace(/\D/g,"").slice(0,6);ev.target.value=v;if(v.length===6)$("#g2f").requestSubmit()};
+$("#gback").onclick=()=>gView("#g1");
+$("#gskip").onclick=()=>{ls.set("pi_gate_skip",Date.now());$("#gate").classList.add("out");setTimeout(()=>{document.documentElement.classList.remove("gt");$("#gate").classList.remove("out");setTimeout(maybePromo,700)},450)};
+$("#agate").onclick=async ev=>{const nx=!GATE.on?{on:true,force:false}:!GATE.force?{on:true,force:true}:{on:false,force:false};
+ if(nx.force&&!confirm("Modo OBLIGATORIO: nadie podrá ver la tienda sin iniciar sesión con el código del email.\n\nAsegúrate de que los emails llegan bien (Panel → Probar email). ¿Activar?"))nx.on=false,nx.force=false;
+ const done=busy(ev.currentTarget,"Guardando…");try{const d=await req("/api/site",{action:"admin_gate",pin:APIN,...nx});GATE=d.gate;done();applyGate();toast(!GATE.on?"Pantalla de inicio de sesión desactivada ✓":GATE.force?"Inicio de sesión OBLIGATORIO para entrar ✓":"Pantalla de inicio de sesión activada ✓ (se puede saltar)","ok")}catch(err){done();toast(err.message,"err")}};
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 

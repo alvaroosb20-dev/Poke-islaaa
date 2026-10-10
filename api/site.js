@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
       const d = (await S.getData()).data;
       const imgs = {};
       for (const k of IMG_KEYS) if (d.iv && d.iv[k]) imgs[k] = imgUrl("s_" + k, d.iv[k]);
-      return res.status(200).json({ data: d, imgs, maint: await S.getMaint(), theme: await S.getTheme(), promo: await S.getPromo(), launch: await S.getLaunch(), now: Date.now() });
+      return res.status(200).json({ data: d, imgs, maint: await S.getMaint(), theme: await S.getTheme(), promo: await S.getPromo(), launch: await S.getLaunch(), gate: await S.getGate(), now: Date.now() });
     }
     // Gente esperando en la pantalla de inauguración (presencia en directo)
     if (b.action === "ping") {
@@ -86,6 +86,10 @@ module.exports = async (req, res) => {
       const chk = await S.getTheme();
       if (chk.name !== b.name) return fail(res, 500, "La base de datos no confirmó el cambio");
       return res.status(200).json({ ok: true, theme: chk });
+    }
+    if (b.action === "admin_gate") {
+      await cmd(["SET", "gate", JSON.stringify({ on: !!b.on, force: !!b.force, at: Date.now() })]);
+      return res.status(200).json({ ok: true, gate: await S.getGate() });
     }
     if (b.action === "admin_launch") {
       const l = b.launch || {}, cur = await S.getLaunch();

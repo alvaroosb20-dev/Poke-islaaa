@@ -32,6 +32,10 @@ async function getLaunch() {
   try { const l = parse(await cmd(["GET", "launch"])) || {}; return { on: !!l.on, at: Number(l.at) || 0, title: l.title || "", msg: l.msg || "", sndv: l.sndv || null }; }
   catch (_) { return { on: false, at: 0, title: "", msg: "", sndv: null }; }
 }
+// Pantalla de inicio de sesión al entrar: { on, force }
+async function getGate() {
+  try { const g = parse(await cmd(["GET", "gate"])) || {}; return { on: g.on !== false, force: !!g.force }; } catch (_) { return { on: true, force: false }; }
+}
 const launchActive = (l) => l.on && l.at > Date.now();
 // Motivo por el que no se puede comprar ahora mismo (null = se puede)
 async function blocked() {
@@ -41,4 +45,4 @@ async function blocked() {
   return null;
 }
 const MAINT_MSG = "La tienda está en mantenimiento ahora mismo. Vuelve en un rato, ¡gracias!";
-module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme, getPromo, getLaunch, launchActive, blocked };
+module.exports = { ZONES, DEF, getData, shipTable, getMaint, MAINT_MSG, THEMES, getTheme, getPromo, getLaunch, launchActive, blocked, getGate };

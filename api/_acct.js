@@ -10,7 +10,7 @@ async function emailOf(tok) {
 }
 async function newSession(email) {
   const t = crypto.randomBytes(24).toString("hex");
-  await cmd(["SET", "sess:" + t, email, "EX", String(60 * 86400)]);
+  await cmd(["SET", "sess:" + t, email, "EX", String(365 * 86400)]);
   return t;
 }
 // Mes en horario de Canarias: "2026-10"
