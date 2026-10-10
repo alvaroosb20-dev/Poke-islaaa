@@ -1,1 +1,1 @@
-{"rewrites": [{"source": "/admin/mystery-box", "destination": "/index.html"}, {"source": "/admin/pokeruleta", "destination": "/index.html"}]}
+{"rewrites": [{"source": "/admin/mystery-box", "destination": "/index.html"}, {"source": "/admin/pokeruleta", "destination": "/index.html"}], "functions": {"api/chat.js": {"maxDuration": 60}, "api/admin.js": {"maxDuration": 60}}}

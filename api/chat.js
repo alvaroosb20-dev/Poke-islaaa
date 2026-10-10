@@ -1,5 +1,6 @@
 const { cmd, getAll } = require("./_db");
 const { shipTable } = require("./_site");
+const { gemini } = require("./_gemini");
 
 const BASE = `Eres el asistente de Poke Islas, una tienda de coleccionismo Pokémon en Canarias con envíos a toda España. Respondes en español, con tono cercano y claro, normalmente en 3-6 frases (más si te piden detalle).
 
@@ -8,9 +9,9 @@ Puedes: explicar todo sobre cartas Pokémon (sets, rarezas, idiomas, ediciones, 
 Datos de la tienda:
 - {{ENVIOS}} El coste se ve en el carrito antes de pagar.
 - Pago con tarjeta y otros métodos de Stripe desde el carrito. No se guardan datos de tarjeta.
-- Compramos y vendemos cartas sueltas, colecciones y productos de coleccionismo: el formulario "QUIERO VENDER" de la web.
+- Si alguien quiere vendernos cartas o colecciones, que nos escriba por Instagram @poke_islas.
 - Contacto: Instagram @poke_islas (https://www.instagram.com/poke_islas/).
-- PokeRuleta: solo para mayores de 18 años. Se paga con Stripe y cada compra da derecho a un giro de la ruleta. El premio lo sortea el servidor con un generador aleatorio seguro según las probabilidades publicadas junto a la ruleta; si un premio se agota deja de poder salir. El premio se envía a la dirección del pago y su estado se ve en «Mis PokeRuletas».
+- PokeRuleta: solo para mayores de 18 años. Se paga con Stripe y cada compra da derecho a un giro de la ruleta. El premio lo sortea el servidor con un generador aleatorio seguro según las probabilidades asignadas a cada premio (todos los sectores de la ruleta se ven iguales); si un premio se agota deja de poder salir. El premio se envía a la dirección del pago y su estado se ve en «Mis PokeRuletas».
 - Las condiciones de compra, devoluciones y privacidad están en los enlaces del pie de la web.
 - Productos 100% auténticos con garantía. Las cartas graduadas dependen de la disponibilidad e incluyen número de certificación.
 
@@ -25,7 +26,7 @@ Reglas:
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json({ error: "Método no permitido" });
-  if (!process.env.GEMINI_API_KEY) return res.status(500).json({ error: "El asistente no está configurado todavía." });
+  if (!process.env.GEMINI_API_KEY) return res.status(500).json({ error: "El asistente no está configurado todavía. Escríbenos por Instagram @poke_islas." });
   try {
     const ip = String(req.headers["x-forwarded-for"] || "x").split(",")[0].trim();
     const hora = Math.floor(Date.now() / 3600000), dia = Math.floor(Date.now() / 86400000);
@@ -49,31 +50,16 @@ module.exports = async (req, res) => {
     } catch (_) {}
     const ST = await shipTable();
     const enviosTxt = "Envío: " + Object.values(ST).map(([n, c]) => n + " " + (c / 100).toFixed(2).replace(".", ",") + " €").join(", ") + ".";
-    const llamar = (gen) => fetch("https://generativelanguage.googleapis.com/v1beta/models/" + (process.env.GEMINI_MODEL || "gemini-3.8-flash") + ":generateContent", {
-      method: "POST",
-      headers: { "x-goog-api-key": process.env.GEMINI_API_KEY.trim(), "content-type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: BASE.replace("{{ENVIOS}}", enviosTxt) + "\n\nCatálogo actual:\n" + catalogo }] },
-        contents: msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
-        generationConfig: gen,
-      }),
-    });
-    let r;
-    for (let t = 0; t < 3; t++) {
-      r = await llamar({ maxOutputTokens: 700, temperature: 0.5, thinkingConfig: { thinkingBudget: 0 } });
-      if (r.status === 400) r = await llamar({ maxOutputTokens: 1500, temperature: 0.5 });
-      if (r.status !== 503) break;
-      await new Promise((x) => setTimeout(x, 1200));
+    const msgsG = msgs.map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+    let reply = "";
+    try {
+      reply = (await gemini(BASE.replace("{{ENVIOS}}", enviosTxt) + "\n\nCatálogo actual:\n" + catalogo, msgsG, { max: 4096 })).text;
+    } catch (e) {
+      console.error("chat", e.code, e.detail || e.message);
+      if (e.code === 429) return res.status(429).json({ error: "Hay mucha demanda ahora mismo. Inténtalo en un minuto o escríbenos por Instagram @poke_islas." });
+      if (e.code === 503) return res.status(503).json({ error: "El asistente está muy ocupado en este momento. Inténtalo de nuevo en unos segundos." });
+      return res.status(502).json({ error: "El asistente no está disponible ahora mismo. Escríbenos por Instagram @poke_islas." });
     }
-    const d = await r.json().catch(() => ({}));
-    if (r.status === 503) return res.status(503).json({ error: "El asistente está muy ocupado en este momento. Inténtalo de nuevo en unos segundos." });
-    if (r.status === 429) return res.status(429).json({ error: "Hay mucha demanda ahora mismo. Escríbenos por Instagram @poke_islas." });
-    if (!r.ok) {
-      const det = ((d.error && d.error.message) || "sin detalle").slice(0, 160);
-      return res.status(502).json({ error: "El asistente no está disponible ahora (" + r.status + ": " + det + ")" });
-    }
-    const parts = (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) || [];
-    const reply = parts.map((p) => p.text || "").join("\n").trim();
     res.status(200).json({ reply: reply || "No he podido responder. Prueba a reformular la pregunta." });
   } catch (e) {
     res.status(500).json({ error: "Error del asistente. Inténtalo de nuevo." });

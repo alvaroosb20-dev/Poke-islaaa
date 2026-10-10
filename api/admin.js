@@ -1,4 +1,5 @@
 // Administración de productos de la tienda (requiere PIN) y diagnóstico del sistema.
+const { gemini } = require("./_gemini");
 const { cmd, parse, getAll } = require("./_db");
 const { putImg, delImg, checkImg } = require("./_img");
 const { checkPin } = require("./_auth");
@@ -39,6 +40,10 @@ module.exports = async (req, res) => {
         out.fotos = { guardadas: all.filter((p) => p.iv).length, antiguas: all.filter((p) => !p.iv && typeof p.img === "string" && p.img.startsWith("data:")).length, deEjemplo: all.filter((p) => !p.iv && !p.img && p.i).length, sinFoto: all.filter((p) => !p.iv && !p.img && !p.i).length };
         out.counts = { productos: Number(await cmd(["HLEN", "products"])) || 0, cajas: Number(await cmd(["HLEN", "mbox"])) || 0, compras: Number(await cmd(["HLEN", "purchases"])) || 0, giros: Number(await cmd(["LLEN", "mb:log"])) || 0 };
       } catch (e) { out.dbError = e.message; }
+      if (process.env.GEMINI_API_KEY) {
+        try { const g = await gemini("Responde solo con la palabra OK.", [{ role: "user", parts: [{ text: "Hola" }] }], { max: 1024, budget: 30000 }); out.ai = { ok: true, model: g.model }; }
+        catch (e) { out.ai = { ok: false, code: e.code, msg: String(e.message || "").slice(0, 200) }; }
+      }
       return res.status(200).json(out);
     }
 
