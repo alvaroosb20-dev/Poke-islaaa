@@ -504,8 +504,8 @@ html.ln body{overflow:hidden}
  <label>Título<input id="lnti" maxlength="120" placeholder="¡GRAN INAUGURACIÓN!"></label>
  <label>Mensaje<textarea id="lnms" rows="3" maxlength="400" placeholder="Muy pronto abrimos las puertas de POKE ISLAS. ¡Prepárate!"></textarea></label>
  <div><b style="font-size:13px">Música de fondo</b><br><span id="lnsnd" style="font-size:14px">Sin música</span>
- <div class="rw" style="margin-top:6px"><label class="fl">🎵 Subir canción (MP3, máx. 4 MB)<input type="file" id="lnfile" accept="audio/*" hidden></label><button type="button" class="sbtn" id="lntest">▶ Escuchar</button><button type="button" class="sbtn o" id="lnrm" hidden>Quitar música</button></div>
- <small style="opacity:.7">Por seguridad, los navegadores no dejan que la música suene sola: el cliente pulsa «🎵 Activar música». Usa música que tengas derecho a usar.</small></div>
+ <div class="rw" style="margin-top:6px"><label class="fl">🎵 Subir canción (cualquier audio o vídeo)<input type="file" id="lnfile" accept="audio/*,video/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.caf,.flac,.ogg,.oga,.opus,.webm,.mp4,.mov,.m4v,.3gp,.wma,.amr" hidden></label><button type="button" class="sbtn" id="lntest">▶ Escuchar</button><button type="button" class="sbtn o" id="lnrm" hidden>Quitar música</button></div>
+ <small style="opacity:.7">Vale MP3, M4A, WAV, AAC, FLAC, OGG, notas de voz y hasta vídeos (se usa su sonido). Se convierte sola para que suene en todos los móviles; si dura más de 5 min 20 s se recorta. Los navegadores no dejan que la música suene sola: el cliente pulsa «🎵 Activar música». Usa música que tengas derecho a usar.</small></div>
  <p class="msg" id="lnfm" hidden></p>
  <div class="rw"><button class="btn pk" id="lnsave" style="border:0">Guardar</button><button type="button" class="btn" id="lnprev" style="border:2px solid var(--line);color:var(--tx)">👀 Ver cómo queda</button></div></div></div></div>
 <div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><div id="mgame"></div><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
@@ -706,7 +706,7 @@ html.ln body{overflow:hidden}
 <p>En cumplimiento de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de los datos del titular de este sitio web:</p>
 <ul><li>Titular: [Nombre y apellidos o razón social]</li><li>NIF/CIF: [NIF]</li><li>Domicilio: [Dirección completa], Santa Cruz de Tenerife, España</li><li>Correo electrónico: pokeislatcg@gmail.com</li><li>Instagram: @poke_islas</li></ul>
 <h4>Objeto</h4><p>Este sitio web ofrece la venta en línea de productos de coleccionismo Pokémon y PokeRuleta con envío a toda España.</p>
-<h4>Propiedad intelectual</h4><p>Pokémon y sus nombres son marcas de sus respectivos titulares. POKE ISLAS es una tienda independiente y no está afiliada a The Pokémon Company, Nintendo, Creatures ni Game Freak. Los textos, diseños e imágenes propias de esta web no pueden reproducirse sin autorización.</p>
+<h4>Propiedad intelectual</h4><p>Pokémon y sus nombres son marcas de sus respectivos titulares. POKE ISLAS es una tienda independiente y no está afiliada a The Pokémon Company, Nintendo, Creatures ni Game Freak. Los textos, diseños e imágenes propias de esta web no pueden reproducirse sin autorización.</p><p style="font-size:13px;opacity:.8">La web usa el codificador de audio LAME (<a href="https://lame.sourceforge.io" target="_blank" rel="noopener">lame.sourceforge.io</a>, licencia LGPL) mediante la librería lamejs.</p>
 <h4>Responsabilidad</h4><p>El titular procura que la información de la web sea correcta y esté actualizada, pero no se hace responsable de errores tipográficos ni de interrupciones del servicio ajenas a su control.</p>
 </section>
 <section data-sec="privacidad" hidden>
@@ -1313,14 +1313,35 @@ async function lnSave(extra){const at=$("#lnat").value?new Date($("#lnat").value
 $("#lnsave").onclick=async ev=>{const done=busy(ev.currentTarget,"Guardando…");try{await lnSave();done();$("#lnf").classList.remove("on");toast(lnActive()?"🎉 Inauguración programada ✓ Los clientes ven la cuenta atrás":"Inauguración desactivada ✓ La tienda está abierta","ok")}catch(err){done();msg("#lnfm","err",err.message)}};
 $("#lnprev").onclick=async()=>{LPREV=true;$("#lnf").classList.remove("on");applyLaunch()};
 $("#lnrm").onclick=async ev=>{if(!confirm("¿Quitar la música?"))return;const done=busy(ev.currentTarget,"Quitando…");try{await lnSave({rmSnd:1});done();$("#lnsnd").textContent="Sin música";ev.target.hidden=true}catch(err){done();msg("#lnfm","err",err.message)}};
-$("#lnfile").onchange=async ev=>{const f=ev.target.files[0];ev.target.value="";if(!f)return;
- const type=(f.type||"audio/mpeg").replace("audio/mp3","audio/mpeg");if(!/^audio\//.test(type))return msg("#lnfm","err","Elige un archivo de audio (MP3 o M4A).");
- if(f.size>4*1024*1024)return msg("#lnfm","err",`La canción pesa ${(f.size/1048576).toFixed(1)} MB y el máximo es 4 MB. Usa un fragmento más corto o un MP3 de menor calidad (128 kbps).`);
- const buf=new Uint8Array(await f.arrayBuffer()),CH=1200000,n=Math.ceil(buf.length/CH);
- try{for(let i=0;i<n;i++){$("#lnsnd").textContent=`Subiendo música… ${Math.round(i/n*100)}%`;let s="";const part=buf.subarray(i*CH,(i+1)*CH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));
+// Cualquier archivo de audio o vídeo que el móvil pueda reproducir se convierte a MP3 en el propio navegador
+let LAMEP=null;const loadLame=()=>LAMEP||(LAMEP=new Promise((ok,ko)=>{const sc=document.createElement("script");sc.src="/lame.min.js";sc.onload=()=>ok(window.lamejs);sc.onerror=()=>{LAMEP=null;ko(new Error("No se pudo cargar el conversor de audio"))};document.head.appendChild(sc)}));
+async function toMp3(file,prog){const raw=await file.arrayBuffer(),AC=window.AudioContext||window.webkitAudioContext,ac=new AC();
+ let buf;try{buf=await new Promise((ok,ko)=>{const p=ac.decodeAudioData(raw.slice(0),ok,ko);if(p&&p.catch)p.catch(ko)})}catch(_){throw new Error("Este archivo no se puede leer como audio en este móvil. Prueba con otro formato o con otra canción.")}finally{try{ac.close()}catch(_){}}
+ const MAX=320,sr=44100,ch=Math.min(2,buf.numberOfChannels),len=Math.min(buf.duration,MAX),cut=buf.duration>MAX;
+ const off=new (window.OfflineAudioContext||window.webkitOfflineAudioContext)(ch,Math.ceil(len*sr),sr),src=off.createBufferSource(),g=off.createGain();src.buffer=buf;src.connect(g);g.connect(off.destination);
+ if(cut){g.gain.setValueAtTime(1,len-3);g.gain.linearRampToValueAtTime(0,len)}src.start(0);
+ const pcm=await new Promise((ok,ko)=>{off.oncomplete=e=>ok(e.renderedBuffer);const p=off.startRendering();if(p&&p.then)p.then(ok,ko)});
+ const kb=[32,40,48,56,64,80,96,112,128].filter(k=>k*1000/8*len<3.8e6).pop()||32;
+ const L=await loadLame(),enc=new L.Mp3Encoder(ch,sr,kb),cvt=a=>{const o=new Int16Array(a.length);for(let i=0;i<a.length;i++){const v=Math.max(-1,Math.min(1,a[i]));o[i]=v<0?v*32768:v*32767}return o};
+ const lft=cvt(pcm.getChannelData(0)),rgt=ch>1?cvt(pcm.getChannelData(1)):null,out=[],BL=1152*40;
+ for(let i=0;i<lft.length;i+=BL){for(let k=i;k<Math.min(i+BL,lft.length);k+=1152){const b=rgt?enc.encodeBuffer(lft.subarray(k,k+1152),rgt.subarray(k,k+1152)):enc.encodeBuffer(lft.subarray(k,k+1152));if(b.length)out.push(new Uint8Array(b))}
+  prog(Math.round(i/lft.length*100));await new Promise(r=>setTimeout(r,0))}
+ const fl=enc.flush();if(fl.length)out.push(new Uint8Array(fl));const n=out.reduce((s,b)=>s+b.length,0),mp3=new Uint8Array(n);let p=0;for(const b of out){mp3.set(b,p);p+=b.length}
+ return {mp3,cut,secs:Math.round(len),kb}}
+$("#lnfile").onchange=async ev=>{const f=ev.target.files[0];ev.target.value="";if(!f)return;msg("#lnfm","","");
+ if(f.size>250*1024*1024)return msg("#lnfm","err","El archivo es demasiado grande (máx. 250 MB). Usa un fragmento más corto.");
+ const st=$("#lnsnd");try{st.textContent="Leyendo «"+f.name+"»…";
+  let r,type="audio/mpeg";
+  try{r=await toMp3(f,pc=>st.textContent=`Convirtiendo la música… ${pc}%`)}
+  catch(e){// si este navegador no sabe convertirlo pero es un audio que pesa poco, se sube tal cual
+   const ok=/^audio\/(mpeg|mp3|mp4|x-m4a|aac|wav|x-wav|ogg)$/.test(f.type)&&f.size<=4*1024*1024;if(!ok)throw e;
+   r={mp3:new Uint8Array(await f.arrayBuffer()),cut:false,secs:0};type=f.type}
+  const buf=r.mp3,CH=1200000,n=Math.ceil(buf.length/CH);
+  for(let i=0;i<n;i++){st.textContent=`Subiendo música… ${Math.round(i/n*100)}%`;let s="";const part=buf.subarray(i*CH,(i+1)*CH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));
    const d=await req("/api/site",{action:"admin_snd",pin:APIN,i,n,type,data:btoa(s)});if(d.sndv)LAUNCH.sndv=d.sndv}
-  $("#lnsnd").textContent="🎵 Música cargada: "+f.name;$("#lnrm").hidden=false;applyLaunch();toast("Música subida ✓","ok")}
- catch(err){$("#lnsnd").textContent="No se pudo subir";msg("#lnfm","err",err.message)}};
+  st.textContent="🎵 Música cargada: "+f.name+(r.secs?` (${Math.floor(r.secs/60)}:${String(r.secs%60).padStart(2,"0")} min)`:"");$("#lnrm").hidden=false;applyLaunch();
+  toast(r.cut?"Música subida ✓ Era muy larga: se han usado los primeros 5 min 20 s con un final suave":"Música subida ✓","ok")}
+ catch(err){st.textContent="No se pudo subir la música";msg("#lnfm","err",err.message)}};
 $("#lntest").onclick=()=>{const a=$("#lnaud");if(!LAUNCH.sndv)return toast("Primero sube una canción","info");if(a.paused){a.play();$("#lntest").textContent="⏸ Parar"}else{a.pause();$("#lntest").textContent="▶ Escuchar"}};
 /* ---- anuncio emergente de la PokeRuleta al entrar ---- */
 var PROMO={on:true},PROMOT=null;
