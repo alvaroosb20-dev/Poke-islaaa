@@ -1,4 +1,4 @@
-// Reseñas de clientes: estrellas, comentario y foto. Se publican cuando el administrador las aprueba.
+// Reseñas de clientes: estrellas, comentario y foto. Se publican al momento; el administrador puede ocultarlas o borrarlas.
 const crypto = require("crypto");
 const { cmd, parse, hvals } = require("./_db");
 const { putImg, delImg, imgUrl, checkImg } = require("./_img");
@@ -40,10 +40,10 @@ module.exports = async (req, res) => {
         verified = ps.some((p) => p.status === "pagado" && String(p.email || "").toLowerCase() === email);
       }
       const id = String(Date.now()) + crypto.randomInt(100, 999);
-      const r = { id, name, stars, text, at: Date.now(), ok: 0, verified, iv: null };
+      const r = { id, name, stars, text, at: Date.now(), ok: 1, verified, iv: null };
       if (b.img) r.iv = await putImg("r" + id, b.img);
       await cmd(["HSET", "reviews", id, JSON.stringify(r)]);
-      return res.status(200).json({ ok: true, pending: true });
+      return res.status(200).json({ ok: true, review: pub(r) });
     }
 
     if (String(b.action).startsWith("admin_")) {
