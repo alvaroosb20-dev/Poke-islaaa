@@ -534,6 +534,20 @@ html.gt:not(.ln) body{overflow:hidden}
 @keyframes shk{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(5px,-3px)}30%,50%,70%{transform:translate(-8px,4px)}40%,60%{transform:translate(8px,-4px)}}
 @media (prefers-reduced-motion:reduce){#pvid video,#pvid img{transition:none;transform:none;filter:none}.ov.shk .bx{animation:none}}
 #vender{display:none!important}
+/* ===== Fotos de producto deslizables ===== */
+#grid .art.car .trk{position:absolute;inset:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;border-radius:10px}
+#grid .art.car .trk::-webkit-scrollbar{display:none}
+#grid .art.car .trk img{position:static;flex:0 0 100%;width:100%;height:100%;inset:auto;object-fit:contain;padding:6px;box-sizing:border-box;scroll-snap-align:center;scroll-snap-stop:always;border-radius:10px}
+#grid .art .dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:5px;pointer-events:none;z-index:2}
+#grid .art .dots i{width:7px;height:7px;border-radius:50%;background:#fff8;box-shadow:0 0 0 1px #0004;transition:all .2s}
+#grid .art .dots i.on{background:#fff;width:18px;border-radius:4px}
+#grid .art .cprev,#grid .art .cnext{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:32px;height:32px;border-radius:50%;border:0;background:#000a;color:#fff;font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;opacity:0;transition:opacity .2s;padding:0}
+#grid .art .cprev{left:6px}#grid .art .cnext{right:6px}
+@media (hover:hover){#grid .art.car:hover .cprev,#grid .art.car:hover .cnext{opacity:1}}
+.axw{display:grid;gap:8px}.axw small{font-weight:400;opacity:.7}
+#axl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#axl .axs{display:grid;gap:6px;justify-items:start;background:var(--card);border-radius:10px;padding:8px}
+#axl .axs img,#axl .axs span{width:100%;height:110px;object-fit:contain;border-radius:8px;background:#0001;display:grid;place-items:center;font-size:12px;opacity:.9}
 </style>
 </head>
 <body>
@@ -688,6 +702,7 @@ html.gt:not(.ln) body{overflow:hidden}
 </aside>
 <div id="ad" class="ov2"><form class="bx" id="af" novalidate><h2 style="font-size:26px;margin:0" id="at">Editar producto</h2>
 <img class="pv" id="pv" alt=""><div class="rw"><label class="fl">📷 Cambiar foto<input type="file" id="ai" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" class="sbtn o" id="arm">Quitar foto</button></div>
+<div class="axw"><b>Fotos extra <small>(los clientes las ven deslizando la foto)</small></b><div id="axl"></div></div>
 <label>Nombre<input id="an" maxlength="120"></label>
 <div class="rw"><label>Precio (€)<input id="ap" type="number" step="0.01" min="0" inputmode="decimal"></label><label>Precio anterior (€)<input id="ao" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Opcional"></label></div>
 <div class="rw"><label>Stock<input id="as" type="number" min="0" step="1" inputmode="numeric"></label><label>Grading<input id="ag" placeholder="PSA 10, Nova 9.5…" maxlength="40"></label></div>
@@ -840,6 +855,7 @@ const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.
 const CATS=["Todo","Destacados","Cartas graduadas","Cartas sueltas","Colecciones","Álbumes vintage","Figuras","Stickers","Cuadros"];
 let P=[],PLOAD="loading",cur="Todo",FQ="",FG="all",FS="rec",PG=1,cart=ls.get("pi",{}),payNonce=null;const PER=18;
 const pimg=p=>p.img||IMG[p.i]||"";
+const pimgs=p=>[pimg(p),...(p.xs||[])].filter(Boolean);
 // Buscador y filtros del catálogo
 const norm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
 const gkey=g=>norm(g).replace(/\s+/g," ");const isG=p=>!!p.g&&/\d/.test(p.g);const gNums=p=>p.g?(String(p.g).match(/\d+(?:[.,]\d+)?/g)||[]).map(n=>Math.floor(parseFloat(n.replace(",",".")))):[];
@@ -863,7 +879,7 @@ function draw(){
  $("#pager").innerHTML=pages>1?`<button data-pg="${PG-1}" ${PG<=1?"disabled":""}>‹ Anterior</button>${Array.from({length:pages},(_,k)=>`<button data-pg="${k+1}" class="${k+1===PG?"on":""}" aria-label="Página ${k+1}">${k+1}</button>`).join("")}<button data-pg="${PG+1}" ${PG>=pages?"disabled":""}>Siguiente ›</button>`:"";
  if(!all.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><p>No hay cartas que coincidan${FQ.trim()?` con «${esc(FQ.trim())}»`:""}.</p><button class="sbtn" id="fclear">Ver todas las cartas</button></div>`;return}
 
- g.innerHTML=l.map(p=>{const out=!(p.s>0);return `<article class="p"><div class="art" style="background:linear-gradient(150deg,${esc(p.h||"#1f7a5c")},#0c1a1e)">${pimg(p)?`<img src="${esc(pimg(p))}" alt="${esc(p.n)}" loading="lazy">`:""}${p.g?`<span class="tag">${esc(p.g)}</span>`:""}${out?'<div class="out">Agotado</div>':""}</div><h3>${esc(p.n)}</h3><small>${esc(p.c)}</small>${p.d?`<p class="pd">${esc(p.d)}</p>`:""}<div class="pr"><b>${e(p.pr)}</b>${p.o?`<s>${e(p.o)}</s>`:""}</div><button class="add" data-a="${p.id}" ${out?"disabled":""}>${out?"Agotado":"Añadir al carrito"}</button>${p.link&&!out?`<a class="buy" href="${esc(p.link)}" target="_blank" rel="noopener">Comprar ahora</a>`:""}${ADMIN?`<button class="ed" data-e="${p.id}">Editar</button><div class="mv"><button data-mv="${p.id}" data-d="-1" aria-label="Mover antes">◀ Antes</button><button data-mv="${p.id}" data-d="1" aria-label="Mover después">Después ▶</button></div>`:""}</article>`}).join("")||'<p class="sub">No hay productos en esta categoría todavía.</p>'}
+ g.innerHTML=l.map(p=>{const out=!(p.s>0);return `<article class="p"><div class="art${pimgs(p).length>1?" car":""}" style="background:linear-gradient(150deg,${esc(p.h||"#1f7a5c")},#0c1a1e)">${pimgs(p).length>1?`<div class="trk">${pimgs(p).map((s,k)=>`<img src="${esc(s)}" alt="${esc(p.n)}${k?" (foto "+(k+1)+")":""}" loading="lazy">`).join("")}</div><button type="button" class="cprev" aria-label="Foto anterior">‹</button><button type="button" class="cnext" aria-label="Foto siguiente">›</button><div class="dots">${pimgs(p).map((_,k)=>`<i class="${k?"":"on"}"></i>`).join("")}</div>`:pimg(p)?`<img src="${esc(pimg(p))}" alt="${esc(p.n)}" loading="lazy">`:""}${p.g?`<span class="tag">${esc(p.g)}</span>`:""}${out?'<div class="out">Agotado</div>':""}</div><h3>${esc(p.n)}</h3><small>${esc(p.c)}</small>${p.d?`<p class="pd">${esc(p.d)}</p>`:""}<div class="pr"><b>${e(p.pr)}</b>${p.o?`<s>${e(p.o)}</s>`:""}</div><button class="add" data-a="${p.id}" ${out?"disabled":""}>${out?"Agotado":"Añadir al carrito"}</button>${p.link&&!out?`<a class="buy" href="${esc(p.link)}" target="_blank" rel="noopener">Comprar ahora</a>`:""}${ADMIN?`<button class="ed" data-e="${p.id}">Editar</button><div class="mv"><button data-mv="${p.id}" data-d="-1" aria-label="Mover antes">◀ Antes</button><button data-mv="${p.id}" data-d="1" aria-label="Mover después">Después ▶</button></div>`:""}</article>`}).join("")||'<p class="sub">No hay productos en esta categoría todavía.</p>'}
 async function loadP(){PLOAD=P.length?PLOAD:"loading";if(!P.length)draw();try{const d=await req("/api/products",null,"GET");if(!Array.isArray(d))throw new Error("respuesta no válida");P=d;PLOAD="ok"}catch(err){PLOAD=err.message}draw();cdraw()}
 function cdraw(){
  if(PLOAD==="ok")Object.keys(cart).forEach(k=>{const p=P.find(x=>x.id==k);if(!p||!(p.s>0))delete cart[k];else if(cart[k]>p.s)cart[k]=p.s});
@@ -919,12 +935,16 @@ $("#ars").onclick=()=>location.reload();
 $("#apanel").onclick=()=>openPanel("compras");
 
 /* ---- editor de productos ---- */
-let ED=null,EDIMG;
-function openEd(id){const p=id?P.find(x=>x.id==id):null;ED=p?{...p}:{id:Date.now(),n:"",c:"Cartas graduadas",pr:0,s:1,h:"#1f7a5c",f:0};EDIMG=undefined;
+let ED=null,EDIMG,EDX=[undefined,undefined];
+function openEd(id){const p=id?P.find(x=>x.id==id):null;ED=p?{...p}:{id:Date.now(),n:"",c:"Cartas graduadas",pr:0,s:1,h:"#1f7a5c",f:0};EDIMG=undefined;EDX=[undefined,undefined];
  $("#at").textContent=p?"Editar producto":"Nuevo producto";$("#ac").innerHTML=CATS.slice(2).map(c=>`<option ${c==ED.c?"selected":""}>${esc(c)}</option>`).join("");
  $("#an").value=ED.n||"";$("#ap").value=(ED.pr/100).toFixed(2);$("#ao").value=ED.o?(ED.o/100).toFixed(2):"";$("#as").value=ED.s??0;$("#ag").value=ED.g||"";$("#al2").value=ED.link||"";$("#adsc").value=ED.d||"";$("#af2").checked=!!ED.f;
  edPrev();$("#ai").value="";$("#ade").style.display=p?"":"none";msg("#afm","","");$("#ad").classList.add("on")}
-function edPrev(){const src=EDIMG===undefined?pimg(ED):EDIMG;$("#pv").src=src||"";$("#pv").style.display=src?"":"none";$("#arm").style.display=src?"":"none"}
+function edPrev(){const src=EDIMG===undefined?pimg(ED):EDIMG;$("#pv").src=src||"";$("#pv").style.display=src?"":"none";$("#arm").style.display=src?"":"none";
+ $("#axl").innerHTML=[0,1].map(k=>{const s=EDX[k]===undefined?(ED.xs||[])[k]:EDX[k];return `<div class="axs">${s?`<img src="${esc(s)}" alt="">`:'<span>Sin foto</span>'}<label class="fl">📷 ${s?"Cambiar":"Añadir"} foto ${k+2}<input type="file" data-ax="${k}" accept="image/jpeg,image/png,image/webp" hidden></label>${s?`<button type="button" class="lnk2" data-axrm="${k}">Quitar</button>`:""}</div>`}).join("")}
+$("#axl").addEventListener("change",async ev=>{const k=ev.target.dataset.ax,f=ev.target.files&&ev.target.files[0];if(k==null||!f)return;if(f.size>15e6)return msg("#afm","err","La foto pesa demasiado (máx. 15 MB).");
+ const d=await shr(f,1000);if(!d)return msg("#afm","err","No se pudo leer la foto. Usa JPG, PNG o WebP.");EDX[+k]=d;edPrev();msg("#afm","info","Foto "+(+k+2)+" lista. Pulsa Guardar para aplicarla.")});
+$("#axl").addEventListener("click",ev=>{const k=ev.target.dataset.axrm;if(k==null)return;EDX[+k]=null;edPrev();msg("#afm","info","La foto "+(+k+2)+" se quitará al guardar.")});
 $("#ai").onchange=async ev=>{const f=ev.target.files[0];if(!f)return;if(f.size>15e6){msg("#afm","err","La foto pesa demasiado (máx. 15 MB).");return}
  const d=await shr(f,1000);if(!d){msg("#afm","err","No se pudo leer la foto. Usa JPG, PNG o WebP.");return}EDIMG=d;edPrev();msg("#afm","info","Foto nueva lista. Pulsa Guardar para aplicarla.")};
 $("#arm").onclick=()=>{EDIMG=null;edPrev();msg("#afm","info","La foto se quitará al guardar.")};
@@ -936,7 +956,7 @@ $("#af").onsubmit=async ev=>{ev.preventDefault();
  if(!(s>=0))return msg("#afm","err","Escribe un stock válido (0 o más).");
  if(lk&&!/^https:\/\/buy\.stripe\.com\//.test(lk))return msg("#afm","err","El enlace de pago debe empezar por https://buy.stripe.com/");
  const product={id:ED.id,n,c:$("#ac").value,g:$("#ag").value.trim()||null,pr,o:o||null,s,f:$("#af2").checked?1:0,i:ED.i||null,link:lk||null,h:ED.h||null,d:$("#adsc").value.trim()||null};
- if(EDIMG)product.img=EDIMG;if(EDIMG===null)product.rmImg=1;
+ if(EDIMG)product.img=EDIMG;if(EDIMG===null)product.rmImg=1;product.ex=EDX.map(v=>v===undefined?"keep":v);
  const done=busy($("#asave"),"Guardando…");msg("#afm","","");
  try{const r=await req("/api/admin",{pin:APIN,action:"save",product});await loadP();const chk=P.find(x=>x.id===product.id);
   if(!chk||chk.pr!==r.product.pr||chk.n!==r.product.n)throw new Error("El servidor guardó, pero no se pudo comprobar. Recarga la página.");
@@ -1701,6 +1721,10 @@ async function upVid(p,f){const set=t=>{p._vst=t;renderEd()};
    d=await req("/api/mbox",{action:"admin_vid",pin:APIN,boxId:EB.id,pid:p.id,i,n,type,data:btoa(s)})}
   p.vid=d.vid;p.vt=d.vt;p._vst="";renderEd();toast("🎬 Animación guardada ✓ Saldrá cuando toque este premio","ok");loadMB().then(renderMB)}
  catch(err){p._vst="";renderEd();msg("#mbmsg2","err",err.message||"No se pudo subir la animación")}}
+/* ---- fotos de producto deslizables ---- */
+function carGo(art,dir){const t=art.querySelector(".trk");if(!t)return;const n=t.children.length,i=Math.round(t.scrollLeft/t.clientWidth);t.scrollTo({left:((i+dir+n)%n)*t.clientWidth,behavior:"smooth"})}
+document.addEventListener("scroll",ev=>{const t=ev.target;if(!t.classList||!t.classList.contains("trk"))return;const i=Math.round(t.scrollLeft/t.clientWidth);t.parentNode.querySelectorAll(".dots i").forEach((d,k)=>d.classList.toggle("on",k===i))},true);
+document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest(".cprev,.cnext");if(!b)return;ev.preventDefault();ev.stopPropagation();carGo(b.closest(".art"),b.classList.contains("cnext")?1:-1)},true);
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 

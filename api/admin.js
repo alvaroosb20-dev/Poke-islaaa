@@ -51,6 +51,7 @@ module.exports = async (req, res) => {
       if (!Number.isSafeInteger(id)) return res.status(400).json({ error: "Producto no válido" });
       await cmd(["HDEL", "products", String(id)]);
       await delImg("p" + id);
+      await delImg("p" + id + "x1"); await delImg("p" + id + "x2");
       const still = (await cmd(["HMGET", "products", String(id)]))[0];
       if (still) return res.status(500).json({ error: "No se pudo eliminar el producto" });
       return res.status(200).json({ ok: true });
@@ -67,6 +68,9 @@ module.exports = async (req, res) => {
       if (p.link && !/^https:\/\/buy\.stripe\.com\/[A-Za-z0-9_-]+$/.test(String(p.link))) return res.status(400).json({ error: "El enlace de pago debe empezar por https://buy.stripe.com/" });
       const newImg = typeof p.img === "string" && p.img.startsWith("data:image/") ? p.img : null; // una URL o null = foto sin cambios
       if (newImg) checkImg(newImg);
+      // Fotos extra (hasta 2 más, se ven deslizando): cada hueco es una foto nueva (data:image), "keep" (sin cambios) o null (quitar)
+      const ex = Array.isArray(p.ex) ? [p.ex[0], p.ex[1]] : ["keep", "keep"];
+      ex.forEach((v) => { if (typeof v === "string" && v.startsWith("data:image/")) checkImg(v); });
 
       const prev = parse((await cmd(["HMGET", "products", String(p.id)]))[0]) || {};
       const row = {
@@ -75,6 +79,13 @@ module.exports = async (req, res) => {
         h: /^#[0-9a-f]{6}$/i.test(String(p.h || "")) ? p.h : "#1f7a5c", d: txt(p.d, 1000) || null,
         iv: prev.iv || null, ord: Number.isFinite(prev.ord) ? prev.ord : null,
       };
+      const xv = Array.isArray(prev.xv) ? [prev.xv[0] || null, prev.xv[1] || null] : [null, null];
+      for (let k = 0; k < 2; k++) {
+        const v = ex[k], key = "p" + p.id + "x" + (k + 1);
+        if (typeof v === "string" && v.startsWith("data:image/")) xv[k] = await putImg(key, v);
+        else if (v === null || v === false) { if (xv[k]) await delImg(key); xv[k] = null; }
+      }
+      if (xv[0] || xv[1]) row.xv = xv;
       if (newImg) row.iv = await putImg("p" + p.id, newImg);
       else if (p.rmImg) { await delImg("p" + p.id); row.iv = null; row.i = null; }
       else if (!row.iv && typeof prev.img === "string" && prev.img.startsWith("data:image/")) {
