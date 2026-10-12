@@ -548,6 +548,15 @@ html.gt:not(.ln) body{overflow:hidden}
 #axl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #axl .axs{display:grid;gap:6px;justify-items:start;background:var(--card);border-radius:10px;padding:8px}
 #axl .axs img,#axl .axs span{width:100%;height:110px;object-fit:contain;border-radius:8px;background:#0001;display:grid;place-items:center;font-size:12px;opacity:.9}
+/* ===== Galería en la foto ampliada ===== */
+#lbp,#lbnx{display:none;position:fixed;top:50%;transform:translateY(-50%);z-index:3;width:46px;height:46px;border-radius:50%;border:1.5px solid #ffffff44;background:#0c1a1ecc;color:#ffcb05;font-size:30px;line-height:1;cursor:pointer;place-items:center;padding:0 0 4px}
+#lbp{left:10px}#lbnx{right:10px}
+#lb.multi:not(.z) #lbp,#lb.multi:not(.z) #lbnx{display:grid}
+#lbd{display:flex;gap:6px;justify-content:center;margin-top:12px}#lbd i{width:8px;height:8px;border-radius:50%;background:#fff6;transition:all .2s}#lbd i.on{background:#ffcb05;width:20px;border-radius:4px}
+#lbn{position:fixed;top:calc(22px + env(safe-area-inset-top,0px));left:16px;color:#fff;font-weight:800;font-size:14px;background:#0c1a1ecc;border-radius:999px;padding:6px 12px}#lbn:empty{display:none}
+#lb.z #lbd,#lb.z #lbn{display:none}
+#lbi.sl{animation:lbsl .28s ease-out}#lbi.sr{animation:lbsr .28s ease-out}
+@keyframes lbsl{from{transform:translateX(40px);opacity:.3}}@keyframes lbsr{from{transform:translateX(-40px);opacity:.3}}
 </style>
 </head>
 <body>
@@ -719,7 +728,7 @@ html.gt:not(.ln) body{overflow:hidden}
 <div class="sg" id="sg"><button>¿Cómo sé si una carta es auténtica?</button><button>¿Qué significa PSA 10?</button><button>¿Cuánto cuesta el envío?</button><button>¿Cómo cuido mis cartas?</button></div></div>
 <form id="cf"><input id="ci" placeholder="Escribe tu pregunta…" maxlength="500" autocomplete="off"><button id="cs">Enviar</button></form>
 <div class="dis">Asistente de IA: puede equivocarse. Para pedidos, escríbenos por Instagram.</div></div>
-<div id="lb" role="dialog" aria-label="Foto ampliada"><button id="lbx">Cerrar ✕</button><img id="lbi" alt=""><p id="lbt"></p></div>
+<div id="lb" role="dialog" aria-label="Foto ampliada"><button id="lbx">Cerrar ✕</button><button id="lbp" type="button" aria-label="Foto anterior">‹</button><button id="lbnx" type="button" aria-label="Foto siguiente">›</button><img id="lbi" alt=""><div id="lbd" aria-hidden="true"></div><p id="lbt"></p><span id="lbn"></span></div>
 <div class="ov" id="mba"><div class="bx"><h2 id="mbat" style="font-size:26px;margin:0">PokeRuleta</h2>
  <img class="pv" id="mbaimg" alt="" style="display:none"><div class="rw"><label class="fl">📷 Imagen de la caja<input type="file" id="mbaf" accept="image/jpeg,image/png,image/webp" hidden></label><button type="button" class="sbtn o" id="mbarm">Quitar imagen</button></div>
  <label>Nombre<input id="mban" maxlength="120"></label><label>Descripción<textarea id="mbad" rows="2" maxlength="300"></textarea></label>
@@ -982,10 +991,13 @@ $("#cf").onsubmit=ev=>{ev.preventDefault();ask($("#ci").value)};
 $("#sg").onclick=ev=>{if(ev.target.tagName==="BUTTON")ask(ev.target.textContent)};
 
 /* ================= FOTOS AMPLIADAS Y PÁGINAS LEGALES ================= */
-function openLB(src,t){$("#lbi").src=src;$("#lbt").textContent=t||"";$("#lb").classList.remove("z");$("#lb").classList.add("on");document.body.style.overflow="hidden"}
-function closeLB(){$("#lb").classList.remove("on","z");document.body.style.overflow=""}
+var LBL=[],LBI=0;
+function openLB(src,t,list,i){LBL=list&&list.length>1?list:[src];LBI=list&&list.length>1?(i||0):0;$("#lbi").src=LBL[LBI];$("#lbt").textContent=t||"";const l=$("#lb");l.classList.remove("z");l.classList.toggle("multi",LBL.length>1);lbUpd();l.classList.add("on");document.body.style.overflow="hidden"}
+function lbUpd(){$("#lbn").textContent=LBL.length>1?(LBI+1)+" / "+LBL.length:"";$("#lbd").innerHTML=LBL.length>1?LBL.map((_,k)=>`<i class="${k===LBI?"on":""}"></i>`).join(""):""}
+function lbGo(d){if(LBL.length<2)return;const l=$("#lb");l.classList.remove("z");LBI=(LBI+d+LBL.length)%LBL.length;const im=$("#lbi");im.classList.remove("sl","sr");void im.offsetWidth;im.src=LBL[LBI];im.classList.add(d>0?"sl":"sr");lbUpd()}
+function closeLB(){$("#lb").classList.remove("on","z","multi");document.body.style.overflow=""}
 function openLegal(k){$$("#legal [data-sec]").forEach(s=>s.hidden=s.dataset.sec!==k);$("#legal").classList.add("on");$("#legal .bx").scrollTop=0}
-document.addEventListener("keydown",ev=>{if(ev.key!=="Escape")return;closeLB();$$(".ov.on").forEach(o=>{if(o.id!=="mres")o.classList.remove("on")});$("#cart").classList.remove("on")});
+document.addEventListener("keydown",ev=>{if($("#lb").classList.contains("on")&&(ev.key==="ArrowRight"||ev.key==="ArrowLeft")){lbGo(ev.key==="ArrowRight"?1:-1);return}if(ev.key!=="Escape")return;closeLB();$$(".ov.on").forEach(o=>{if(o.id!=="mres")o.classList.remove("on")});$("#cart").classList.remove("on")});
 
 /* ================= POKERULETA ================= */
 let MB=[],MBERR="",MBsel=null,MBtk=null,MBpend=null,MBz="canarias",MBnonce=null,MBMSG={t:"",m:""},wRot=0,WB=null,spinning=false,EB=null,ANIM=null;
@@ -1295,7 +1307,8 @@ document.addEventListener("click",async ev=>{const t=ev.target,el=t.closest?t:nu
  if(t.dataset.r){delete cart[t.dataset.r];saveCart();cdraw()}
  if(t.closest("#menu a"))$("#menu").classList.remove("on");
  if(t.id==="retryP")loadP();
- if(t.tagName==="IMG"&&t.getAttribute("src")&&(t.closest(".art")||t.classList.contains("gr9")||t.closest(".mbpz")||t.closest(".mi"))){const c=t.closest("article,li,.mi"),h3=c&&c.querySelector("h3,span,b");openLB(t.src,h3?h3.textContent:t.alt)}
+ if(t.tagName==="IMG"&&t.getAttribute("src")&&(t.closest(".art")||t.classList.contains("gr9")||t.closest(".mbpz")||t.closest(".mi"))){const c=t.closest("article,li,.mi"),h3=c&&(c.querySelector("h3")||c.querySelector("span,b")),tr=t.closest(".trk"),L=tr?[...tr.querySelectorAll("img")]:null;openLB(t.src,h3?h3.textContent:t.alt,L&&L.map(x=>x.src),L?L.indexOf(t):0)}
+ if(t.id==="lbp"||t.id==="lbnx"){lbGo(t.id==="lbnx"?1:-1);return}
  if(t.id==="lb"||t.id==="lbx")closeLB();
  if(t.id==="lbi"){const l=$("#lb");l.classList.toggle("z");if(l.classList.contains("z")){l.scrollLeft=(l.scrollWidth-l.clientWidth)/2;l.scrollTop=(l.scrollHeight-l.clientHeight)/4}}
  if(t.dataset.mbs){MBtk=null;MBpend=null;MBnonce=null;MBsel=Number(t.dataset.mbs);msgMB("","");renderMB()}
@@ -1725,6 +1738,10 @@ async function upVid(p,f){const set=t=>{p._vst=t;renderEd()};
 function carGo(art,dir){const t=art.querySelector(".trk");if(!t)return;const n=t.children.length,i=Math.round(t.scrollLeft/t.clientWidth);t.scrollTo({left:((i+dir+n)%n)*t.clientWidth,behavior:"smooth"})}
 document.addEventListener("scroll",ev=>{const t=ev.target;if(!t.classList||!t.classList.contains("trk"))return;const i=Math.round(t.scrollLeft/t.clientWidth);t.parentNode.querySelectorAll(".dots i").forEach((d,k)=>d.classList.toggle("on",k===i))},true);
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest(".cprev,.cnext");if(!b)return;ev.preventDefault();ev.stopPropagation();carGo(b.closest(".art"),b.classList.contains("cnext")?1:-1)},true);
+// Deslizar en la foto ampliada para cambiar de foto
+(function(){const l=$("#lb");let x0=null,y0=0;l.addEventListener("touchstart",ev=>{if(l.classList.contains("z")||ev.touches.length>1){x0=null;return}x0=ev.touches[0].clientX;y0=ev.touches[0].clientY},{passive:true});
+ l.addEventListener("touchend",ev=>{if(x0==null)return;const t=ev.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.3){lbGo(dx<0?1:-1);l._sw=Date.now()}},{passive:true});
+ l.addEventListener("click",ev=>{if(l._sw&&Date.now()-l._sw<400){ev.stopPropagation();ev.preventDefault()}},true)})();
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 
