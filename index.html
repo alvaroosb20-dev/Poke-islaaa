@@ -613,6 +613,25 @@ footer#contacto{background:rgba(12,26,30,.94)}
 #tienda,#mystery,#grading,#envios,#resenas{margin-top:34px}
 @media (min-width:760px){#bgx .bgl{top:calc(9vh + 60px);width:min(44vw,600px)}#tienda,#mystery,#grading,#envios,#resenas{margin-top:56px}}
 @media (prefers-reduced-motion:reduce){#pdown b{animation:none}}
+/* ===== Toda la web transparente sobre el paisaje (cristal oscuro) ===== */
+#bgx .bgs{position:absolute;inset:0;background:linear-gradient(180deg,#06121fb3,#06121f99 40%,#06121fbf);opacity:0}
+.hero2,.feat,#tienda,#mystery,#grading,.dark,#envios,#resenas,#sorteo,footer#contacto{background:transparent!important;border-color:#ffffff1f}
+#tienda,#envios,#resenas,#sorteo,.hero2,#mystery,#grading,footer#contacto{--tx:#f4efe3;--bg:transparent;--card:rgba(10,24,34,.58);--line:rgba(255,255,255,.16);color:var(--tx)}
+#tienda h2,#envios h2,#resenas h2,#tienda .sub,#envios p,#resenas p{text-shadow:0 2px 12px #000c}
+.p,.rv,#envios .sec div,#envios [class*="card"]{-webkit-backdrop-filter:blur(10px) saturate(1.2);backdrop-filter:blur(10px) saturate(1.2);box-shadow:0 10px 30px #0005}
+.p small,.p .pd{opacity:.8}
+.p s{opacity:.7}
+.feat{border-block-color:#ffcb0599}
+.feat>*{background:rgba(0,0,0,.35)}
+#tienda .flt input::placeholder{color:#f4efe3aa}
+#tienda .flt select option,#tienda select option{color:#0c1a1e;background:#fff}
+#tienda,#mystery,#grading,#envios,#resenas{margin-top:20px}
+@media (min-width:760px){#tienda,#mystery,#grading,#envios,#resenas{margin-top:28px}}
+#bgx .bgs{background:linear-gradient(180deg,#06121fbf,#06121fc7 45%,#06121fd1)}
+#tienda,#envios,#resenas,#mystery,#grading,footer#contacto,.hero2{text-shadow:0 1px 6px #000b}
+#tienda .p,#tienda button,#tienda input,#tienda select,#mystery button,#mystery select,.btn{text-shadow:none}
+#grading .gr>div{background:rgba(10,24,34,.62);border:1px solid #ffffff29;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+#envios .zones>*,#envios [class*="z"]>div{text-shadow:0 1px 6px #000}
 </style>
 </head>
 <body>
@@ -652,7 +671,7 @@ footer#contacto{background:rgba(12,26,30,.94)}
  <div class="rw"><button class="btn pk" id="lnsave" style="border:0">Guardar</button><button type="button" class="btn" id="lnprev" style="border:2px solid var(--line);color:var(--tx)">👀 Ver cómo queda</button></div></div></div></div>
 <div id="mant" role="dialog" aria-modal="true" aria-label="Web en mantenimiento"><div><div class="mlogo">POKE<i>ISLAS</i></div><div class="mic">🚧</div><h2>Web en mantenimiento</h2><p id="mantmsg">Estamos mejorando la tienda. ¡Volvemos muy pronto!</p><p>Mientras tanto puedes escribirnos:</p><p><a href="https://www.instagram.com/poke_islas/" target="_blank" rel="noopener">Instagram @poke_islas</a><br><a href="mailto:pokeislatcg@gmail.com">pokeislatcg@gmail.com</a></p><div id="mgame"></div><a href="#" id="mantadm" class="madm">Acceso administrador</a></div></div>
 <div id="hwtop" aria-hidden="true"><span class="web l"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="web r"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 0L100 100M0 0L50 100M0 0L100 50M0 0L20 100M0 0L100 20"/><path d="M0 22Q12 17 22 0M0 45Q25 35 45 0M0 70Q38 55 70 0M0 95Q52 75 95 0"/></svg></span><span class="spd">🕷️</span></div><div id="hw" aria-hidden="true"><span class="bat">🦇</span><span class="bat">🦇</span><span class="bat">🦇</span></div><div id="hwbar"></div>
-<div id="bgx" aria-hidden="true"><div class="bgi"></div><img class="bgl" src="/fondo-logo.webp" alt="" fetchpriority="high"></div>
+<div id="bgx" aria-hidden="true"><div class="bgi"></div><div class="bgs"></div><img class="bgl" src="/fondo-logo.webp" alt="" fetchpriority="high"></div>
 <div class="bar">Envíos seguros a toda España desde Canarias 🇮🇨🇪🇸</div>
 <div id="abar"><span>Modo administrador</span><span id="mtbar" hidden>EN MANTENIMIENTO</span><span id="lnbar" hidden>INAUGURACIÓN PROGRAMADA</span><button id="alaunch">🎉 Inauguración</button><button id="agate">🔐 Login</button><button id="amant">🚧 Mantenimiento</button><button id="apromo">📣 Anuncio</button><button id="atheme">🎃 Halloween</button><button id="aadd">+ Añadir producto</button><button id="sitebtn">🛠 Editar web</button><button id="apanel">📊 Panel</button><button id="ars">Recargar</button><button id="aout">Salir</button></div>
 <nav>
@@ -1817,9 +1836,9 @@ function unlock(p){return new Promise(done=>{const o=$("#unl");if(!o||!p){done()
  T.push(setTimeout(()=>o.classList.add("urv"),rd?50:1050));T.push(setTimeout(()=>o.classList.add("ubn"),rd?100:1650));T.push(setTimeout(()=>o.classList.add("uok"),rd?150:2100))})}
 $("#unl").addEventListener("click",ev=>{const o=$("#unl");if(ev.target.id==="uskip"||ev.target.id==="ugo"||o.classList.contains("uok"))UNLres&&UNLres()});
 /* ---- fondo con paisaje: el paisaje se desplaza suave al deslizar y el logo se queda quieto ---- */
-(function(){const bi=$("#bgx .bgi");if(!bi)return;let H=0,Wd=0,h=0,raf=0;
+(function(){const bi=$("#bgx .bgi"),sc=$("#bgx .bgs"),lg=$("#bgx .bgl");if(!bi)return;let H=0,Wd=0,h=0,raf=0;
  const size=()=>{const w=innerWidth;if(w!==Wd||!H){Wd=w;H=Math.max(innerHeight,document.documentElement.clientHeight);h=Math.max(H*1.15,w*1672/940);bi.style.height=h+"px"}};
- const upd=()=>{raf=0;const max=Math.max(1,document.documentElement.scrollHeight-innerHeight),p=Math.min(1,Math.max(0,scrollY/max));bi.style.transform=`translate3d(0,${(-p*(h-H)).toFixed(1)}px,0)`};
+ const upd=()=>{raf=0;const max=Math.max(1,document.documentElement.scrollHeight-innerHeight),p=Math.min(1,Math.max(0,scrollY/max));bi.style.transform=`translate3d(0,${(-p*(h-H)).toFixed(1)}px,0)`;if(sc)sc.style.opacity=Math.min(1,scrollY/(H*.8)).toFixed(3);if(lg){const o=1-Math.min(1,Math.max(0,(scrollY-H*.25)/(H*.45)));lg.style.opacity=o.toFixed(3);lg.style.visibility=o>0?"":"hidden"}};
  size();upd();addEventListener("scroll",()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});addEventListener("resize",()=>{size();upd()});
  const pd=$("#pdown");if(pd)pd.onclick=()=>{const t=$(".hero2");if(t)t.scrollIntoView({behavior:reduced()?"auto":"smooth"})}})();
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
