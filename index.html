@@ -489,7 +489,7 @@ html.ln body{overflow:hidden}
 html.gt:not(.ln) #gate{display:flex;position:fixed;inset:0;z-index:9990;overflow:auto;color:#fff;align-items:flex-start;justify-content:center;text-align:center;padding:30px 16px;
  background:radial-gradient(circle at 50% 15%,#7a1fa2 0,#3b0d6b 32%,#12051f 72%);animation:gin .35s ease-out}
 html.gt:not(.ln) body{overflow:hidden}
-#gate.out{opacity:0;transform:scale(1.04);transition:opacity .5s,transform .5s}
+#gate.gout{opacity:0;transform:scale(1.04);transition:opacity .5s,transform .5s}
 @keyframes gin{from{opacity:0}}
 #gate .grays{position:fixed;left:50%;top:20%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(#ffe27a17 0 8deg,transparent 8deg 16deg);border-radius:50%;animation:prorot 34s linear infinite;-webkit-mask:radial-gradient(circle,#000 15%,transparent 60%);mask:radial-gradient(circle,#000 15%,transparent 60%);pointer-events:none}
 #gate .gin{margin:auto;width:100%;max-width:420px;position:relative;z-index:1}
@@ -520,7 +520,7 @@ html.gt:not(.ln) body{overflow:hidden}
 /* ===== Animación en vídeo de cada premio ===== */
 #pvid{display:none;position:fixed;inset:0;z-index:9000;background:#000;align-items:center;justify-content:center;--pvc:#ffcb05}
 #pvid.on{display:flex;animation:pvin .35s ease-out}
-#pvid.out{opacity:0;transition:opacity .4s}
+#pvid.pvout{opacity:0;transition:opacity .4s}
 @keyframes pvin{from{opacity:0}}
 #pvid .pvbg{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--pvc) 45%,transparent) 0,transparent 60%);opacity:.0;transition:opacity .6s}
 #pvid.pl .pvbg{opacity:1}
@@ -557,6 +557,41 @@ html.gt:not(.ln) body{overflow:hidden}
 #lb.z #lbd,#lb.z #lbn{display:none}
 #lbi.sl{animation:lbsl .28s ease-out}#lbi.sr{animation:lbsr .28s ease-out}
 @keyframes lbsl{from{transform:translateX(40px);opacity:.3}}@keyframes lbsr{from{transform:translateX(-40px);opacity:.3}}
+/* ===== Desbloqueo de carta (silueta → color → «¡NUEVA CARTA!») ===== */
+#unl{display:none;position:fixed;inset:0;z-index:9000;overflow:hidden;color:#fff;--u1:#fff27a;--u2:#ff9f1a;--u3:#7a1a00;user-select:none;-webkit-user-select:none}
+#unl.on{display:block}
+#unl.uout{opacity:0;transition:opacity .35s}
+#unl .ub1,#unl .ub2,#unl .urays,#unl .ufl{position:absolute;inset:0}
+#unl .ub1{z-index:0;background:repeating-linear-gradient(90deg,#ffffff00 0 70px,#ffffff14 70px 110px,#ffffff00 110px 190px),linear-gradient(180deg,#2f86ff,#0d3fb8);background-size:380px 100%,100% 100%;animation:ustr 2.2s linear infinite}
+@keyframes ustr{to{background-position:380px 0,0 0}}
+#unl .ub2{z-index:0;opacity:0;background:radial-gradient(circle at 50% 38%,var(--u1) 0,var(--u2) 32%,var(--u3) 80%)}
+#unl .urays{z-index:0;opacity:0;inset:auto;left:50%;top:38%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;background:repeating-conic-gradient(#ffffff2a 0 7deg,#ffffff00 7deg 18deg);border-radius:50%;animation:prorot 26s linear infinite;-webkit-mask:radial-gradient(circle,#000 10%,transparent 55%);mask:radial-gradient(circle,#000 10%,transparent 55%)}
+#unl #fxc{z-index:1}
+#unl .ufl{z-index:3;background:#fff;opacity:0;pointer-events:none}
+#unl.urv .ub2{opacity:1;transition:opacity .25s}
+#unl.urv .urays{opacity:1;transition:opacity .6s .1s}
+#unl.urv .ufl{animation:ufl .7s ease-out}
+@keyframes ufl{0%{opacity:1}100%{opacity:0}}
+#unl .ust{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(56px + env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom))}
+#unl .ucard{position:relative;display:grid;place-items:center}
+#unl #ufx{position:absolute;inset:0;pointer-events:none;animation:none!important}
+#unl #uimg{max-height:46vh;max-width:78vw;object-fit:contain;filter:brightness(0);opacity:.62;animation:ubob 1.4s ease-in-out infinite;transition:filter .2s}
+@keyframes ubob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.02)}}
+#unl.urv #uimg{filter:drop-shadow(0 0 22px var(--u1)) drop-shadow(0 18px 30px #0009);opacity:1;animation:upop .75s cubic-bezier(.2,1.6,.4,1) both,ubob2 3s ease-in-out .8s infinite}
+@keyframes upop{0%{transform:scale(1.35) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes ubob2{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(1deg)}}
+#unl .uban{text-align:center;max-width:460px;transform:translateX(130%) skewX(-8deg);opacity:0}
+#unl.ubn .uban{transform:none;opacity:1;transition:transform .5s cubic-bezier(.2,1.3,.4,1),opacity .2s}
+#unl .unew{display:inline-block;font-weight:900;font-style:italic;font-size:clamp(22px,6vw,34px);color:#ffe14a;letter-spacing:.5px;text-shadow:0 3px 0 #000,2px 2px 0 #000,-2px -1px 0 #000,2px -1px 0 #000,-2px 2px 0 #000;transform:rotate(-4deg)}
+#unl h2{margin:2px 0 8px;font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(28px,8.5vw,52px);line-height:1;color:#fff;text-shadow:0 4px 0 #000,3px 3px 0 #000,-3px -2px 0 #000,3px -2px 0 #000,-3px 3px 0 #000;transform:rotate(-4deg)}
+#unl #urar{margin:6px 0}#unl #urar>*{background:#fff;box-shadow:0 2px 0 #0006}#unl #uval{font-weight:900;font-size:20px;color:#ffe14a;margin:4px 0;text-shadow:0 2px 0 #000}
+#unl #udsc{font-size:14px;opacity:.92;margin:0 auto 6px;max-width:380px;text-shadow:0 1px 3px #000}
+#unl #ugo{margin-top:10px;font:inherit;font-size:18px;font-weight:900;border:0;border-radius:12px;padding:13px 34px;cursor:pointer;color:#fff;background:linear-gradient(180deg,#5fe06b,#1f9e4a);box-shadow:0 5px 0 #0b5e27,0 10px 24px #0007;text-shadow:0 2px 0 #0006;opacity:0;transform:scale(.6)}
+#unl.uok #ugo{opacity:1;transform:none;transition:transform .35s cubic-bezier(.2,1.6,.4,1),opacity .2s;animation:propulse 1.6s ease-in-out .4s infinite}
+#unl #uskip{position:absolute;z-index:4;right:14px;top:calc(14px + env(safe-area-inset-top));border:0;border-radius:999px;font:inherit;font-weight:800;padding:9px 14px;background:#0006;color:#fff;cursor:pointer}
+#unl.uok #uskip{display:none}
+@media (min-width:760px){#unl .urays{left:37%;top:50%}#unl .ub2{background:radial-gradient(circle at 37% 50%,var(--u1) 0,var(--u2) 32%,var(--u3) 80%)}#unl .ust{flex-direction:row;gap:56px}#unl #uimg{max-height:70vh;max-width:42vw}#unl .uban{text-align:left}#unl #udsc{margin-left:0}}
+@media (prefers-reduced-motion:reduce){#unl .ub1,#unl .urays,#unl #uimg,#unl.urv #uimg,#unl.uok #ugo{animation:none}}
 </style>
 </head>
 <body>
@@ -765,6 +800,10 @@ html.gt:not(.ln) body{overflow:hidden}
  <small style="opacity:.7">Tu reseña se publicará al momento. Al enviarla aceptas que mostremos tu nombre, comentario y foto en la web.</small></div>
  <div id="rvthx" hidden>🙌 ¡Gracias por tu reseña!<br><small>Ya está publicada en la web.</small></div></div></div>
 <div class="ov" id="mbl"><div class="bx wide"><div style="display:flex;justify-content:space-between;align-items:center"><h2 id="mblt" style="font-size:24px;margin:0">Panel de administración</h2><button class="sbtn o" id="mblx">Cerrar</button></div><div class="sedt ptabs" id="ptabs"><button data-pt="compras">Compras</button><button data-pt="giros">PokeRuleta</button><button data-pt="descuentos">Descuentos</button><button data-pt="cajas">Cajas</button><button data-pt="clientes">Clientes</button><button data-pt="ventas">Quiero vender</button><button data-pt="estado">Estado</button></div><div id="mblb" style="display:grid;gap:10px"></div></div></div>
+<div id="unl" role="dialog" aria-label="Carta conseguida"><div class="ub1" aria-hidden="true"></div><div class="ub2" aria-hidden="true"></div><div class="urays" aria-hidden="true"></div><div class="ufl" aria-hidden="true"></div>
+ <div class="ust"><div class="ucard"><span id="ufx"></span><img id="uimg" alt=""></div>
+  <div class="uban"><div class="unew">¡NUEVA CARTA!</div><h2 id="unm"></h2><div id="urar"></div><p id="uval"></p><p id="udsc"></p><button type="button" id="ugo">CONTINUAR</button></div></div>
+ <button type="button" id="uskip">Saltar ⏭</button></div>
 <div id="pvid" role="dialog" aria-label="Animación del premio"><div class="pvbg" aria-hidden="true"></div><video id="pvv" playsinline preload="auto"></video><img id="pvg" alt="" hidden><button id="pvsnd" type="button" hidden>🔊 Activar sonido</button><button id="pvskip" type="button">Saltar ⏭</button></div>
 <div class="ov" id="pz"><div class="bx" id="pzb"><button class="sbtn o" id="pzx" style="justify-self:end">Cerrar ✕</button><div class="c4d" id="pzt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="pzi" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="pzh" style="font-size:24px;text-align:center"></h3><p id="pzr" style="text-align:center"></p><p class="val" id="pzv" style="text-align:center"></p><p id="pzd" style="opacity:.85;text-align:center"></p><p id="pzp" style="opacity:.7;text-align:center;font-size:13px"></p><button class="btn pk" id="pzbuy" style="border:0;text-align:center">COMPRAR Y GIRAR</button></div></div>
 <div class="ov" id="mres"><div class="bx"><h2>🎉 ¡HAS GANADO!</h2><p>Has conseguido:</p><div class="c4d" id="mrt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="mri" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="mrn" style="font-size:26px"></h3><p id="mrr"></p><p class="val" id="mrv"></p><p id="mrd" style="opacity:.8"></p><small id="mrid" style="opacity:.6"></small>
@@ -1183,16 +1222,16 @@ function card4d(w,src){w.hidden=!src;if(!src)return;w.querySelector(".tbg i").st
  w.addEventListener("pointerdown",ev=>{mv(ev);try{w.setPointerCapture(ev.pointerId)}catch(_){}});w.addEventListener("pointermove",ev=>{if(ev.pointerType==="mouse"||touch)mv(ev)});
  const up=()=>{touch=0};w.addEventListener("pointerup",up);w.addEventListener("pointercancel",up);w.addEventListener("pointerleave",up);
  w._go=()=>{if(!raf&&!reduced())raf=requestAnimationFrame(loop)}}
-function showPrize(p,ev){if(p&&p.vid&&!ADMIN_ED_PREV)return playVid(p).then(()=>showPrize0(p,ev));showPrize0(p,ev)}
+function showPrize(p,ev){const q={...p,img:p.card||p.img};if(p&&p.vid&&!ADMIN_ED_PREV)return playVid(p).then(()=>showPrize0(q,ev));unlock(q).then(()=>{NOFX=1;showPrize0(q,ev)})}
 function showPrize0(p,ev){$("#pzb").className="bx g"+ri(p.rarity);card4d($("#pzt"),p.img);if($("#pzt")._go)$("#pzt")._go();
  $("#pzh").textContent=p.name;$("#pzr").innerHTML=rar(p.rarity);$("#pzv").textContent=p.value?"Valor: "+e(p.value):"";
  $("#pzd").textContent=p.desc||"";$("#pzp").textContent=[ADMIN&&pReal(curBox(),p)!=null?"Probabilidad: "+String(pReal(curBox(),p)).replace(".",",")+"%":"",p.left!=null?"Quedan "+p.left:""].filter(Boolean).join(" · ");
  $("#pzbuy").textContent=MBtk&&MBtk.status==="pending"?"GIRAR RULETA":"COMPRAR Y GIRAR";
- $("#pz").classList.add("on");playFx(p.img?$("#pzt"):$("#pzb"),fxOf(p),ri(p.rarity),$("#pz"))}
+ $("#pz").classList.add("on");if(NOFX){NOFX=0;return}playFx(p.img?$("#pzt"):$("#pzb"),fxOf(p),ri(p.rarity),$("#pz"))}
 function wheelTap(ev){if(spinning)return;const p=tapPrize($("#wh"),ev);if(!p||String(p.id).startsWith("d"))return;
  const w=$(".wheelw");w.classList.remove("tap");void w.offsetWidth;w.classList.add("tap");showPrize(p,ev)}
-function showRes(p,spinId){const bp=[...(MBtk&&MBtk.box&&MBtk.box.prizes||[]),...((curBox()||{}).prizes||[])].find(x=>x.id===p.id)||p;if(bp.vid||p.vid)return playVid(bp.vid?bp:p).then(()=>showRes0(p,spinId));showRes0(p,spinId)}
-function showRes0(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);card4d($("#mrt"),p.img);if($("#mrt")._go)$("#mrt")._go();$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");fanfare();const bp=(MBtk&&MBtk.box&&MBtk.box.prizes||[]).find(x=>x.id===p.id)||p;playFx(p.img?$("#mrt"):$("#mres .bx"),fxOf(bp),ri(p.rarity),$("#mres"));setTimeout(()=>confetti(),1500)}
+function showRes(p,spinId){const bp=[...(MBtk&&MBtk.box&&MBtk.box.prizes||[]),...((curBox()||{}).prizes||[])].find(x=>x.id===p.id)||p;const q={...p,img:bp.card||p.card||p.img,fx:bp.fx||p.fx,color:bp.color||p.color};if(bp.vid||p.vid)return playVid(bp.vid?bp:p).then(()=>showRes0(q,spinId));unlock(q).then(()=>{NOFX=1;showRes0(q,spinId)})}
+function showRes0(p,spinId){$("#mres .bx").className="bx g"+ri(p.rarity);card4d($("#mrt"),p.img);if($("#mrt")._go)$("#mrt")._go();$("#mrn").textContent=p.name;$("#mrr").innerHTML=rar(p.rarity);$("#mrv").textContent="Valor: "+e(p.value);$("#mrd").textContent=p.desc||"";$("#mrid").textContent=spinId?"Giro nº "+spinId+" · registrado":"";$("#mres").classList.add("on");if(NOFX){NOFX=0;setTimeout(()=>confetti(),200);return}fanfare();const bp=(MBtk&&MBtk.box&&MBtk.box.prizes||[]).find(x=>x.id===p.id)||p;playFx(p.img?$("#mrt"):$("#mres .bx"),fxOf(bp),ri(p.rarity),$("#mres"));setTimeout(()=>confetti(),1500)}
 let CFid=0;
 function confetti(ox,oy){if(reduced())return;const id=++CFid,c=$("#cf2");c.width=innerWidth;c.height=innerHeight;const x=c.getContext("2d"),HW=document.documentElement.classList.contains("th-halloween"),col=HW?["#ff7a18","#8e44ec","#7CFF6B","#ffb347","#2b123d","#ffffff"]:["#ffcb05","#f26b1d","#1f7a5c","#ffffff","#e1306c","#2a7de1"],EM=["🎃","🦇","👻"],B=ox!=null,g=B?.3:0,P2=Array.from({length:B?130:170},()=>B?{x:ox,y:oy,vx:(Math.random()-.5)*18,vy:-5-Math.random()*12,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.35,c:col[Math.random()*6|0]}:{x:Math.random()*c.width,y:-20-Math.random()*c.height*.6,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,s:5+Math.random()*7,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:col[Math.random()*6|0]});let n=0;(function f(){if(id!==CFid)return;x.clearRect(0,0,c.width,c.height);P2.forEach(p=>{p.vy+=g;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);if(HW&&p.e===undefined)p.e=Math.random()<.28?EM[Math.random()*3|0]:"";if(HW&&p.e){x.font=(p.s*2.6|0)+"px serif";x.textAlign="center";x.fillText(p.e,0,0)}else{x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6)}x.restore()});if(++n<(B?170:240))requestAnimationFrame(f);else x.clearRect(0,0,c.width,c.height)})()}
 async function openTicket(token){const d=await req("/api/mbox",{action:"ticket",token});MBtk={...d.ticket,box:d.box};MBpend=null;if(d.box)MBsel=d.box.id;renderMB()}
@@ -1219,7 +1258,8 @@ function openBoxEd(b){EB=b?JSON.parse(JSON.stringify(b)):sample();if(b)EB.prizes
 function renderEd(){$("#mbat").textContent=EB._new?"Nueva PokeRuleta":"Editar PokeRuleta";const bi=EB.newImg||(!EB.rmImg&&EB.img)||"";$("#mbaimg").style.display=bi?"":"none";$("#mbaimg").src=bi;$("#mbarm").style.display=bi?"":"none";
  $("#mban").value=EB.name;$("#mbad").value=EB.desc||"";$("#mbap").value=(EB.price/100).toFixed(2);$("#mbaa").checked=!!EB.active;$("#mbdel").style.display=EB._new?"none":"";
  $("#mbpl").innerHTML=EB.prizes.map((p,i)=>{const im=p.newImg||(!p.rmImg&&p.img)||"";return `<div class="prow ${p.on?"":"off"}" data-i="${i}"><div class="r1">${im?`<img class="th" src="${esc(im)}" alt="">`:'<span class="th"></span>'}<input data-f="n" placeholder="Nombre del premio" value="${esc(p.name)}" maxlength="120" aria-label="Nombre del premio ${i+1}"><button type="button" data-act="up" title="Subir">↑</button><button type="button" data-act="dn" title="Bajar">↓</button><button type="button" data-act="rm" title="Eliminar premio">✕</button></div>
-  <div class="r2"><label class="fl">📷 ${im?"Cambiar foto":"Añadir foto"}<input type="file" data-f="img" accept="image/jpeg,image/png,image/webp" hidden></label>${im?'<button type="button" class="lnk2" data-act="rmimg">Quitar foto</button>':""}</div>
+  <div class="r2"><label class="fl">📷 ${im?"Cambiar foto de la ruleta":"Añadir foto de la ruleta"}<input type="file" data-f="img" accept="image/jpeg,image/png,image/webp" hidden></label>${im?'<button type="button" class="lnk2" data-act="rmimg">Quitar foto</button>':""}</div>
+  <div class="r2 rcard">${(()=>{const cs=p.newCimg||(!p.rmCimg&&p.card)||"";return `${cs?`<img class="th" src="${esc(cs)}" alt="">`:""}<label class="fl">🃏 ${cs?"Cambiar foto de la carta":"Foto de la carta (al ganar)"}<input type="file" data-f="cimg" accept="image/jpeg,image/png,image/webp" hidden></label>${cs?'<button type="button" class="lnk2" data-act="rmcimg">Quitar</button>':'<small>Si no la pones, se usa la foto de la ruleta</small>'}`})()}</div>
   <div class="r2 rvid">${EB._new||!p._sv?'<small>🎬 Guarda la caja para poder añadir la animación (vídeo) de este premio</small>':p._vst?`<small class="vst">${esc(p._vst)}</small>`:p.vid?`<span class="vok">🎬 Animación puesta</span><button type="button" class="lnk2" data-act="vplay">▶ Ver</button><label class="fl">Cambiar<input type="file" data-f="vid" accept="video/*,image/gif" hidden></label><button type="button" class="lnk2" data-act="vrm">Quitar</button>`:`<label class="fl">🎬 Añadir animación (vídeo o GIF)<input type="file" data-f="vid" accept="video/*,image/gif" hidden></label>`}</div>
   <textarea data-f="d" rows="1" placeholder="Descripción (opcional)" maxlength="300">${esc(p.desc)}</textarea>
   <div class="r3"><label>Valor (€)<input data-f="v" type="number" step="0.01" min="0" value="${(p.value/100).toFixed(2)}"></label><label>Probabilidad (%)<input data-f="p" type="number" step="0.01" min="0" max="100" value="${p.p}"></label><label>Stock${p.stock0!==""&&p.stock0!=null?` <small>(quedan ${p.stock0})</small>`:""}<input data-f="s" type="number" min="0" step="1" placeholder="Ilimitado" value="${p.stock}"></label></div>
@@ -1242,17 +1282,18 @@ $("#mbpl").addEventListener("input",ev=>{const r=ev.target.closest(".prow"),f=ev
 $("#mbpl").addEventListener("change",async ev=>{const r=ev.target.closest(".prow"),f=ev.target.dataset.f;if(!r)return;const p=EB.prizes[+r.dataset.i];
  if(f==="r")p.rarity=ev.target.value;if(f==="fx")p.fx=ev.target.value;if(f==="on"){p.on=ev.target.checked?1:0;r.classList.toggle("off",!p.on);updEd()}if(f==="s")renderEd();
  if(f==="vid"&&ev.target.files[0])return upVid(p,ev.target.files[0]);
+ if(f==="cimg"&&ev.target.files[0]){const d=await shr(ev.target.files[0],900);if(!d)return msg("#mbmsg2","err","No se pudo leer la imagen.");p.newCimg=d;p.rmCimg=0;renderEd();return}
  if(f==="img"&&ev.target.files[0]){const d=await shr(ev.target.files[0],560);if(!d)return msg("#mbmsg2","err","No se pudo leer la imagen.");p.newImg=d;p.rmImg=0;renderEd()}});
 $("#mbpl").addEventListener("click",ev=>{const a=ev.target.dataset.act;if(!a)return;const i=+ev.target.closest(".prow").dataset.i,L=EB.prizes;
  if(a==="vplay"){ADMIN_ED_PREV=0;playVid(L[i]);return}
  if(a==="vrm"){if(!confirm("¿Quitar la animación de «"+L[i].name+"»?"))return;const p=L[i];req("/api/mbox",{action:"admin_vid_del",pin:APIN,boxId:EB.id,pid:p.id}).then(()=>{p.vid=null;renderEd();toast("Animación quitada ✓","ok");loadMB().then(renderMB)}).catch(err=>msg("#mbmsg2","err",err.message));return}
- if(a==="rm"&&!confirm("¿Eliminar el premio «"+L[i].name+"»?"))return;if(a==="rm")L.splice(i,1);if(a==="rmimg"){L[i].newImg=null;L[i].rmImg=1}
+ if(a==="rm"&&!confirm("¿Eliminar el premio «"+L[i].name+"»?"))return;if(a==="rm")L.splice(i,1);if(a==="rmimg"){L[i].newImg=null;L[i].rmImg=1}if(a==="rmcimg"){L[i].newCimg=null;L[i].rmCimg=1}
  if(a==="up"&&i>0)[L[i-1],L[i]]=[L[i],L[i-1]];if(a==="dn"&&i<L.length-1)[L[i+1],L[i]]=[L[i],L[i+1]];renderEd()});
 $("#mbcancel").onclick=()=>$("#mba").classList.remove("on");
 $("#mbsave").onclick=async()=>{EB.name=$("#mban").value;EB.desc=$("#mbad").value;EB.price=Math.round(parseFloat($("#mbap").value||0)*100);EB.active=$("#mbaa").checked?1:0;
  const bad=validEd();if(bad)return msg("#mbmsg2","err",bad);
  const box={id:EB._new?undefined:EB.id,name:EB.name.trim(),desc:EB.desc.trim(),price:EB.price,active:EB.active,ord:EB.ord||0,
-  prizes:EB.prizes.map(p=>({id:p.id,name:String(p.name).trim(),desc:String(p.desc||"").trim(),value:p.value,p:p.p,rarity:p.rarity,fx:p.fx||"auto",color:p.color,on:p.on,stock:p.stock===""?null:Number(p.stock),stock0:p.stock0===""?null:p.stock0,...(p.newImg?{img:p.newImg}:{}),...(p.rmImg?{rmImg:1}:{})}))};
+  prizes:EB.prizes.map(p=>({id:p.id,name:String(p.name).trim(),desc:String(p.desc||"").trim(),value:p.value,p:p.p,rarity:p.rarity,fx:p.fx||"auto",color:p.color,on:p.on,stock:p.stock===""?null:Number(p.stock),stock0:p.stock0===""?null:p.stock0,...(p.newImg?{img:p.newImg}:{}),...(p.rmImg?{rmImg:1}:{}),...(p.newCimg?{cimg:p.newCimg}:{}),...(p.rmCimg?{rmCimg:1}:{})}))};
  if(EB.newImg)box.img=EB.newImg;if(EB.rmImg)box.rmImg=1;
  const done=busy($("#mbsave"),"Guardando…");msg("#mbmsg2","","");
  try{const r=await req("/api/mbox",{action:"admin_save_box",pin:APIN,box});const s=r.box;
@@ -1680,7 +1721,7 @@ function gateLoad(){GBUSY=true;gView("#g3");const bar=$("#gbarf"),pc=$("#gpc"),t
   bar.style.width=v+"%";pc.textContent=v+"%";for(const[s,t]of steps)if(v>=s)tx.textContent=t;
   if(v<100&&(now-t0)<9000)return requestAnimationFrame(f);
   bar.style.width="100%";pc.textContent="100%";tx.textContent="¡Bienvenido a POKE ISLAS!";
-  setTimeout(()=>{$("#gate").classList.add("out");setTimeout(()=>{document.documentElement.classList.remove("gt");$("#gate").classList.remove("out");GBUSY=false;toast("¡Hola! Ya estás dentro ✓ Participas en el sorteo con cada compra","ok");setTimeout(maybePromo,900)},550)},450)})(t0)}
+  setTimeout(()=>{$("#gate").classList.add("gout");setTimeout(()=>{document.documentElement.classList.remove("gt");$("#gate").classList.remove("gout");GBUSY=false;toast("¡Hola! Ya estás dentro ✓ Participas en el sorteo con cada compra","ok");setTimeout(maybePromo,900)},550)},450)})(t0)}
 const PRODS_OK=()=>PLOAD!=="loading";
 $("#g1f").onsubmit=async ev=>{ev.preventDefault();const email=$("#ge").value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))return msg("#gm","err","Escribe un email válido.");
  const done=busy($("#g1b"),"Enviando código…");try{await req("/api/account",{action:"send_code",email});done();GMAIL=email;$("#gto").textContent=email;gView("#g2");$("#gc").value="";setTimeout(()=>$("#gc").focus(),100)}catch(err){done();msg("#gm","err",err.message)}};
@@ -1688,7 +1729,7 @@ $("#g2f").onsubmit=async ev=>{ev.preventDefault();const code=$("#gc").value.repl
  const done=busy($("#g2b"),"Comprobando…");try{const d=await req("/api/account",{action:"verify",email:GMAIL,code});done();ACC={token:d.token,email:d.email};ls.set("pi_acct",ACC);accBtn();gateLoad()}catch(err){done();msg("#gm","err",err.message)}};
 $("#gc").oninput=ev=>{const v=ev.target.value.replace(/\D/g,"").slice(0,6);ev.target.value=v;if(v.length===6)$("#g2f").requestSubmit()};
 $("#gback").onclick=()=>gView("#g1");
-$("#gskip").onclick=()=>{ls.set("pi_gate_skip",Date.now());$("#gate").classList.add("out");setTimeout(()=>{document.documentElement.classList.remove("gt");$("#gate").classList.remove("out");setTimeout(maybePromo,700)},450)};
+$("#gskip").onclick=()=>{ls.set("pi_gate_skip",Date.now());$("#gate").classList.add("gout");setTimeout(()=>{document.documentElement.classList.remove("gt");$("#gate").classList.remove("gout");setTimeout(maybePromo,700)},450)};
 $("#agate").onclick=async ev=>{const nx=!GATE.on?{on:true,force:false}:!GATE.force?{on:true,force:true}:{on:false,force:false};
  if(nx.force&&!confirm("Modo OBLIGATORIO: nadie podrá ver la tienda sin iniciar sesión con el código del email.\n\nAsegúrate de que los emails llegan bien (Panel → Probar email). ¿Activar?"))nx.on=false,nx.force=false;
  const done=busy(ev.currentTarget,"Guardando…");try{const d=await req("/api/site",{action:"admin_gate",pin:APIN,...nx});GATE=d.gate;done();applyGate();toast(!GATE.on?"Pantalla de inicio de sesión desactivada ✓":GATE.force?"Inicio de sesión OBLIGATORIO para entrar ✓":"Pantalla de inicio de sesión activada ✓ (se puede saltar)","ok")}catch(err){done();toast(err.message,"err")}};
@@ -1698,8 +1739,8 @@ var ADMIN_ED_PREV=0,PVres=null,PVT=null;
 function vPrime(b){const v=$("#pvv"),f=b&&(b.prizes||[]).find(p=>p.vid&&!/gif/.test(p.vt||""));if(!f||!v)return;try{v.src=f.vid;v.muted=false;const pr=v.play();if(pr&&pr.then)pr.then(()=>{v.pause();v.currentTime=0}).catch(()=>{})}catch(_){}}
 function playVid(p){return new Promise(done=>{const o=$("#pvid"),v=$("#pvv"),g=$("#pvg"),sb=$("#pvsnd");if(!o||!p||!p.vid)return done();
  const C=(FXP[fxOf(p)]||FXP.estrella)[0];o.style.setProperty("--pvc",C);clearTimeout(PVT);sb.hidden=true;
- let fin=false;const end=()=>{if(fin)return;fin=true;clearTimeout(PVT);o.classList.add("out");try{v.pause()}catch(_){}setTimeout(()=>{o.classList.remove("on","out","pl");v.removeAttribute("src");v.load();g.removeAttribute("src");done()},420)};PVres=end;
- o.classList.remove("out","pl");o.classList.add("on");
+ let fin=false;const end=()=>{if(fin)return;fin=true;clearTimeout(PVT);o.classList.add("pvout");try{v.pause()}catch(_){}setTimeout(()=>{o.classList.remove("on","pvout","pl");v.removeAttribute("src");v.load();g.removeAttribute("src");done()},420)};PVres=end;
+ o.classList.remove("pvout","pl");o.classList.add("on");
  if(/gif/.test(p.vt||"")){v.hidden=true;g.hidden=false;g.onload=()=>o.classList.add("pl");g.src=p.vid;PVT=setTimeout(end,6000);return}
  g.hidden=true;v.hidden=false;v.onended=end;v.onerror=end;v.onplaying=()=>o.classList.add("pl");
  if(v.getAttribute("src")!==p.vid)v.src=p.vid;v.currentTime=0;v.muted=false;
@@ -1742,6 +1783,16 @@ document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.clos
 (function(){const l=$("#lb");let x0=null,y0=0;l.addEventListener("touchstart",ev=>{if(l.classList.contains("z")||ev.touches.length>1){x0=null;return}x0=ev.touches[0].clientX;y0=ev.touches[0].clientY},{passive:true});
  l.addEventListener("touchend",ev=>{if(x0==null)return;const t=ev.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.3){lbGo(dx<0?1:-1);l._sw=Date.now()}},{passive:true});
  l.addEventListener("click",ev=>{if(l._sw&&Date.now()-l._sw<400){ev.stopPropagation();ev.preventDefault()}},true)})();
+/* ---- desbloqueo de carta: silueta → explosión de color → «¡NUEVA CARTA!» ---- */
+var NOFX=0,UNLres=null;
+const UNC={fuego:["#ffb03a","#ff3d00","#7a0a00"],agua:["#7fd8ff","#1e7bff","#06245e"],rayo:["#fff27a","#ffb800","#6b3d00"],hielo:["#e6fbff","#5fc8ff","#0b3d6b"],psiquico:["#ff9cf3","#b23cff","#3a0a6b"],fantasma:["#c9b8ff","#6a3cd1","#1a0b3d"],planta:["#d8ff8a","#2fbf4a","#08391a"],dragon:["#ffd36b","#ff6a1a","#3d0b6b"],hada:["#ffe0f4","#ff4fae","#6b0b44"],estrella:["#fff27a","#ff9f1a","#7a1a00"]};
+function unlock(p){return new Promise(done=>{const o=$("#unl");if(!o||!p){done();return}const k=fxOf(p),C=UNC[k]||UNC.estrella,lv=ri(p.rarity);
+ o.style.setProperty("--u1",C[0]);o.style.setProperty("--u2",C[1]);o.style.setProperty("--u3",C[2]);
+ $("#uimg").src=p.img||"/icon-192.png?v=2";$("#unm").textContent=p.name||"";$("#urar").innerHTML=rar(p.rarity||"Común");$("#uval").textContent=p.value?"Valor: "+e(p.value):"";$("#udsc").textContent=p.desc||"";
+ o.className="on";o.classList.add("l"+lv);let fin=false,T=[];const end=()=>{if(fin)return;fin=true;T.forEach(clearTimeout);o.classList.add("uout");setTimeout(()=>{o.className="";done()},380)};UNLres=end;
+ const rd=reduced();if(!rd)playFx($("#ufx"),k,lv,o);
+ T.push(setTimeout(()=>o.classList.add("urv"),rd?50:1050));T.push(setTimeout(()=>o.classList.add("ubn"),rd?100:1650));T.push(setTimeout(()=>o.classList.add("uok"),rd?150:2100))})}
+$("#unl").addEventListener("click",ev=>{const o=$("#unl");if(ev.target.id==="uskip"||ev.target.id==="ugo"||o.classList.contains("uok"))UNLres&&UNLres()});
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 

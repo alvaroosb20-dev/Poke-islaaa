@@ -67,7 +67,7 @@ module.exports = async (req, res) => {
         const pp = M.pub(d.box).prizes.find((x) => x.id === d.prize.id) || {};
         await cmd(["LPUSH", "mb:testlog", JSON.stringify({ at: Date.now(), boxId: d.box.id, prizeId: d.prize.id, prize: d.prize.name, rnd: d.rnd, total: d.total })]).catch(() => {});
         await cmd(["LTRIM", "mb:testlog", "0", "499"]).catch(() => {});
-        return res.status(200).json({ test: true, prize: { id: d.prize.id, name: d.prize.name, desc: d.prize.desc, value: d.prize.value, rarity: d.prize.rarity || "Común", img: pp.img || null, vid: pp.vid || null, vt: pp.vt || null, fx: pp.fx || "auto" } });
+        return res.status(200).json({ test: true, prize: { id: d.prize.id, name: d.prize.name, desc: d.prize.desc, value: d.prize.value, rarity: d.prize.rarity || "Común", img: pp.img || null, card: pp.card || null, vid: pp.vid || null, vt: pp.vt || null, fx: pp.fx || "auto" } });
       }
       if (b.action === "admin_box") {
         const box = await M.withStock(await M.getBox(Number(b.id)));

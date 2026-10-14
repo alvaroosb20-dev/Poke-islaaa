@@ -69,6 +69,8 @@ function effective(b) {
 
 const boxImg = (b) => imgUrl("b" + b.id, b.iv);
 const prizeImg = (b, p) => imgUrl("z" + b.id + "_" + p.id, p.iv);
+// Foto de la carta (opcional) que se enseña al ganar, distinta de la imagen del sector de la ruleta
+const prizeCard = (b, p) => (p.cv ? imgUrl("z" + b.id + "_" + p.id + "c", p.cv) : null);
 // Animación (vídeo o GIF) de cada premio: se guarda en trozos con la clave vid:<caja>_<premio>
 const vidKey = (boxId, pid) => "vid_" + boxId + "_" + pid;
 const prizeVid = (b, p) => (p.vv ? "/api/img?k=" + vidKey(b.id, p.id) + "&v=" + p.vv : null);
@@ -84,14 +86,14 @@ async function delVid(k) {
 function pub(b) {
   return {
     id: b.id, name: b.name, desc: b.desc, price: b.price, img: boxImg(b),
-    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), vid: prizeVid(b, p), vt: p.vv ? p.vt || "video/mp4" : null, value: p.value, p: 1, fx: p.fx || "auto", color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
+    prizes: effective(b).map((p) => ({ id: p.id, name: p.name, desc: p.desc, rarity: p.rarity || "Común", img: prizeImg(b, p), card: prizeCard(b, p), vid: prizeVid(b, p), vt: p.vv ? p.vt || "video/mp4" : null, value: p.value, p: 1, fx: p.fx || "auto", color: p.color, left: p.left })), // p: 1 = todos los sectores iguales; la probabilidad real no se publica
     soldOut: activePrizes(b).filter((p) => p.left === 0).map((p) => ({ name: p.name, rarity: p.rarity || "Común", value: p.value })),
   };
 }
 
 // Vista de administración: incluye premios inactivos, stock y URLs de imagen
 function adm(b) {
-  return { ...b, why: why(b), img: boxImg(b), prizes: (b.prizes || []).map((p) => ({ ...p, img: prizeImg(b, p), vid: prizeVid(b, p) })) };
+  return { ...b, why: why(b), img: boxImg(b), prizes: (b.prizes || []).map((p) => ({ ...p, img: prizeImg(b, p), card: prizeCard(b, p), vid: prizeVid(b, p) })) };
 }
 
 const isData = (v) => typeof v === "string" && v.startsWith("data:image/");
@@ -128,11 +130,13 @@ async function saveBox(input) {
     while (seen.has(pid)) pid = crypto.randomBytes(4).toString("hex");
     seen.add(pid);
     if (isData(p.img)) checkImg(p.img);
+    if (isData(p.cimg)) checkImg(p.cimg);
     return {
       id: pid, name: str(p.name, 120, true, "el nombre del premio " + n), desc: str(p.desc, 300, false, "Descripción"),
       value: p.value, p: Math.round(pr * 100) / 100, rarity: RAR.includes(p.rarity) ? p.rarity : "Común", fx: FX.includes(p.fx) ? p.fx : "auto",
       color: /^#[0-9a-f]{6}$/i.test(String(p.color || "")) ? p.color.toLowerCase() : "#444444",
       on: p.on ? 1 : 0, stock, iv: prevP[pid] ? prevP[pid].iv || null : null,
+      cv: prevP[pid] ? prevP[pid].cv || null : null, _cimg: isData(p.cimg) ? p.cimg : null, _crm: !!p.rmCimg,
       vv: prevP[pid] ? prevP[pid].vv || null : null, vt: prevP[pid] ? prevP[pid].vt || null : null,
       _img: isData(p.img) ? p.img : null, _rm: !!p.rmImg, _stock0: p.stock0,
     };
@@ -155,8 +159,10 @@ async function saveBox(input) {
     const k = "z" + id + "_" + p.id;
     if (p._img) p.iv = await putImg(k, p._img);
     else if (p._rm) { await delImg(k); p.iv = null; }
+    if (p._cimg) p.cv = await putImg(k + "c", p._cimg);
+    else if (p._crm) { await delImg(k + "c"); p.cv = null; }
   }
-  for (const old of prev.prizes || []) if (!seen.has(old.id)) { await delImg("z" + id + "_" + old.id); if (old.vv) await delVid(vidKey(id, old.id)); }
+  for (const old of prev.prizes || []) if (!seen.has(old.id)) { await delImg("z" + id + "_" + old.id); await delImg("z" + id + "_" + old.id + "c"); if (old.vv) await delVid(vidKey(id, old.id)); }
 
   // Stock: solo se toca si el administrador lo ha cambiado (así no se pisan ventas recientes)
   const stk = "mbstk:" + id;
@@ -168,7 +174,7 @@ async function saveBox(input) {
   }
   for (const old of prev.prizes || []) if (!seen.has(old.id)) await cmd(["HDEL", stk, old.id]);
 
-  for (const p of prizes) { delete p._img; delete p._rm; delete p._stock0; }
+  for (const p of prizes) { delete p._img; delete p._rm; delete p._stock0; delete p._cimg; delete p._crm; }
   await cmd(["HSET", "mbox", String(id), JSON.stringify(box)]);
   return box;
 }
@@ -177,7 +183,7 @@ async function deleteBox(id) {
   const b = await getBox(id);
   if (!b) return;
   await delImg("b" + id);
-  for (const p of b.prizes || []) { await delImg("z" + id + "_" + p.id); if (p.vv) await delVid(vidKey(id, p.id)); }
+  for (const p of b.prizes || []) { await delImg("z" + id + "_" + p.id); await delImg("z" + id + "_" + p.id + "c"); if (p.vv) await delVid(vidKey(id, p.id)); }
   await cmd(["DEL", "mbstk:" + id]);
   await cmd(["HDEL", "mbox", String(id)]);
 }
