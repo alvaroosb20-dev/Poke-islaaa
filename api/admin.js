@@ -1,5 +1,6 @@
 // Administración de productos de la tienda (requiere PIN) y diagnóstico del sistema.
 const { gemini } = require("./_gemini");
+const { delVid } = require("./_mbox");
 const { cmd, parse, getAll } = require("./_db");
 const { putImg, delImg, checkImg } = require("./_img");
 const { checkPin } = require("./_auth");
@@ -51,7 +52,7 @@ module.exports = async (req, res) => {
       if (!Number.isSafeInteger(id)) return res.status(400).json({ error: "Producto no válido" });
       await cmd(["HDEL", "products", String(id)]);
       await delImg("p" + id);
-      await delImg("p" + id + "x1"); await delImg("p" + id + "x2");
+      await delImg("p" + id + "x1"); await delImg("p" + id + "x2"); await delVid("vid_" + id + "_prod");
       const still = (await cmd(["HMGET", "products", String(id)]))[0];
       if (still) return res.status(500).json({ error: "No se pudo eliminar el producto" });
       return res.status(200).json({ ok: true });
@@ -77,7 +78,7 @@ module.exports = async (req, res) => {
         id: p.id, n, c: txt(p.c, 60) || "Cartas sueltas", g: txt(p.g, 40) || null, pr: p.pr, o: p.o || null, s: p.s, f: p.f ? 1 : 0,
         i: /^[a-z0-9]{1,10}$/.test(String(p.i || "")) ? p.i : null, link: p.link || null,
         h: /^#[0-9a-f]{6}$/i.test(String(p.h || "")) ? p.h : "#1f7a5c", d: txt(p.d, 1000) || null,
-        iv: prev.iv || null, ord: Number.isFinite(prev.ord) ? prev.ord : null,
+        iv: prev.iv || null, vv: prev.vv || null, vt: prev.vt || null, ord: Number.isFinite(prev.ord) ? prev.ord : null,
       };
       const xv = Array.isArray(prev.xv) ? [prev.xv[0] || null, prev.xv[1] || null] : [null, null];
       for (let k = 0; k < 2; k++) {
@@ -97,6 +98,30 @@ module.exports = async (req, res) => {
       const saved = parse((await cmd(["HMGET", "products", String(row.id)]))[0]);
       if (!saved || saved.pr !== row.pr || saved.n !== row.n) return res.status(500).json({ error: "La base de datos no confirmó el guardado" });
       return res.status(200).json({ ok: true, product: saved });
+    }
+
+    // Vídeo de un producto (se ve deslizando junto a las fotos): se sube en trozos de 700 KB (máx. 16 MB)
+    if (action === "vid" || action === "vid_del") {
+      if (!Number.isSafeInteger(id)) return res.status(400).json({ error: "Producto no válido" });
+      const prev = parse((await cmd(["HMGET", "products", String(id)]))[0]);
+      if (!prev) return res.status(404).json({ error: "Guarda primero el producto y vuelve a intentarlo" });
+      const k = "vid_" + id + "_prod";
+      const setP = async (vv, vt) => { const cur = parse((await cmd(["HMGET", "products", String(id)]))[0]); if (!cur) return; if (vv) { cur.vv = vv; cur.vt = vt; } else { delete cur.vv; delete cur.vt; } await cmd(["HSET", "products", String(id), JSON.stringify(cur)]); };
+      if (action === "vid_del") { await setP(null); await delVid(k); return res.status(200).json({ ok: true }); }
+      const b = req.body, i = Number(b.i), n = Number(b.n), type = String(b.type || "");
+      if (!(Number.isInteger(n) && n >= 1 && n <= 24 && Number.isInteger(i) && i >= 0 && i < n)) return res.status(400).json({ error: "Trozo no válido" });
+      if (!/^video\/(mp4|webm|quicktime)$/.test(type)) return res.status(400).json({ error: "Formato no válido: usa un vídeo (MP4, MOV o WebM)" });
+      const data = String(b.data || "");
+      if (!data || data.length > 960000 || /[^A-Za-z0-9+/=]/.test(data)) return res.status(400).json({ error: "Trozo de vídeo no válido" });
+      await cmd(["SET", "vid:" + k + ":" + i, data]);
+      if (i === n - 1) {
+        let size = 0; for (let j = 0; j < n; j++) { const c = await cmd(["GET", "vid:" + k + ":" + j]); if (!c) return res.status(400).json({ error: "Falta un trozo del vídeo. Vuelve a subirlo." }); size += Buffer.byteLength(String(c), "base64"); }
+        const v = Date.now();
+        await cmd(["SET", "vid:" + k + ":m", JSON.stringify({ n, type, v, size })]);
+        await setP(v, type);
+        return res.status(200).json({ ok: true, vid: "/api/img?k=" + k + "&v=" + v, vt: type });
+      }
+      return res.status(200).json({ ok: true });
     }
 
     if (action === "order") {
