@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true, product: saved });
     }
 
-    // Vídeo de un producto (se ve deslizando junto a las fotos): se sube en trozos de 700 KB (máx. 16 MB)
+    // Vídeo de un producto (se ve deslizando junto a las fotos): se sube en trozos de 700 KB (máx. 50 MB)
     if (action === "vid" || action === "vid_del") {
       if (!Number.isSafeInteger(id)) return res.status(400).json({ error: "Producto no válido" });
       const prev = parse((await cmd(["HMGET", "products", String(id)]))[0]);
@@ -109,7 +109,7 @@ module.exports = async (req, res) => {
       const setP = async (vv, vt) => { const cur = parse((await cmd(["HMGET", "products", String(id)]))[0]); if (!cur) return; if (vv) { cur.vv = vv; cur.vt = vt; } else { delete cur.vv; delete cur.vt; } await cmd(["HSET", "products", String(id), JSON.stringify(cur)]); };
       if (action === "vid_del") { await setP(null); await delVid(k); return res.status(200).json({ ok: true }); }
       const b = req.body, i = Number(b.i), n = Number(b.n), type = String(b.type || "");
-      if (!(Number.isInteger(n) && n >= 1 && n <= 24 && Number.isInteger(i) && i >= 0 && i < n)) return res.status(400).json({ error: "Trozo no válido" });
+      if (!(Number.isInteger(n) && n >= 1 && n <= 80 && Number.isInteger(i) && i >= 0 && i < n)) return res.status(400).json({ error: "Trozo no válido" });
       if (!/^video\/(mp4|webm|quicktime)$/.test(type)) return res.status(400).json({ error: "Formato no válido: usa un vídeo (MP4, MOV o WebM)" });
       const data = String(b.data || "");
       if (!data || data.length > 960000 || /[^A-Za-z0-9+/=]/.test(data)) return res.status(400).json({ error: "Trozo de vídeo no válido" });

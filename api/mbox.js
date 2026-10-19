@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
         for (const x of await M.allBoxesRaw()) boxes.push(M.adm(await M.withStock(x)));
         return res.status(200).json({ boxes });
       }
-      // Animación de un premio: vídeo (MP4/WebM/MOV) o GIF, subido en trozos de ~700 KB (máx. 16 MB)
+      // Animación de un premio: vídeo (MP4/WebM/MOV) o GIF, subido en trozos de ~700 KB (máx. 50 MB)
       if (b.action === "admin_vid" || b.action === "admin_vid_del") {
         const boxId = Number(b.boxId), pid = String(b.pid || "");
         const box = Number.isSafeInteger(boxId) ? await M.getBox(boxId) : null;
@@ -47,7 +47,7 @@ module.exports = async (req, res) => {
         const setP = async (vv, vt) => { const fresh = await M.getBox(boxId); const q = fresh && fresh.prizes.find((p) => p.id === pid); if (!q) return; q.vv = vv; q.vt = vt; await cmd(["HSET", "mbox", String(boxId), JSON.stringify(fresh)]); };
         if (b.action === "admin_vid_del") { await setP(null, null); await M.delVid(k); return res.status(200).json({ ok: true }); }
         const i = Number(b.i), n = Number(b.n), type = String(b.type || "");
-        if (!(Number.isInteger(n) && n >= 1 && n <= 24 && Number.isInteger(i) && i >= 0 && i < n)) return fail(res, 400, "Trozo no válido");
+        if (!(Number.isInteger(n) && n >= 1 && n <= 80 && Number.isInteger(i) && i >= 0 && i < n)) return fail(res, 400, "Trozo no válido");
         if (!/^(video\/(mp4|webm|quicktime)|image\/gif)$/.test(type)) return fail(res, 400, "Formato no válido: usa un vídeo (MP4, MOV, WebM) o un GIF");
         const data = String(b.data || "");
         if (!data || data.length > 960000 || /[^A-Za-z0-9+/=]/.test(data)) return fail(res, 400, "Trozo de vídeo no válido");

@@ -1089,13 +1089,11 @@ function openEd(id){const p=id?P.find(x=>x.id==id):null;ED=p?{...p}:{id:Date.now
 function edPrev(){const src=EDIMG===undefined?pimg(ED):EDIMG;$("#pv").src=src||"";$("#pv").style.display=src?"":"none";$("#arm").style.display=src?"":"none";
  $("#axl").innerHTML=[0,1].map(k=>{const s=EDX[k]===undefined?(ED.xs||[])[k]:EDX[k];return `<div class="axs">${s?`<img src="${esc(s)}" alt="">`:'<span>Sin foto</span>'}<label class="fl">📷 ${s?"Cambiar":"Añadir"} foto ${k+2}<input type="file" data-ax="${k}" accept="image/jpeg,image/png,image/webp" hidden></label>${s?`<button type="button" class="lnk2" data-axrm="${k}">Quitar</button>`:""}</div>`}).join("");edVid()}
 function edVid(){const b=$("#avd");if(!b)return;const saved=P.some(x=>x.id===ED.id);
- b.innerHTML=!saved?'<small>Guarda primero el producto para poder añadirle un vídeo.</small>':ED._vst?`<b>${esc(ED._vst)}</b>`:ED.vid?`<video src="${esc(ED.vid)}" muted playsinline controls preload="metadata"></video><div class="rw"><label class="fl">🎬 Cambiar vídeo<input type="file" id="avf" accept="video/*" hidden></label><button type="button" class="sbtn o" id="avrm">Quitar vídeo</button></div>`:'<label class="fl">🎬 Añadir vídeo del producto<input type="file" id="avf" accept="video/*" hidden></label><small>Se verá deslizando junto a las fotos. Mejor de 5 a 15 segundos.</small>'}
+ b.innerHTML=!saved?'<small>Guarda primero el producto para poder añadirle un vídeo.</small>':ED._vst?`<b>${esc(ED._vst)}</b>`:ED.vid?`<video src="${esc(ED.vid)}" muted playsinline controls preload="metadata"></video><div class="rw"><label class="fl">🎬 Cambiar vídeo<input type="file" id="avf" accept="video/*" hidden></label><button type="button" class="sbtn o" id="avrm">Quitar vídeo</button></div>`:'<label class="fl">🎬 Añadir vídeo del producto<input type="file" id="avf" accept="video/*" hidden></label><small>Se verá deslizando junto a las fotos. Vale cualquier vídeo del móvil (hasta 90 segundos).</small>'}
 $("#avd").addEventListener("change",async ev=>{if(ev.target.id!=="avf"||!ev.target.files[0])return;const f=ev.target.files[0],set=t=>{ED._vst=t;edVid()};
- try{set("🎬 Preparando el vídeo… 0%");let blob=f;try{blob=await vidConv(f,pc=>set("🎬 Preparando el vídeo… "+pc+"%"))}catch(_){blob=f}
-  const type=/webm/.test(blob.type)?"video/webm":/quicktime|\.mov$/i.test(blob.type||f.name)?"video/quicktime":"video/mp4";if(blob.size>16*1024*1024)throw new Error("El vídeo pesa demasiado (máx. 16 MB). Usa uno más corto.");
-  const buf=new Uint8Array(await blob.arrayBuffer()),CH=700000,n=Math.ceil(buf.length/CH);let d;
-  for(let i=0;i<n;i++){set(`⬆️ Subiendo vídeo… ${Math.round(i/n*100)}%`);let s="";const part=buf.subarray(i*CH,(i+1)*CH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));d=await req("/api/admin",{pin:APIN,action:"vid",id:ED.id,i,n,type,data:btoa(s)})}
-  ED._vst="";ED.vid=d.vid;edVid();await loadP();toast("🎬 Vídeo guardado ✓","ok")}
+ try{const blob=await vidPrep(f,set),type=vtypeOf(blob,f),buf=new Uint8Array(await blob.arrayBuffer());
+  const d=await vidSend(buf,(i,n,data)=>req("/api/admin",{pin:APIN,action:"vid",id:ED.id,i,n,type,data}),set,"Subiendo vídeo");
+  ED._vst="";ED.vid=d.vid;edVid();await loadP();toast(blob.cut?"🎬 Vídeo guardado ✓ Era muy largo: se han usado los primeros 90 segundos":"🎬 Vídeo guardado ✓","ok")}
  catch(err){ED._vst="";edVid();msg("#afm","err",err.message||"No se pudo subir el vídeo")}});
 $("#avd").addEventListener("click",async ev=>{if(ev.target.id!=="avrm")return;if(!confirm("¿Quitar el vídeo de este producto?"))return;try{await req("/api/admin",{pin:APIN,action:"vid_del",id:ED.id});ED.vid=null;edVid();await loadP();toast("Vídeo quitado ✓","ok")}catch(err){msg("#afm","err",err.message)}});
 $("#axl").addEventListener("change",async ev=>{const k=ev.target.dataset.ax,f=ev.target.files&&ev.target.files[0];if(k==null||!f)return;if(f.size>15e6)return msg("#afm","err","La foto pesa demasiado (máx. 15 MB).");
@@ -1862,30 +1860,39 @@ function playVid(p){return new Promise(done=>{const o=$("#pvid"),v=$("#pvv"),g=$
 $("#pvskip").onclick=()=>PVres&&PVres();
 $("#pvsnd").onclick=ev=>{ev.stopPropagation();const v=$("#pvv");v.muted=false;$("#pvsnd").hidden=true;v.play().catch(()=>{})};
 // Convierte el vídeo a uno ligero y compatible con todos los móviles (máx. 15 s, 720p)
+// Vídeos: cualquier formato y tamaño; se convierte en el navegador a uno ligero (máx. 90 s). Si no se puede convertir, se sube tal cual hasta 50 MB.
+const VMAXS=90,VMAXB=50*1024*1024,VCH=700000;
+const vtypeOf=(b,f)=>/webm/.test(b.type)?"video/webm":/quicktime|\.mov$/i.test(b.type||f.name)?"video/quicktime":"video/mp4";
+async function vidPrep(f,set){set("🎬 Preparando el vídeo… 0% (mantén esta pantalla abierta)");let blob;
+ try{blob=await vidConv(f,pc=>set("🎬 Preparando el vídeo… "+pc+"% (mantén esta pantalla abierta)"))}
+ catch(e){if(f.size>VMAXB)throw new Error("Este navegador no puede preparar ese vídeo y pesa más de 50 MB. Prueba desde Safari en el iPhone o con un vídeo más corto.");blob=f}
+ if(blob.size>VMAXB)throw new Error("El vídeo pesa demasiado incluso después de prepararlo. Prueba con uno más corto.");return blob}
+// Sube en trozos de 700 KB, 3 a la vez; el último va al final para que el servidor lo cierre
+async function vidSend(buf,send,set,label){const n=Math.ceil(buf.length/VCH),b64=i=>{let s="";const part=buf.subarray(i*VCH,(i+1)*VCH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));return btoa(s)};
+ let done=0,next=0;const show=()=>set(`⬆️ ${label}… ${Math.round(done/n*100)}%`);show();
+ const worker=async()=>{while(next<n-1){const i=next++;let tries=0;for(;;){try{await send(i,n,b64(i));break}catch(e){if(++tries>=3)throw e;await sleep(800*tries)}}done++;show()}};
+ await Promise.all([worker(),worker(),worker()]);const d=await send(n-1,n,b64(n-1));done=n;show();return d}
 async function vidConv(file,prog){if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream)throw new Error("Este navegador no puede convertir vídeos");
  const mt=["video/mp4;codecs=avc1.42E01E,mp4a.40.2","video/mp4","video/webm;codecs=vp8,opus","video/webm;codecs=vp9,opus","video/webm"].find(t=>{try{return MediaRecorder.isTypeSupported(t)}catch(_){return false}});if(!mt)throw new Error("Este navegador no puede convertir vídeos");
  const url=URL.createObjectURL(file),v=document.createElement("video");v.playsInline=true;v.setAttribute("playsinline","");v.preload="auto";v.src=url;
  try{await new Promise((ok,ko)=>{v.onloadeddata=ok;v.onerror=()=>ko(new Error("No se puede leer ese vídeo en este navegador"));setTimeout(()=>ko(new Error("El vídeo tarda demasiado en abrirse")),20000)});
-  const dur=Math.min(15,isFinite(v.duration)&&v.duration>0?v.duration:15),sc=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight)),W=Math.round(v.videoWidth*sc/2)*2||720,H=Math.round(v.videoHeight*sc/2)*2||1280;
+  const full=isFinite(v.duration)&&v.duration>0?v.duration:30,dur=Math.min(VMAXS,full),sc=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight)),W=Math.round(v.videoWidth*sc/2)*2||720,H=Math.round(v.videoHeight*sc/2)*2||1280;
   const cv=document.createElement("canvas");cv.width=W;cv.height=H;const cx=cv.getContext("2d"),st=cv.captureStream(30);
   let A=null;try{const AC=window.AudioContext||window.webkitAudioContext;A=new AC();const src=A.createMediaElementSource(v),d=A.createMediaStreamDestination();src.connect(d);d.stream.getAudioTracks().forEach(t=>st.addTrack(t))}catch(_){}
-  const rec=new MediaRecorder(st,{mimeType:mt,videoBitsPerSecond:2200000,audioBitsPerSecond:128000}),parts=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)parts.push(e.data)};
+  const rec=new MediaRecorder(st,{mimeType:mt,videoBitsPerSecond:dur<=20?2500000:dur<=45?1800000:1300000,audioBitsPerSecond:128000}),parts=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)parts.push(e.data)};
   const stopped=new Promise(ok=>rec.onstop=ok);
   v.muted=false;try{await v.play()}catch(_){v.muted=true;await v.play()}
   rec.start(500);let on=true;
   await new Promise(ok=>{const tick=()=>{if(!on)return;cx.drawImage(v,0,0,W,H);prog(Math.min(99,Math.round(v.currentTime/dur*100)));if(v.ended||v.currentTime>=dur){on=false;return ok()}requestAnimationFrame(tick)};tick();v.onended=()=>{on=false;ok()};setTimeout(()=>{on=false;ok()},(dur+5)*1000)});
   rec.stop();v.pause();await stopped;if(A)A.close().catch(()=>{});
-  const blob=new Blob(parts,{type:mt.split(";")[0]});if(blob.size<2000)throw new Error("La conversión ha fallado");return blob}
+  const blob=new Blob(parts,{type:mt.split(";")[0]});if(blob.size<2000)throw new Error("La conversión ha fallado");blob.cut=full>VMAXS+.5;return blob}
  finally{URL.revokeObjectURL(url)}}
 async function upVid(p,f){const set=t=>{p._vst=t;renderEd()};
  try{const gif=/gif$/i.test(f.type)||/\.gif$/i.test(f.name);let blob=f,type;
-  if(gif){if(f.size>8*1024*1024)throw new Error("El GIF pesa más de 8 MB. Usa uno más corto o un vídeo.");type="image/gif"}
-  else{set("🎬 Preparando el vídeo… 0%");try{blob=await vidConv(f,pc=>set("🎬 Preparando el vídeo… "+pc+"%"))}catch(e){blob=f}
-   type=/webm/.test(blob.type)?"video/webm":/quicktime|\.mov$/i.test(blob.type||f.name)?"video/quicktime":"video/mp4";
-   if(blob.size>16*1024*1024)throw new Error("El vídeo pesa demasiado (máx. 16 MB). Usa uno más corto (5-10 segundos).")}
-  const buf=new Uint8Array(await blob.arrayBuffer()),CH=700000,n=Math.ceil(buf.length/CH);if(n>24)throw new Error("El vídeo pesa demasiado (máx. 16 MB).");
-  let d;for(let i=0;i<n;i++){set(`⬆️ Subiendo animación… ${Math.round(i/n*100)}%`);let s="";const part=buf.subarray(i*CH,(i+1)*CH);for(let j=0;j<part.length;j+=32768)s+=String.fromCharCode.apply(null,part.subarray(j,j+32768));
-   d=await req("/api/mbox",{action:"admin_vid",pin:APIN,boxId:EB.id,pid:p.id,i,n,type,data:btoa(s)})}
+  if(gif){if(f.size>VMAXB)throw new Error("El GIF pesa más de 50 MB. Usa uno más corto o un vídeo.");type="image/gif"}
+  else{blob=await vidPrep(f,set);type=vtypeOf(blob,f)}
+  const buf=new Uint8Array(await blob.arrayBuffer());
+  const d=await vidSend(buf,(i,n,data)=>req("/api/mbox",{action:"admin_vid",pin:APIN,boxId:EB.id,pid:p.id,i,n,type,data}),set,"Subiendo animación");
   p.vid=d.vid;p.vt=d.vt;p._vst="";renderEd();toast("🎬 Animación guardada ✓ Saldrá cuando toque este premio","ok");loadMB().then(renderMB)}
  catch(err){p._vst="";renderEd();msg("#mbmsg2","err",err.message||"No se pudo subir la animación")}}
 /* ---- fotos de producto deslizables ---- */
