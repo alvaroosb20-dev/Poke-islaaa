@@ -681,6 +681,44 @@ h2{letter-spacing:-.015em!important;line-height:1.08}
 #faq summary::after{content:"+";position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:#ffcb05;transition:transform .2s}
 #faq details[open] summary::after{transform:translateY(-50%) rotate(45deg)}
 #faq details p{margin:0 0 15px;opacity:.88;line-height:1.55}
+/* ===== Panel de filtros ===== */
+#tienda .flt{flex-wrap:wrap}
+#fbtn{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);color:var(--tx);border-radius:999px;padding:0 16px;min-height:44px;font-weight:700;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+#fbtn.on{border-color:#ffcb05;color:#ffcb05}#fbtn b{background:#ffcb05;color:#0c1a1e;border-radius:999px;min-width:20px;height:20px;display:inline-grid;place-items:center;font-size:12px;padding:0 6px}
+#fpan{display:none;position:fixed;inset:0;z-index:85;background:#0009;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+#fpan.on{display:flex;justify-content:flex-end;animation:fpin .2s ease-out}
+@keyframes fpin{from{opacity:0}}
+body.fopen{overflow:hidden}
+#fpan .fbox{width:min(420px,100%);height:100%;background:#0f1d24;color:#f4efe3;display:flex;flex-direction:column;box-shadow:-20px 0 50px #0008;animation:fpsl .28s cubic-bezier(.2,.9,.3,1)}
+@keyframes fpsl{from{transform:translateX(100%)}}
+@media (max-width:759px){#fpan.on{align-items:flex-end}#fpan .fbox{width:100%;height:auto;max-height:88vh;border-radius:22px 22px 0 0;animation-name:fpup}}
+@keyframes fpup{from{transform:translateY(100%)}}
+#fpan .fhd{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 12px;border-bottom:1px solid #ffffff1a}
+#fpan .fhd b{font:800 22px "Plus Jakarta Sans",system-ui,sans-serif}
+#fx{width:38px;height:38px;border-radius:50%;border:1px solid #ffffff33;background:none;color:#fff;font-size:16px;cursor:pointer}
+#fpb{overflow:auto;padding:4px 20px 10px;flex:1;-webkit-overflow-scrolling:touch}
+#fpb details{border-bottom:1px solid #ffffff1a;padding:4px 0}
+#fpb summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:14px 0;font-weight:700;font-size:16px}
+#fpb summary::-webkit-details-marker{display:none}
+#fpb summary::after{content:"";margin-left:auto;width:9px;height:9px;border-right:2px solid #ffcb05;border-bottom:2px solid #ffcb05;transform:rotate(-135deg);transition:transform .2s}
+#fpb details:not([open]) summary::after{transform:rotate(45deg)}
+#fpb summary i{font-style:normal;background:#ffcb05;color:#0c1a1e;border-radius:999px;font-size:12px;padding:1px 8px}
+#fpb .fopts{display:grid;gap:4px;padding-bottom:12px}
+#fpb .fopts label{display:flex;align-items:center;gap:12px;padding:8px 2px;cursor:pointer;font-size:15px}
+#fpb .fopts label.dis{opacity:.4}
+#fpb .fopts input{appearance:none;-webkit-appearance:none;width:22px;height:22px;flex:0 0 22px;border:2px solid #ffffff55;border-radius:6px;margin:0;display:grid;place-items:center;background:transparent;padding:0;cursor:pointer}
+#fpb .fopts input:checked{background:#ffcb05;border-color:#ffcb05}
+#fpb .fopts input:checked::after{content:"";width:6px;height:11px;border:solid #0c1a1e;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+#fpb .fopts small{margin-left:auto;opacity:.6;font-size:13px}
+#fpb .fpr{display:flex;align-items:center;gap:10px}#fpb .fpr em{font-style:normal;opacity:.7}
+#fpb .fpr label{flex:1;display:flex;align-items:center;gap:6px;background:#ffffff12;border:1.5px solid #ffffff2a;border-radius:12px;padding:0 12px}
+#fpb .fpr label:focus-within{border-color:#ffcb05}
+#fpb .fpr span{opacity:.7}#fpb .fpr input{border:0;background:transparent;color:#fff;padding:13px 0;width:100%;font:inherit;font-size:16px;outline:none;text-align:right}
+#fpb .fhi{font-size:13px;opacity:.7;margin:10px 0 14px}
+#fpan .fft{display:flex;gap:10px;padding:14px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid #ffffff1a}
+#fclr{flex:0 0 auto;border:1.5px solid #ffffff44;background:none;color:#fff;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer}
+#fgo{flex:1;border:0;background:#ffcb05;color:#0c1a1e;border-radius:12px;padding:13px 16px;font-weight:800;cursor:pointer}
+@media (max-width:759px){#tienda .flt .sw{flex:1 1 100%}#tienda .flt select{flex:1 1 0;max-width:none;min-height:44px}#fbtn{flex:1 1 0;justify-content:center}}
 @media (min-width:760px){#faq{margin-top:28px}#faq .faql{grid-template-columns:1fr 1fr;align-items:start}}
 </style>
 </head>
@@ -742,7 +780,7 @@ h2{letter-spacing:-.015em!important;line-height:1.08}
 
 <section id="tienda"><div class="w">
   <h2>Colección</h2><p class="sub">Las cartas son las protagonistas. Todo 100% auténtico, con garantía y confianza.</p>
-  <div class="flt"><label class="sw"><span class="vh">Buscar</span><input id="q" type="search" placeholder="Buscar carta o nota…" autocomplete="off" enterkeyhint="search"></label><select id="fsort" aria-label="Ordenar"><option value="rec">Orden</option><option value="asc">Precio ↑</option><option value="desc">Precio ↓</option></select></div>
+  <div class="flt"><label class="sw"><span class="vh">Buscar</span><input id="q" type="search" placeholder="Buscar carta o nota…" autocomplete="off" enterkeyhint="search"></label><select id="fsort" aria-label="Ordenar"><option value="rec">Orden</option><option value="asc">Precio ↑</option><option value="desc">Precio ↓</option></select><button type="button" id="fbtn" aria-label="Abrir filtros"><span aria-hidden="true">⚙️</span> Filtros</button></div>
   <div class="cats" id="cats"></div>
   <p id="pcount"></p>
   <div class="grid" id="grid"></div>
@@ -902,6 +940,7 @@ h2{letter-spacing:-.015em!important;line-height:1.08}
  <div class="ust"><div class="ucard"><span id="ufx"></span><img id="uimg" alt=""></div>
   <div class="uban"><div class="unew">¡NUEVA CARTA!</div><h2 id="unm"></h2><div id="urar"></div><p id="uval"></p><p id="udsc"></p><button type="button" id="ugo">CONTINUAR</button></div></div>
  <button type="button" id="uskip">Saltar ⏭</button></div>
+<div id="fpan" role="dialog" aria-label="Filtros"><div class="fbox"><div class="fhd"><b>Filtros</b><button type="button" id="fx" aria-label="Cerrar filtros">✕</button></div><div id="fpb"></div><div class="fft"><button type="button" id="fclr">Borrar todo</button><button type="button" id="fgo">Ver cartas</button></div></div></div>
 <div id="pvid" role="dialog" aria-label="Animación del premio"><div class="pvbg" aria-hidden="true"></div><video id="pvv" playsinline preload="auto"></video><img id="pvg" alt="" hidden><button id="pvsnd" type="button" hidden>🔊 Activar sonido</button><button id="pvskip" type="button">Saltar ⏭</button></div>
 <div class="ov" id="pz"><div class="bx" id="pzb"><button class="sbtn o" id="pzx" style="justify-self:end">Cerrar ✕</button><div class="c4d" id="pzt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="pzi" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="pzh" style="font-size:24px;text-align:center"></h3><p id="pzr" style="text-align:center"></p><p class="val" id="pzv" style="text-align:center"></p><p id="pzd" style="opacity:.85;text-align:center"></p><p id="pzp" style="opacity:.7;text-align:center;font-size:13px"></p><button class="btn pk" id="pzbuy" style="border:0;text-align:center">COMPRAR Y GIRAR</button></div></div>
 <div class="ov" id="mres"><div class="bx"><h2>🎉 ¡HAS GANADO!</h2><p>Has conseguido:</p><div class="c4d" id="mrt" hidden><div class="cback"><img src="/icon-192.png?v=2" alt=""></div><div class="tin"><div class="tbg"><i></i></div><img id="mri" alt=""><div class="shine"></div><div class="glr"></div></div></div><h3 id="mrn" style="font-size:26px"></h3><p id="mrr"></p><p class="val" id="mrv"></p><p id="mrd" style="opacity:.8"></p><small id="mrid" style="opacity:.6"></small>
@@ -1002,6 +1041,15 @@ const CATS=["Todo","Destacados","Cartas graduadas","Cartas sueltas","Colecciones
 let P=[],PLOAD="loading",cur="Todo",FQ="",FG="all",FS="rec",PG=1,cart=ls.get("pi",{}),payNonce=null;const PER=18;
 const pimg=p=>p.img||IMG[p.i]||"";
 const pimgs=p=>[pimg(p),...(p.xs||[])].filter(Boolean);
+// Panel de filtros: disponibilidad, precio, categoría, empresa de gradación y nota
+var FL={st:new Set(),cat:new Set(),co:new Set(),nt:new Set(),min:"",max:""};
+const fCo=p=>isG(p)?(String(p.g).trim().split(/\s+/)[0]||"Otra").replace(/^./,c=>c.toUpperCase()):"Sin gradear";
+const fNt=p=>{const m=isG(p)&&String(p.g).match(/\d+(?:[.,]\d+)?/);return m?m[0].replace(".",","):""};
+const fSt=p=>p.s>0?"En stock":"Agotado";
+function fOK(p,skip){if(skip!=="st"&&FL.st.size&&!FL.st.has(fSt(p)))return false;if(skip!=="cat"&&FL.cat.size&&!FL.cat.has(p.c||"Otros"))return false;
+ if(skip!=="co"&&FL.co.size&&!FL.co.has(fCo(p)))return false;if(skip!=="nt"&&FL.nt.size&&!FL.nt.has(fNt(p)))return false;
+ const mn=parseFloat(String(FL.min).replace(",",".")),mx=parseFloat(String(FL.max).replace(",","."));if(skip!=="pr"){if(mn>=0&&p.pr<mn*100)return false;if(mx>=0&&String(FL.max)!==""&&p.pr>mx*100)return false}return true}
+const fCount=()=>FL.st.size+FL.cat.size+FL.co.size+FL.nt.size+(FL.min!==""?1:0)+(FL.max!==""?1:0);
 // Buscador y filtros del catálogo
 const norm=t=>String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
 const gkey=g=>norm(g).replace(/\s+/g," ");const isG=p=>!!p.g&&/\d/.test(p.g);const gNums=p=>p.g?(String(p.g).match(/\d+(?:[.,]\d+)?/g)||[]).map(n=>Math.floor(parseFloat(n.replace(",",".")))):[];
@@ -1010,7 +1058,7 @@ function grades(){const m=new Map();P.forEach(p=>{if(isG(p)&&!m.has(gkey(p.g)))m
  return [...m.values()].sort((a,b)=>{const ca=norm(a).split(" ")[0],cb=norm(b).split(" ")[0];return ca.localeCompare(cb)||num(b)-num(a)})}
 const visibleP=()=>{const q=norm(FQ).split(/\s+/).filter(Boolean);let l=P.filter(p=>{
   if(FG==="feat"&&!p.f)return false;if(FG==="graded"&&!isG(p))return false;if(FG==="raw"&&isG(p))return false;if(FG.startsWith("n:")&&!gNums(p).includes(Number(FG.slice(2))))return false;
-  if(q.length){const h=norm([p.n,p.g,p.d,p.c].join(" "));if(!q.every(w=>h.includes(w)))return false}return true});
+  if(q.length){const h=norm([p.n,p.g,p.d,p.c].join(" "));if(!q.every(w=>h.includes(w)))return false}return fOK(p)});
  if(FS==="asc")l=[...l].sort((a,b)=>a.pr-b.pr);else if(FS==="desc")l=[...l].sort((a,b)=>b.pr-a.pr);return l};
 function saveCart(){ls.set("pi",cart);payNonce=null}
 function draw(){
@@ -1021,7 +1069,7 @@ function draw(){
  if(PLOAD==="loading"){g.innerHTML='<article class="p sk"></article>'.repeat(4);$("#pager").innerHTML="";$("#pcount").textContent="";return}
  if(PLOAD!=="ok"){g.innerHTML=`<div class="msg err" style="grid-column:1/-1">No se pudo cargar el catálogo: ${esc(PLOAD)} <button class="sbtn" id="retryP">Reintentar</button></div>`;$("#pager").innerHTML="";return}
  const all=visibleP(),pages=Math.max(1,Math.ceil(all.length/PER));if(PG>pages)PG=pages;if(PG<1)PG=1;const l=all.slice((PG-1)*PER,PG*PER);
- const filt=FQ.trim()||FG!=="all";$("#pcount").innerHTML=all.length?`${all.length} ${all.length===1?"carta":"cartas"}${FQ.trim()?` para «${esc(FQ.trim())}»`:""}${pages>1?` · página ${PG} de ${pages}`:""}${filt?' · <button class="lnk2" id="fclear">Quitar filtros</button>':""}`:"";
+ const filt=FQ.trim()||FG!=="all"||fCount();if(typeof fDraw==="function")setTimeout(fDraw);$("#pcount").innerHTML=all.length?`${all.length} ${all.length===1?"carta":"cartas"}${FQ.trim()?` para «${esc(FQ.trim())}»`:""}${pages>1?` · página ${PG} de ${pages}`:""}${filt?' · <button class="lnk2" id="fclear">Quitar filtros</button>':""}`:"";
  $("#pager").innerHTML=pages>1?`<button data-pg="${PG-1}" ${PG<=1?"disabled":""}>‹ Anterior</button>${Array.from({length:pages},(_,k)=>`<button data-pg="${k+1}" class="${k+1===PG?"on":""}" aria-label="Página ${k+1}">${k+1}</button>`).join("")}<button data-pg="${PG+1}" ${PG>=pages?"disabled":""}>Siguiente ›</button>`:"";
  if(!all.length){g.innerHTML=`<div class="empty" style="grid-column:1/-1"><p>No hay cartas que coincidan${FQ.trim()?` con «${esc(FQ.trim())}»`:""}.</p><button class="sbtn" id="fclear">Ver todas las cartas</button></div>`;return}
 
@@ -1449,7 +1497,7 @@ $("#mbnew").onclick=()=>openBoxEd(null);$("#mbcfg").onclick=()=>openPanel("cajas
 document.addEventListener("click",async ev=>{const t=ev.target,el=t.closest?t:null;if(!el)return;
  if(t.dataset.fg){FG=t.dataset.fg;PG=1;draw()}
  if(t.dataset.pg&&!t.disabled){PG=Number(t.dataset.pg);draw();goCats()}
- if(t.id==="fclear"){FG="all";FQ="";PG=1;$("#q").value="";draw()}
+ if(t.id==="fclear"){FG="all";FQ="";PG=1;$("#q").value="";FL={st:new Set(),cat:new Set(),co:new Set(),nt:new Set(),min:"",max:""};draw();fDraw()}
  const gl=t.closest("[data-go]");if(gl){ev.preventDefault();const v=gl.dataset.go;FG=v==="Destacados"?"feat":v==="Cartas graduadas"?"graded":"all";FQ="";PG=1;$("#q").value="";draw();goCats()}
  const lg=t.closest("[data-legal]");if(lg){ev.preventDefault();openLegal(lg.dataset.legal)}
  if(t.id==="legalx"||t.id==="legal")$("#legal").classList.remove("on");
@@ -1926,6 +1974,24 @@ document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.clos
 // Enlaces directos a las páginas legales: poke-isla.com/#privacidad, #cookies, #aviso, #condiciones, #devoluciones
 function legalHash(){const PM={"/privacidad":"privacidad","/cookies":"cookies","/aviso-legal":"aviso","/condiciones":"condiciones","/devoluciones":"devoluciones"},k=PM[location.pathname.replace(/\/$/,"")]||location.hash.slice(1);if(["privacidad","cookies","aviso","condiciones","devoluciones","sorteo"].includes(k)&&$(`#legal [data-sec="${k}"]`))openLegal(k)}
 addEventListener("hashchange",legalHash);setTimeout(legalHash,300);
+/* ---- panel de filtros ---- */
+function fGroups(){const by=(fn,key)=>{const m=new Map();P.forEach(p=>{const v=fn(p);if(!v)return;m.set(v,(m.get(v)||0)+(fOK(p,key)?1:0))});return m};
+ const num=s=>parseFloat(String(s).replace(",","."));
+ return[["st","Disponibilidad",[...by(fSt,"st")].sort((a,b)=>a[0]==="En stock"?-1:1)],
+  ["cat","Categoría",[...by(p=>p.c||"Otros","cat")].sort((a,b)=>a[0].localeCompare(b[0]))],
+  ["co","Empresa de gradación",[...by(fCo,"co")].sort((a,b)=>a[0]==="Sin gradear"?1:b[0]==="Sin gradear"?-1:a[0].localeCompare(b[0]))],
+  ["nt","Nota",[...by(fNt,"nt")].sort((a,b)=>num(b[0])-num(a[0]))]]}
+function fDraw(){const b=$("#fbtn");if(b){const n=fCount();b.innerHTML=`<span aria-hidden="true">⚙️</span> Filtros${n?` <b>${n}</b>`:""}`;b.classList.toggle("on",!!n)}
+ const box=$("#fpb");if(!box||!$("#fpan").classList.contains("on"))return;const hi=P.reduce((m,p)=>Math.max(m,p.pr),0);
+ box.innerHTML=fGroups().filter(g=>g[2].length>1||FL[g[0]].size).map(([k,t,opts])=>`<details open><summary>${t}${FL[k].size?` <i>${FL[k].size}</i>`:""}</summary><div class="fopts">${opts.map(([v,n])=>`<label class="${n||FL[k].has(v)?"":"dis"}"><input type="checkbox" data-fk="${k}" value="${esc(v)}" ${FL[k].has(v)?"checked":""}><span>${k==="nt"?"Nota "+esc(v):esc(v)}</span><small>${n}</small></label>`).join("")}</div></details>`).join("")
+ +`<details open><summary>Precio</summary><div class="fpr"><label><span>€</span><input id="fmin" inputmode="decimal" placeholder="0" value="${esc(FL.min)}" aria-label="Precio mínimo"></label><em>a</em><label><span>€</span><input id="fmax" inputmode="decimal" placeholder="${(hi/100).toFixed(2).replace(".",",")}" value="${esc(FL.max)}" aria-label="Precio máximo"></label></div><p class="fhi">El precio más alto es ${e(hi)}</p></details>`;
+ const n=visibleP().length;$("#fgo").textContent=`Ver ${n} ${n===1?"carta":"cartas"}`}
+function fOpen(){$("#fpan").classList.add("on");document.body.classList.add("fopen");fDraw()}
+function fClose(){$("#fpan").classList.remove("on");document.body.classList.remove("fopen")}
+document.addEventListener("click",ev=>{const t=ev.target;if(t.closest&&t.closest("#fbtn"))fOpen();if(t.id==="fpan"||t.id==="fx"||t.id==="fgo"){fClose();if(t.id==="fgo"){const g=$("#tienda");g&&g.scrollIntoView({behavior:"smooth"})}}
+ if(t.id==="fclr"){FL={st:new Set(),cat:new Set(),co:new Set(),nt:new Set(),min:"",max:""};PG=1;draw();fDraw()}});
+document.addEventListener("change",ev=>{const k=ev.target.dataset&&ev.target.dataset.fk;if(!k)return;ev.target.checked?FL[k].add(ev.target.value):FL[k].delete(ev.target.value);PG=1;draw();fDraw()});
+document.addEventListener("input",ev=>{const id=ev.target.id;if(id!=="fmin"&&id!=="fmax")return;FL[id==="fmin"?"min":"max"]=ev.target.value.replace(/[^\d.,]/g,"");PG=1;draw();const n=visibleP().length;$("#fgo").textContent=`Ver ${n} ${n===1?"carta":"cartas"}`;const b=$("#fbtn");if(b){const c=fCount();b.innerHTML=`<span aria-hidden="true">⚙️</span> Filtros${c?` <b>${c}</b>`:""}`;b.classList.toggle("on",!!c)}});
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 
