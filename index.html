@@ -3,7 +3,7 @@
 <head>
 <link rel="preload" as="image" href="/fondo.jpg">
 <meta name="google-site-verification" content="3FAo_8IXWcs13XVG94h0Xm_WXdfpmIu2JkQAQ3m0CvU">
-<script>try{var lnA=+localStorage.getItem("pi_ln");if(lnA>Date.now()&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("ln")}catch(e){}</script><script>try{(function(){if(/bot|crawl|spider|slurp|lighthouse|google|bing|yandex|duckduck|facebookexternal|whatsapp/i.test(navigator.userAgent))return;var L=localStorage,a=L.getItem("pi_acct");if(a&&a!=="null")return;if(sessionStorage.getItem("pi_pin")||L.getItem("pi_gon")==="0"||/^\/admin/.test(location.pathname)||/[?&](caja|pago|session_id|ok|t)=/.test(location.search))return;var s=+L.getItem("pi_gate_skip")||0;if(L.getItem("pi_gfo")!=="1"&&s&&Date.now()-s<2592e5)return;document.documentElement.classList.add("gt")})()}catch(e){}</script>
+<script>try{var lnA=+localStorage.getItem("pi_ln");if(lnA>Date.now()&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("ln")}catch(e){}</script><script>try{(function(){if(/bot|crawl|spider|slurp|lighthouse|google|bing|yandex|duckduck|facebookexternal|whatsapp/i.test(navigator.userAgent))return;var L=localStorage,a=L.getItem("pi_acct");if(a&&a!=="null")return;if(sessionStorage.getItem("pi_pin")||L.getItem("pi_gon")==="0"||/^\/(admin|privacidad|cookies|aviso-legal|condiciones|devoluciones)/.test(location.pathname)||/[?&](caja|pago|session_id|ok|t)=/.test(location.search))return;var s=+L.getItem("pi_gate_skip")||0;if(L.getItem("pi_gfo")!=="1"&&s&&Date.now()-s<2592e5)return;document.documentElement.classList.add("gt")})()}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_th")==="halloween")document.documentElement.classList.add("th-halloween")}catch(e){}</script>
 <script>try{if(localStorage.getItem("pi_mt")==="1"&&!sessionStorage.getItem("pi_pin"))document.documentElement.classList.add("mt")}catch(e){}</script>
 
@@ -1819,7 +1819,7 @@ var GATE={on:true,force:false},GMAIL="",GBUSY=false;
 const GSKIPMS=3*86400000;
 const ISBOT=/bot|crawl|spider|slurp|lighthouse|google|bing|yandex|duckduck|facebookexternal|whatsapp/i.test(navigator.userAgent);
 function gateNeeded(){if(ISBOT||!GATE.on||ACC||ADMIN||ss.get("pi_pin")||MAINT.on||lnActive())return false;
- if(/^\/admin/.test(location.pathname)||/[?&](caja|pago|session_id|ok|t)=/.test(location.search))return false;
+ if(/^\/(admin|privacidad|cookies|aviso-legal|condiciones|devoluciones)/.test(location.pathname)||/[?&](caja|pago|session_id|ok|t)=/.test(location.search))return false;
  if(!GATE.force){const s=ls.get("pi_gate_skip",0);if(s&&Date.now()-s<GSKIPMS)return false}return true}
 function applyGate(){if(!GATE||!$("#gate"))return;try{localStorage.setItem("pi_gon",GATE.on?"1":"0");localStorage.setItem("pi_gfo",GATE.force?"1":"0")}catch(_){}
  const b=$("#agate");if(b)b.textContent="🔐 Login: "+(!GATE.on?"desactivado":GATE.force?"obligatorio":"opcional");
@@ -1924,7 +1924,7 @@ $("#unl").addEventListener("click",ev=>{const o=$("#unl");if(ev.target.id==="usk
  const pd=$("#pdown");if(pd)pd.onclick=()=>{const t=$(".hero2");if(t)t.scrollIntoView({behavior:reduced()?"auto":"smooth"})}})();
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest(".rvnav");if(!b)return;const l=$("#rvlist"),c=l.querySelector(".rv");l.scrollBy({left:(c?c.getBoundingClientRect().width+14:l.clientWidth*.8)*Number(b.dataset.rv),behavior:"smooth"})});
 // Enlaces directos a las páginas legales: poke-isla.com/#privacidad, #cookies, #aviso, #condiciones, #devoluciones
-function legalHash(){const k=location.hash.slice(1);if(["privacidad","cookies","aviso","condiciones","devoluciones","sorteo"].includes(k)&&$(`#legal [data-sec="${k}"]`))openLegal(k)}
+function legalHash(){const PM={"/privacidad":"privacidad","/cookies":"cookies","/aviso-legal":"aviso","/condiciones":"condiciones","/devoluciones":"devoluciones"},k=PM[location.pathname.replace(/\/$/,"")]||location.hash.slice(1);if(["privacidad","cookies","aviso","condiciones","devoluciones","sorteo"].includes(k)&&$(`#legal [data-sec="${k}"]`))openLegal(k)}
 addEventListener("hashchange",legalHash);setTimeout(legalHash,300);
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
