@@ -1923,6 +1923,9 @@ $("#unl").addEventListener("click",ev=>{const o=$("#unl");if(ev.target.id==="usk
  size();upd();addEventListener("scroll",()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});addEventListener("resize",()=>{size();upd()});
  const pd=$("#pdown");if(pd)pd.onclick=()=>{const t=$(".hero2");if(t)t.scrollIntoView({behavior:reduced()?"auto":"smooth"})}})();
 document.addEventListener("click",ev=>{const b=ev.target.closest&&ev.target.closest(".rvnav");if(!b)return;const l=$("#rvlist"),c=l.querySelector(".rv");l.scrollBy({left:(c?c.getBoundingClientRect().width+14:l.clientWidth*.8)*Number(b.dataset.rv),behavior:"smooth"})});
+// Enlaces directos a las páginas legales: poke-isla.com/#privacidad, #cookies, #aviso, #condiciones, #devoluciones
+function legalHash(){const k=location.hash.slice(1);if(["privacidad","cookies","aviso","condiciones","devoluciones","sorteo"].includes(k)&&$(`#legal [data-sec="${k}"]`))openLegal(k)}
+addEventListener("hashchange",legalHash);setTimeout(legalHash,300);
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 
