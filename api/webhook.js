@@ -1,4 +1,5 @@
 // Avisos de Stripe: confirman pagos, fallos, cancelaciones y reembolsos.
+const { getWA, sendWA } = require("./_wa");
 const crypto = require("crypto");
 const { cmd, parse } = require("./_db");
 const { ensureTicket } = require("./_mbox");
@@ -90,6 +91,35 @@ async function pagado(s) {
     const aviso = `<h2>Nueva venta${kind === "mbox" ? " · PokeRuleta" : ""}</h2><p><b>Cliente:</b> ${esc(c.name)} · ${esc(c.email)} · ${esc(c.phone)}</p><p><b>Zona de envío:</b> ${esc(s.metadata && s.metadata.zone)}</p><p><b>Dirección:</b> ${esc(c.address) || "-"}</p><p><b>Pago Stripe:</b> ${esc(pi)}</p>${tabla}`;
     await enviar(process.env.VENTAS_EMAIL || "pokeislatcg@gmail.com", "Nueva venta: " + eur(s.amount_total) + " - " + (c.name || c.email || ""), aviso, c.email);
   } catch (e) { console.error("correo", e.message); }
+
+  // Aviso por WhatsApp al dueño con todos los datos del pedido
+  try {
+    const wa = await getWA();
+    if (wa.on && wa.phone && wa.key) {
+      let lineas = [];
+      try { lineas = ((await stripe("GET", "checkout/sessions/" + s.id + "/line_items?limit=50")).data || []).map((l) => ({ n: l.description, q: l.quantity, t: l.amount_total })); } catch (_) {}
+      const envio = s.shipping_cost && s.shipping_cost.amount_total;
+      const ZN = { canarias: "Canarias", peninsula: "Península", baleares: "Baleares", ceuta: "Ceuta y Melilla", melilla: "Ceuta y Melilla" };
+      const z = (s.metadata && s.metadata.zone) || "";
+      const txt = [
+        (kind === "mbox" ? "🎰 *NUEVA COMPRA DE POKERULETA*" : "🛒 *NUEVO PEDIDO EN POKE ISLAS*"),
+        "",
+        "👤 " + (c.name || "-"),
+        "📞 " + (c.phone || "-"),
+        "✉️ " + (c.email || "-"),
+        "📍 " + (c.address || "-"),
+        z ? "🚚 Zona: " + (ZN[z] || z) : null,
+        "",
+        "📦 *Pedido:*",
+        ...(lineas.length ? lineas.map((l) => "• " + l.n + " × " + l.q + " — " + eur(l.t)) : ["• (ver detalle en Stripe)"]),
+        envio != null ? "Envío: " + eur(envio) : null,
+        "💰 *TOTAL: " + eur(s.amount_total) + "*",
+        cpc ? "🏷️ Cupón: " + cpc : null,
+        kind === "mbox" ? "\nEl cliente ya puede girar la ruleta. El premio sale en el panel → PokeRuletas." : null,
+      ].filter((x) => x != null).join("\n");
+      await sendWA(txt, wa);
+    }
+  } catch (e) { console.error("whatsapp", e.message); }
 }
 
 module.exports = async (req, res) => {

@@ -718,6 +718,7 @@ body.fopen{overflow:hidden}
 #fpan .fft{display:flex;gap:10px;padding:14px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid #ffffff1a}
 #fclr{flex:0 0 auto;border:1.5px solid #ffffff44;background:none;color:#fff;border-radius:12px;padding:13px 16px;font-weight:700;cursor:pointer}
 #fgo{flex:1;border:0;background:#ffcb05;color:#0c1a1e;border-radius:12px;padding:13px 16px;font-weight:800;cursor:pointer}
+#wabox .cpn{margin-top:6px}#wabox .wahelp summary{cursor:pointer;color:#1f9e4a;font-weight:700;margin-top:4px}#wabox .wahelp ol{margin:8px 0 4px 18px;padding:0;display:grid;gap:6px;font-size:14px}#wabox .ck{margin-top:6px}
 @media (max-width:759px){#tienda .flt .sw{flex:1 1 100%}#tienda .flt select{flex:1 1 0;max-width:none;min-height:44px}#fbtn{flex:1 1 0;justify-content:center}}
 @media (min-width:760px){#faq{margin-top:28px}#faq .faql{grid-template-columns:1fr 1fr;align-items:start}}
 </style>
@@ -1484,7 +1485,12 @@ async function openPanel(tab){PANEL=tab;$("#mbl").classList.add("on");$$("#ptabs
    body.innerHTML=`<div class="prow"><b>${d.db?"✅ Base de datos conectada":"❌ Base de datos no disponible"}</b>${d.dbError?`<small>${esc(d.dbError)}</small>`:""}${d.db?`<span>${pl(d.counts.productos,"producto")} · ${pl(d.counts.cajas,"caja")} · ${pl(d.counts.compras,"compra")} · ${pl(d.counts.giros,"giro")}</span>`:""}</div>`+
     `<div class="prow"><b>Variables de entorno en Vercel</b>${Object.entries(d.vars).map(([k,v])=>`<span>${v?"✅":"⚠️"} ${esc(k)}${v?"":" — sin configurar"}</span>`).join("")}${d.stripeMode?`<span>Stripe en modo <b>${d.stripeMode}</b>${d.stripeMode==="prueba"?" (no se cobra de verdad)":""}</span>`:""}${d.ai?`<span>${d.ai.ok?"✅ Asistente de IA funcionando":"⚠️ Asistente de IA con error: "+esc(d.ai.msg||"")+(d.ai.code===401?" → revisa que GEMINI_API_KEY en Vercel sea correcta":d.ai.code===429?" → se ha acabado la cuota gratuita de Gemini por ahora":"")}</span>`:""}</div>`+
     `<div class="prow"><b>Prueba de la web</b><span id="stest"><span class="spn d"></span> Comprobando servicios…</span></div>`+
-    `<div class="prow"><b>✉️ Prueba de correos</b><span>Envía un correo de prueba (los códigos para entrar y los avisos usan este sistema).</span><div class="cpn"><input id="mtto" type="email" placeholder="email de prueba (que no sea el tuyo de Resend)"><button class="sbtn" id="mtgo">Enviar prueba</button></div><span id="mtres"></span></div>`;
+    `<div class="prow"><b>✉️ Prueba de correos</b><span>Envía un correo de prueba (los códigos para entrar y los avisos usan este sistema).</span><div class="cpn"><input id="mtto" type="email" placeholder="email de prueba (que no sea el tuyo de Resend)"><button class="sbtn" id="mtgo">Enviar prueba</button></div><span id="mtres"></span></div>`+
+    `<div class="prow" id="wabox"><b>📲 Avisos de pedidos por WhatsApp</b><span>Te llega un WhatsApp con cada pedido pagado: nombre, teléfono, dirección, lo que ha comprado y el precio.</span>
+     <details class="wahelp"><summary>Cómo activarlo (1 minuto)</summary><ol><li>Guarda en tus contactos el número del bot <b>+34 621 07 32 45</b> (CallMeBot).</li><li>Mándale por WhatsApp este mensaje exacto: <b>I allow callmebot to send me messages</b></li><li>Te contestará con tu <b>APIKEY</b> (un número). Pégalo abajo con tu número y pulsa «Guardar y probar».</li></ol></details>
+     <div class="cpn"><input id="waph" inputmode="tel" placeholder="Tu WhatsApp, ej. +34612345678"></div><div class="cpn"><input id="wakey" inputmode="numeric" placeholder="APIKEY del bot"><button class="sbtn" id="wago">Guardar y probar</button></div>
+     <label class="ck"><input type="checkbox" id="waon" checked> Avisos activados</label><span id="wares"></span></div>`;
+    setTimeout(waLoad,0);
    const chk=[["Catálogo","/api/products",null,"GET"],["PokeRuleta","/api/mbox",{action:"public"}],["Web","/api/site",{action:"get"}],["Pagos (estado)","/api/order",{action:"status",session:"cs_test_comprobacion000"}]],out=[];
    for(const[n,u,b,m]of chk){try{await req(u,b,m);out.push("✅ "+n)}catch(err){out.push((err.status&&err.status<500&&err.status!==404?"✅ ":"❌ ")+n+(err.status&&err.status<500&&err.status!==404?"":": "+err.message))}}
    const st=$("#stest");if(st)st.innerHTML=out.map(esc).join("<br>")}
@@ -1992,6 +1998,13 @@ document.addEventListener("click",ev=>{const t=ev.target;if(t.closest&&t.closest
  if(t.id==="fclr"){FL={st:new Set(),cat:new Set(),co:new Set(),nt:new Set(),min:"",max:""};PG=1;draw();fDraw()}});
 document.addEventListener("change",ev=>{const k=ev.target.dataset&&ev.target.dataset.fk;if(!k)return;ev.target.checked?FL[k].add(ev.target.value):FL[k].delete(ev.target.value);PG=1;draw();fDraw()});
 document.addEventListener("input",ev=>{const id=ev.target.id;if(id!=="fmin"&&id!=="fmax")return;FL[id==="fmin"?"min":"max"]=ev.target.value.replace(/[^\d.,]/g,"");PG=1;draw();const n=visibleP().length;$("#fgo").textContent=`Ver ${n} ${n===1?"carta":"cartas"}`;const b=$("#fbtn");if(b){const c=fCount();b.innerHTML=`<span aria-hidden="true">⚙️</span> Filtros${c?` <b>${c}</b>`:""}`;b.classList.toggle("on",!!c)}});
+/* ---- avisos de pedidos por WhatsApp ---- */
+async function waLoad(){if(!$("#waph"))return;try{const d=await req("/api/admin",{pin:APIN,action:"wa_get"});$("#waph").value=d.phone||"";$("#waon").checked=d.on||!d.phone;if(d.hasKey)$("#wakey").placeholder="APIKEY guardada ✓ (déjalo vacío para mantenerla)";$("#wares").textContent=d.phone&&d.hasKey?(d.on?"✅ Activado: los pedidos te llegan a "+d.phone:"⏸️ Desactivado"):""}catch(_){}}
+document.addEventListener("click",async ev=>{if(ev.target.id!=="wago")return;const done=busy(ev.target,"Enviando prueba…"),r=$("#wares");r.textContent="";
+ try{const d=await req("/api/admin",{pin:APIN,action:"wa_test",phone:$("#waph").value,key:$("#wakey").value,on:$("#waon").checked});done();
+  if(d.ok){r.textContent="✅ Mensaje de prueba enviado. Mira tu WhatsApp.";$("#wakey").value="";$("#wakey").placeholder="APIKEY guardada ✓ (déjalo vacío para mantenerla)";toast("WhatsApp configurado ✓","ok")}
+  else r.textContent="⚠️ "+d.error+" — revisa el número y la APIKEY."}catch(err){done();r.textContent="⚠️ "+err.message}});
+document.addEventListener("change",async ev=>{if(ev.target.id!=="waon"||!$("#waph").value)return;try{await req("/api/admin",{pin:APIN,action:"wa_save",phone:$("#waph").value,key:$("#wakey").value,on:ev.target.checked});$("#wares").textContent=ev.target.checked?"✅ Activado":"⏸️ Desactivado";toast(ev.target.checked?"Avisos por WhatsApp activados":"Avisos por WhatsApp desactivados","ok")}catch(err){$("#wares").textContent="⚠️ "+err.message}});
 loadSite();loadP();initMB();handleReturn();loadRV();loadGW();accBtn();
 if(/^\/admin\/(mystery-box|pokeruleta)$/.test(location.pathname.replace(/\/$/,"")))setTimeout(()=>{const m=$("#mystery");m&&m.scrollIntoView();if(!ADMIN)login();else openPanel("cajas")},900);
 

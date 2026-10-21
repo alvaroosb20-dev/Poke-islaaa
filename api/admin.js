@@ -1,6 +1,7 @@
 // Administración de productos de la tienda (requiere PIN) y diagnóstico del sistema.
 const { gemini } = require("./_gemini");
 const { delVid } = require("./_mbox");
+const { getWA, sendWA } = require("./_wa");
 const { cmd, parse, getAll } = require("./_db");
 const { putImg, delImg, checkImg } = require("./_img");
 const { checkPin } = require("./_auth");
@@ -133,6 +134,21 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true, products: await getAll() });
     }
 
+    if (action === "wa_get") { const w = await getWA(); return res.status(200).json({ on: !!w.on, phone: w.phone || "", hasKey: !!w.key }); }
+    if (action === "wa_save" || action === "wa_test") {
+      const b = req.body || {}, cur = await getWA();
+      const phone = String(b.phone || "").replace(/[^\d+]/g, "");
+      if (!/^\+\d{8,15}$/.test(phone)) return res.status(400).json({ error: "Escribe tu número con el prefijo, por ejemplo +34612345678" });
+      const key = String(b.key || "").trim() || cur.key || "";
+      if (!/^[A-Za-z0-9_-]{3,40}$/.test(key)) return res.status(400).json({ error: "Escribe la clave (APIKEY) que te envió el bot por WhatsApp" });
+      const cfg = { on: b.on === false ? 0 : 1, phone, key };
+      await cmd(["SET", "wa:cfg", JSON.stringify(cfg)]);
+      if (action === "wa_test") {
+        try { await sendWA("✅ *POKE ISLAS*\nPrueba correcta: a partir de ahora te llegará aquí cada pedido con nombre, teléfono, dirección, lo que ha comprado y el precio.", cfg); }
+        catch (e) { return res.status(200).json({ ok: false, error: e.message }); }
+      }
+      return res.status(200).json({ ok: true, on: !!cfg.on, phone, hasKey: true });
+    }
     if (action === "mail_test") {
       const to = String(req.body.to || "").trim();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(to)) return res.status(400).json({ error: "Escribe un email válido" });
