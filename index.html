@@ -1039,7 +1039,7 @@ const ls={get:(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.
 
 /* ================= TIENDA ================= */
 const CATS=["Todo","Destacados","Cartas graduadas","Cartas sueltas","Colecciones","Álbumes vintage","Figuras","Stickers","Cuadros"];
-let P=[],PLOAD="loading",cur="Todo",FQ="",FG="all",FS="rec",PG=1,cart=ls.get("pi",{}),payNonce=null;const PER=18;
+let P=[],PLOAD="loading",cur="Todo",FQ="",FG="all",FS="rec",PG=1,cart=ls.get("pi",{}),payNonce=null;const PER=30;
 const pimg=p=>p.img||IMG[p.i]||"";
 const pimgs=p=>[pimg(p),...(p.xs||[])].filter(Boolean);
 // Panel de filtros: disponibilidad, precio, categoría, empresa de gradación y nota
